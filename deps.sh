@@ -14,8 +14,8 @@ then
     fi
 fi
 
-sudo apt install git
-sudo apt install cmake
-sudo apt install libboost-dev-all
-sudo apt install proto-c-compiler proto-compiler libprotobuf-c-dev libprotoc-dev
-sudo apt install libre2-dev
+sudo apt install -y git
+sudo apt install -y cmake
+sudo apt install -y libboost-dev-all
+sudo apt install -y protobuf-c-compiler protobuf-compiler libprotobuf-c-dev libprotoc-dev
+sudo apt install -y libre2-dev
