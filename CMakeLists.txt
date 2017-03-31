@@ -14,7 +14,7 @@ file(GLOB_RECURSE ProtoFiles "${CMAKE_CURRENT_SOURCE_DIR}/*.proto")
 SET(PROTOBUF_FILES ${CMAKE_CURRENT_BINARY_DIR}/generated)
 include_directories(${PROTOBUF_FILES})
 
-MACRO(LINK_PROTOBUF_GENERATED_SOURCES proto_files)
+MACRO(GENERATE_PROTOBUF proto_files)
     MESSAGE("-- Protobuf -- Generating files")
     FILE(MAKE_DIRECTORY ${PROTOBUF_FILES})
     FOREACH (proto ${proto_files})
@@ -24,17 +24,17 @@ MACRO(LINK_PROTOBUF_GENERATED_SOURCES proto_files)
     MESSAGE("-- Protobuf -- Generating files - done")
 ENDMACRO()
 
+GENERATE_PROTOBUF("${ProtoFiles}")
+
 ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/deps/googletest)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/googletest/googletest/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/googletest/googlemock/include)
 
 FILE(GLOB_RECURSE SUPERSONIC_PROTO_FILES ${CMAKE_CURRENT_BINARY_DIR}/generated/**.cc)
 ADD_LIBRARY(supersonic_proto ${SUPERSONIC_PROTO_FILES})
-SET_TARGET_PROPERTIES(supersonic_proto PROPERTIES LINKER_LANGUAGE CXX)
+#SET_TARGET_PROPERTIES(supersonic_proto PROPERTIES LINKER_LANGUAGE CXX)
 
 ADD_LIBRARY(rune supersonic/utils/utf/rune.c)
-
-LINK_PROTOBUF_GENERATED_SOURCES("${ProtoFiles}")
 
 FILE(GLOB_RECURSE PROJECT_MAIN ${CMAKE_CURRENT_SOURCE_DIR}/supersonic/**.cc)
 ADD_EXECUTABLE(supersonic ${PROJECT_MAIN})

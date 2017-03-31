@@ -20,3 +20,5 @@ sudo apt install -y g++
 sudo apt install -y libboost-all-dev
 sudo apt install -y protobuf-c-compiler protobuf-compiler libprotobuf-c-dev libprotoc-dev
 sudo apt install -y libre2-dev
+
+[[ ! -d deps/googletest ]] && mkdir -p deps && git clone https://github.com/google/googletest deps/googletest
