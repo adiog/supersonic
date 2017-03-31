@@ -16,12 +16,11 @@
 #ifndef SUPERSONIC_TESTING_REPEATING_BLOCK_H_
 #define SUPERSONIC_TESTING_REPEATING_BLOCK_H_
 
-#include <stddef.h>
+#include <cstddef>
 
 #include <memory>
 
 #include "supersonic/utils/macros.h"
-#include "supersonic/utils/scoped_ptr.h"
 #include "supersonic/base/exception/result.h"
 #include "supersonic/base/infrastructure/block.h"
 #include "supersonic/cursor/infrastructure/basic_operation.h"

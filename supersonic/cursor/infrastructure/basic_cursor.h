@@ -17,7 +17,7 @@
 #ifndef SUPERSONIC_CURSOR_INFRASTRUCTURE_BASIC_CURSOR_H_
 #define SUPERSONIC_CURSOR_INFRASTRUCTURE_BASIC_CURSOR_H_
 
-#include <stddef.h>
+#include <cstddef>
 
 #include <memory>
 #include <string>
@@ -28,7 +28,6 @@ using std::vector;
 #include <glog/logging.h>
 #include "supersonic/utils/logging-inl.h"
 #include "supersonic/utils/macros.h"
-#include "supersonic/utils/scoped_ptr.h"
 #include <atomic>
 #include "supersonic/base/exception/exception.h"
 #include "supersonic/base/exception/exception_macros.h"

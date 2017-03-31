@@ -18,7 +18,7 @@
 
 #include <sys/time.h>
 
-#include <string.h>
+#include <cstring>
 #include <algorithm>
 #include "supersonic/utils/std_namespace.h"  // For max.
 #include <string>
@@ -27,7 +27,6 @@ namespace supersonic {using std::string; }
 #include <glog/logging.h>
 #include "supersonic/utils/logging-inl.h"
 #include "supersonic/utils/port.h"
-#include "supersonic/utils/scoped_ptr.h"
 #include "supersonic/utils/walltime.h"
 
 // The golden values used in MT

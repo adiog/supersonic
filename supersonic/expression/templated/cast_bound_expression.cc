@@ -16,7 +16,7 @@
 
 #include "supersonic/expression/templated/cast_bound_expression.h"
 
-#include <stddef.h>
+#include <cstddef>
 #include <memory>
 #include <set>
 #include "supersonic/utils/std_namespace.h"
@@ -25,7 +25,6 @@ namespace supersonic {using std::string; }
 
 #include <glog/logging.h>
 #include "supersonic/utils/logging-inl.h"
-#include "supersonic/utils/scoped_ptr.h"
 #include "supersonic/utils/stringprintf.h"
 #include "supersonic/utils/exception/failureor.h"
 #include "supersonic/base/exception/exception.h"

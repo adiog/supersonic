@@ -18,7 +18,7 @@
 #ifndef SUPERSONIC_CURSOR_INFRASTRUCTURE_ORDERING_H_
 #define SUPERSONIC_CURSOR_INFRASTRUCTURE_ORDERING_H_
 
-#include <stddef.h>
+#include <cstddef>
 
 #include <algorithm>
 #include "supersonic/utils/std_namespace.h"
@@ -29,7 +29,6 @@ using std::vector;
 #include <glog/logging.h>
 #include "supersonic/utils/logging-inl.h"
 #include "supersonic/utils/macros.h"
-#include "supersonic/utils/scoped_ptr.h"
 #include "supersonic/base/exception/result.h"
 #include "supersonic/base/infrastructure/projector.h"
 #include "supersonic/base/infrastructure/tuple_schema.h"

@@ -16,14 +16,13 @@
 
 #include "supersonic/cursor/core/scan_view.h"
 
-#include <stddef.h>
+#include <cstddef>
 
 #include <memory>
 #include <string>
 namespace supersonic {using std::string; }
 
 #include "supersonic/utils/integral_types.h"
-#include "supersonic/utils/scoped_ptr.h"
 #include "supersonic/base/infrastructure/block.h"
 #include "supersonic/base/memory/memory.h"
 #include "supersonic/cursor/base/operation.h"

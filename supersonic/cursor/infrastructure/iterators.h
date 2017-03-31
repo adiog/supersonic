@@ -19,7 +19,7 @@
 #ifndef SUPERSONIC_CURSOR_INFRASTRUCTURE_ITERATORS_H_
 #define SUPERSONIC_CURSOR_INFRASTRUCTURE_ITERATORS_H_
 
-#include <stddef.h>
+#include <cstddef>
 
 #include <algorithm>
 #include "supersonic/utils/std_namespace.h"
@@ -32,7 +32,6 @@
 #include <glog/logging.h>
 #include "supersonic/utils/logging-inl.h"
 #include "supersonic/utils/macros.h"
-#include "supersonic/utils/scoped_ptr.h"
 #include "supersonic/base/infrastructure/bit_pointers.h"
 #include "supersonic/base/infrastructure/block.h"
 #include "supersonic/base/infrastructure/tuple_schema.h"

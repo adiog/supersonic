@@ -18,14 +18,13 @@
 #ifndef SUPERSONIC_TESTING_COMPARABLE_CURSOR_H_
 #define SUPERSONIC_TESTING_COMPARABLE_CURSOR_H_
 
-#include <stddef.h>
+#include <cstddef>
 
 #include <iosfwd>
 #include <memory>
 #include <ostream>
 
 #include "supersonic/utils/macros.h"
-#include "supersonic/utils/scoped_ptr.h"
 #include "supersonic/cursor/base/cursor.h"
 #include "supersonic/cursor/infrastructure/iterators.h"
 #include "supersonic/testing/streamable.h"

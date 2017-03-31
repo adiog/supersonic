@@ -15,7 +15,7 @@
 
 #include "supersonic/expression/infrastructure/terminal_bound_expressions.h"
 
-#include <stddef.h>
+#include <cstddef>
 
 #include <memory>
 #include <set>
@@ -26,7 +26,6 @@ namespace supersonic {using std::string; }
 #include <glog/logging.h>
 #include "supersonic/utils/logging-inl.h"
 #include "supersonic/utils/macros.h"
-#include "supersonic/utils/scoped_ptr.h"
 #include "supersonic/utils/exception/failureor.h"
 #include "supersonic/base/infrastructure/bit_pointers.h"
 #include "supersonic/base/infrastructure/block.h"
