@@ -30,6 +30,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/googletest/googlemock/inclu
 
 FILE(GLOB_RECURSE SUPERSONIC_PROTO_FILES ${CMAKE_CURRENT_BINARY_DIR}/generated/**.cc)
 ADD_LIBRARY(supersonic_proto ${SUPERSONIC_PROTO_FILES})
+SET_TARGET_PROPERTIES(supersonic_proto PROPERTIES LINKER_LANGUAGE CXX)
 
 ADD_LIBRARY(rune supersonic/utils/utf/rune.c)
 

@@ -16,6 +16,7 @@ fi
 
 sudo apt install -y git
 sudo apt install -y cmake
-sudo apt install -y libboost-dev-all
+sudo apt install -y g++
+sudo apt install -y libboost-all-dev
 sudo apt install -y protobuf-c-compiler protobuf-compiler libprotobuf-c-dev libprotoc-dev
 sudo apt install -y libre2-dev
