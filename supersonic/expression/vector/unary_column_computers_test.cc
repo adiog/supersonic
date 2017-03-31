@@ -170,10 +170,10 @@ TEST(UnaryColumnComputersTest, EvalutationWorksForSafe) {
   EXPECT_EQ(3., block.output()[1]);
   // We make no assumptions on output[2], this is a NULL.
   EXPECT_EQ(-1., block.output()[3]);  // Should not have been changed.
-  EXPECT_EQ(false, block.skip_vector()[0]);
-  EXPECT_EQ(false, block.skip_vector()[1]);
-  EXPECT_EQ(true, block.skip_vector()[2]);
-  EXPECT_EQ(false, block.skip_vector()[3]);
+  EXPECT_FALSE(block.skip_vector()[0]);
+  EXPECT_FALSE(block.skip_vector()[1]);
+  EXPECT_TRUE(block.skip_vector()[2]);
+  EXPECT_FALSE(block.skip_vector()[3]);
 }
 
 // TODO(onufry): a test should be added for non-safe unary operations.

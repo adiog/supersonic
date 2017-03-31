@@ -200,24 +200,24 @@ TEST(BitPointersTest, BitAssignment) {
   bit_ptr ptr(data);
 
   ptr[2] |= true;
-  EXPECT_EQ(true, ptr[2]);
+  EXPECT_TRUE(ptr[2]);
   ptr[3] |= false;
-  EXPECT_EQ(false, ptr[3]);
+  EXPECT_FALSE(ptr[3]);
   ptr[2] |= false;
-  EXPECT_EQ(true, ptr[2]);
+  EXPECT_TRUE(ptr[2]);
   ptr[2] |= true;
-  EXPECT_EQ(true, ptr[2]);
+  EXPECT_TRUE(ptr[2]);
 
   EXPECT_EQ(4, data[0]);
 
   ptr[2] &= true;
-  EXPECT_EQ(true, ptr[2]);
+  EXPECT_TRUE(ptr[2]);
   ptr[2] &= false;
-  EXPECT_EQ(false, ptr[2]);
+  EXPECT_FALSE(ptr[2]);
   ptr[2] &= false;
-  EXPECT_EQ(false, ptr[2]);
+  EXPECT_FALSE(ptr[2]);
   ptr[2] &= true;
-  EXPECT_EQ(false, ptr[2]);
+  EXPECT_FALSE(ptr[2]);
 
   EXPECT_EQ(0, data[0]);
 }
@@ -310,13 +310,13 @@ void ExpectAlignedPointer(bit_ptr ptr, bit_const_ptr const_ptr) {
   int_ptr = reinterpret_cast<int64>(ptr.data());
   EXPECT_EQ(0, int_ptr & 15) << int_ptr;
   ptr[3] = true;
-  EXPECT_EQ(true, const_ptr[3]);
+  EXPECT_TRUE(const_ptr[3]);
   ptr[4] = false;
-  EXPECT_EQ(false, const_ptr[4]);
+  EXPECT_FALSE(const_ptr[4]);
   ptr[5] = true;
-  EXPECT_EQ(true, const_ptr[5]);
+  EXPECT_TRUE(const_ptr[5]);
   ptr[3] = false;
-  EXPECT_EQ(false, const_ptr[3]);
+  EXPECT_FALSE(const_ptr[3]);
 }
 
 template<size_t size>
@@ -497,10 +497,10 @@ TEST(BitPointersTest, FillFromBitPtrToBooleanUnaligned) {
   for (int i = 0; i < 96; ++i) ptr[i] = ((i ^ ((i + 3) >> 2)) & 1) == 0;
   bit_pointer::FillFrom(&dest[2], ptr + 2, 92);
   // No overwriting of data.
-  EXPECT_EQ(false, dest[0]);
-  EXPECT_EQ(true, dest[1]);
-  EXPECT_EQ(false, dest[94]);
-  EXPECT_EQ(true, dest[95]);
+  EXPECT_FALSE(dest[0]);
+  EXPECT_TRUE(dest[1]);
+  EXPECT_FALSE(dest[94]);
+  EXPECT_TRUE(dest[95]);
   for (int i = 2; i < 94; ++i) EXPECT_EQ(ptr[i], dest[i]);
 }
 
@@ -655,9 +655,9 @@ TEST(BitPointersTest, BoolViewReset) {
   EXPECT_EQ(data.mutable_data(), view.column(0));
   EXPECT_EQ(data.mutable_data(), view.column(1));
 
-  EXPECT_EQ(false, view.column(1)[0]);
+  EXPECT_FALSE(view.column(1)[0]);
   view.column(0)[0] = true;
-  EXPECT_EQ(true, view.column(1)[0]);
+  EXPECT_TRUE(view.column(1)[0]);
 }
 
 TEST(BitPointersTest, BoolBlockCreate) {
@@ -712,10 +712,10 @@ TEST(BitPointersTest, BoolViewSingleColumnConstructor) {
   BoolView view_copy(block.view().column(0));
   view_copy.column(0)[0] = false;
   view_copy.column(0)[1] = true;
-  EXPECT_EQ(false, block.view().column(0)[0]);
-  EXPECT_EQ(true, block.view().column(0)[1]);
+  EXPECT_FALSE(block.view().column(0)[0]);
+  EXPECT_TRUE(block.view().column(0)[1]);
   block.view().column(0)[0] = true;
-  EXPECT_EQ(true, view_copy.column(0)[0]);
+  EXPECT_TRUE(view_copy.column(0)[0]);
 }
 
 }  // namespace

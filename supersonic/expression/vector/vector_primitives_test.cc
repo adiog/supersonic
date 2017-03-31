@@ -88,14 +88,14 @@ template <> struct Normalize<bool> {
 
 template <> struct Normalize<double> {
   double operator()(double arg) const {
-    return  isnan(arg) ? 0.451 : arg;  // We want to have  nan == nan.
+    return  std::isnan(arg) ? 0.451 : arg;  // We want to have  nan == nan.
   };
   void NormalizeVector(double* data, index_t size) const {}
 };
 
 template <> struct Normalize<float> {
   float operator()(float arg) const {
-    return  isnan(arg) ? 0.451 : arg;  // We want to have  nan == nan.
+    return  std::isnan(arg) ? 0.451 : arg;  // We want to have  nan == nan.
   };
   void NormalizeVector(float* data, index_t size) const {}
 };
