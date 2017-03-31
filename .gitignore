@@ -48,3 +48,5 @@ gtest/
 # Protobuf generated files
 *.pb.h
 *.pb.cc
+.idea
+cmake-build-debug

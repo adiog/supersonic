@@ -162,7 +162,7 @@ TEST_F(CopyColumnTest,
   for (int i = 0; i < block_->row_capacity() - 4; ++i) {
     EXPECT_EQ(block_->view().column(0).typed_data<INT64>()[i],
               block_->view().column(1).typed_data<INT64>()[i+4]);
-    EXPECT_EQ(false, block_->view().column(1).is_null()[i+4]);
+    EXPECT_FALSE(block_->view().column(1).is_null()[i+4]);
   }
 }
 

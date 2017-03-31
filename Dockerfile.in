@@ -1,0 +1,10 @@
+FROM ubuntu
+
+COPY . /source
+COPY docker.sudo /usr/bin/sudo
+
+RUN apt-get update \
+    && /source/deps.sh \
+    && mkdir -p /build && cd /build && cmake ../source && make
+
+CMD /build/supersonic

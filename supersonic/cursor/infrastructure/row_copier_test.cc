@@ -59,7 +59,7 @@ TEST_F(RowCopierTest, RowCopierSimpleCopy) {
   DirectRowSourceWriter<RowSinkAdapter> writer;
   RowSourceAdapter source(input->view(), 2);
   RowSinkAdapter sink(output.get(), 7);
-  EXPECT_EQ(true, copier.Copy(reader, source, writer, &sink));
+  EXPECT_TRUE(copier.Copy(reader, source, writer, &sink));
   View expected(input->view(), 2, 1);
   View observed(output->view(), 7, 1);
   EXPECT_VIEWS_EQUAL(expected, observed);
@@ -88,7 +88,7 @@ TEST_F(RowCopierTest, ViewCopierCopyAlongProjection) {
   DirectRowSourceWriter<RowSinkAdapter> writer;
   RowSourceAdapter source(input->view(), 2);
   RowSinkAdapter sink(&output, 7);
-  EXPECT_EQ(true, copier.Copy(reader, source, writer, &sink));
+  EXPECT_TRUE(copier.Copy(reader, source, writer, &sink));
   View projected_input(output.schema());
   projector.Project(input->view(), &projected_input);
   projected_input.set_row_count(3);
@@ -123,7 +123,7 @@ TEST_F(RowCopierTest, MultiViewCopierCopyAlongProjection) {
   DirectRowSourceWriter<RowSinkAdapter> writer;
   RowSourceAdapter source(input->view(), 2);
   RowSinkAdapter sink(&output, 7);
-  EXPECT_EQ(true, copier.Copy(
+  EXPECT_TRUE(copier.Copy(
       util::gtl::Container(&reader, &reader).
           As<vector<const DirectRowSourceReader<RowSourceAdapter>*> >(),
       util::gtl::Container(&source, &source).

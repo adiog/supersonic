@@ -422,8 +422,8 @@ TEST_F(EqualsComparatorTest, ShouldCompareStrings) {
 }
 
 TEST_F(EqualsComparatorTest, ShouldCompareIntegersWithNull) {
-  const int32 data1[] = { -5, NULL, 4 };
-  const int32 data2[] = { NULL, 1, 4 };
+  const int32 data1[] = { -5, static_cast<int32>(NULL), 4 };
+  const int32 data2[] = { static_cast<int32>(NULL), 1, 4 };
   EqualityComparator comp = GetEqualsComparator(INT32, INT32, false, false);
   EXPECT_FALSE(comp(&data1[0], NULL));
   EXPECT_FALSE(comp(NULL, &data2[1]));
