@@ -13,11 +13,11 @@ Supersonic’s main strength lies in its speed. It is a cache-aware engine which
 
 The engine supports a wide variety of typical columnar operations as well as many other specialized functionalities. We believe it to be a useful tool for those of you working on new DBMS solutions to help handle your data more effectively.
 
-![](http://github.com/adiog/supersonic/raw/modern/docs/query_plan.png "")
+![](https://github.com/adiog/supersonic/raw/modern/docs/query_plan.png "")
 
 For some pointers on how to get started with the library visit the project page on Google Code. We also host a **[discussion group](https://groups.google.com/forum/?fromgroups#!forum/supersonic-query-engine)** where you can get up to speed on the latest development news.
 
 Intro
 =====
 
-Check the **[API presentation](https://github.com/adiog/supersonic/raw/modern/docs/api_presentation.pdf)**
+Check the **[API presentation](https://github.com/adiog/supersonic/raw/modern/docs/api-presentation.pdf)**
