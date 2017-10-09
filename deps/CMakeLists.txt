@@ -1,0 +1,30 @@
+cmake_minimum_required(VERSION 3.0)
+project(abseil)
+
+#set(CMAKE_CXX_COMPILER /usr/bin/g++-5)
+#set(CMAKE_CXX_STANDARD 17)
+#set(CMAKE_CXX_FLAGS "-ggdb -O2 -fsanitize=address")
+
+MACRO(COLLECT_PRODUCTION_CC returnVariable rootDirectory)
+    FILE(GLOB_RECURSE dirtyList ${rootDirectory}/*.cc)
+    SET(${returnVariable})
+    FOREACH(file ${dirtyList})
+        IF(NOT file MATCHES ".*_test.cc")
+            IF(NOT file MATCHES ".*benchmarks.cc")
+                IF(NOT file MATCHES ".*_nonprod.cc")
+                    LIST(APPEND ${returnVariable} ${file})
+                ENDIF()
+            ENDIF()
+        ENDIF()
+    ENDFOREACH()
+ENDMACRO()
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/abseil)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/cctz/include)
+
+COLLECT_PRODUCTION_CC(CCTZ_FILES ${CMAKE_CURRENT_SOURCE_DIR}/cctz/src)
+ADD_LIBRARY(cctz ${CCTZ_FILES})
+
+COLLECT_PRODUCTION_CC(ABSEIL_FILES ${CMAKE_CURRENT_SOURCE_DIR}/abseil/)
+ADD_LIBRARY(abseil ${ABSEIL_FILES})
+TARGET_LINK_LIBRARIES(abseil cctz)

@@ -21,11 +21,23 @@
 
 #include "supersonic/base/infrastructure/init.h"
 #include "gtest/gtest.h"
+#include <absl/strings/string_view.h>
 
 GTEST_API_ int main(int argc, char** argv) {
   std::cout << "Running main() from supersonic_test_main.cc\n";
 
-  supersonic::SupersonicInit(&argc, &argv);
+  std::vector<char *> supersonicArguments;
+  std::copy_if(argv,
+               argv + argc,
+               std::back_inserter(supersonicArguments),
+               [](char * arg) {
+                   return absl::string_view{arg}.substr(0, 7) != "--gtest";
+               });
+  auto supersonicArgc = static_cast<int>(supersonicArguments.size());
+  char** supersonicArgv = supersonicArguments.data();
+
+  supersonic::SupersonicInit(&supersonicArgc, &supersonicArgv);
   testing::InitGoogleTest(&argc, argv);
+
   return RUN_ALL_TESTS();
 }
