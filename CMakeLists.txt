@@ -78,5 +78,6 @@ TARGET_LINK_LIBRARIES(supersonic supersonic_proto protobuf abseil re2 boost_syst
 
 
 COLLECT_TEST_CC(supersonicTests ${CMAKE_CURRENT_SOURCE_DIR}/supersonic)
-ADD_EXECUTABLE(supersonicTest ${CMAKE_CURRENT_SOURCE_DIR}/test_utils/supersonic_test_main.cc ${supersonicTests})
+FILE(GLOB_RECURSE guideTests ${CMAKE_CURRENT_SOURCE_DIR}/test/**.cc)
+ADD_EXECUTABLE(supersonicTest ${CMAKE_CURRENT_SOURCE_DIR}/test_utils/supersonic_test_main.cc ${supersonicTests} ${guideTests})
 TARGET_LINK_LIBRARIES(supersonicTest supersonic gtest gmock)
