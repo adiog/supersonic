@@ -381,7 +381,7 @@ target_link_libraries(supersonic
         gflags
         glog
         abseil
-        re2
+#        re2
         boost_system
         boost_timer
         pthread
