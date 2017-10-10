@@ -28,7 +28,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/supersonic_testing)
 set(INST_SET "-mmmx -msse -msse3 -msse3 -mssse3 -msse4 -msse4a -msse4.1 -msse4.2 -mpopcnt")
 
 set(CMAKE_C_FLAGS "${INST_SET} -funsigned-char")
-set(CMAKE_CXX_FLAGS "${INST_SET} -funsigned-char")
+set(CMAKE_CXX_FLAGS "${INST_SET} -funsigned-char --coverage")
 
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Og")
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Og")
@@ -155,7 +155,6 @@ set(HEADERS_SUPERSONIC
         supersonic/base/infrastructure/types_infrastructure.h
         supersonic/base/infrastructure/types.h
         supersonic/base/infrastructure/variant_pointer.h
-        supersonic/base/infrastructure/variant.h
         supersonic/base/infrastructure/view_copier.h
         supersonic/base/memory/arena.h
         supersonic/base/memory/memory.h

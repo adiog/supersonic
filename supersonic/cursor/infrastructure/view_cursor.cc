@@ -47,18 +47,18 @@ class ViewCursor : public BasicCursor {
  public:
   static Cursor* Create(const View& view) { return new ViewCursor(view); }
 
-  virtual ResultView Next(rowcount_t max_row_count) {
+  ResultView Next(rowcount_t max_row_count) override {
     PROPAGATE_ON_FAILURE(ThrowIfInterrupted());
     if (!iterator_.next(max_row_count)) return ResultView::EOS();
     return ResultView::Success(&iterator_.view());
   }
 
   // No WaitingOnBarrier possible here, as no children present.
-  virtual bool IsWaitingOnBarrierSupported() const { return true; }
+  bool IsWaitingOnBarrierSupported() const override { return true; }
 
-  virtual CursorId GetCursorId() const { return VIEW; }
+  CursorId GetCursorId() const override { return VIEW; }
 
-  virtual void AppendDebugDescription(string* output) const {
+  void AppendDebugDescription(string* output) const override {
     output->append("ViewCursor(");
     output->append(schema().GetHumanReadableSpecification());
     output->append(")");
@@ -90,7 +90,7 @@ class ViewCursorWithSelectionVector : public BasicCursor {
     return Success(cursor.release());
   }
 
-  virtual ResultView Next(rowcount_t max_row_count) {
+  ResultView Next(rowcount_t max_row_count) override {
     PROPAGATE_ON_FAILURE(ThrowIfInterrupted());
     if (read_pointer_ == row_count_) {
       return ResultView::EOS();
@@ -132,7 +132,7 @@ class ViewCursorWithSelectionVector : public BasicCursor {
     source_view_.ResetFrom(view);
   }
 
-  virtual string DebugDescription() const {
+  string DebugDescription() const override {
     return StrCat("ViewCursorWithSelectionVector(",
                   source_view_.schema().GetHumanReadableSpecification(),
                   ")");
