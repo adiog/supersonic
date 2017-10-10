@@ -30,10 +30,10 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/supersonic_testing)
 set(INST_SET "-mmmx -msse -msse3 -msse3 -mssse3 -msse4 -msse4a -msse4.1 -msse4.2 -mpopcnt")
 
 set(CMAKE_C_FLAGS "${INST_SET} -funsigned-char")
-set(CMAKE_CXX_FLAGS "${INST_SET} -funsigned-char --coverage")
+set(CMAKE_CXX_FLAGS "-std=c++14 ${INST_SET} -funsigned-char")
 
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Og")
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Og")
+set(CMAKE_CXX_FLAGS_DEBUG "-std=c++14 ${CMAKE_CXX_FLAGS_DEBUG} -Og --coverage")
 
 
 FUNCTION (proto_gen OUT_DIR PROTO_FILE)
