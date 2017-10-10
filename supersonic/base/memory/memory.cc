@@ -53,10 +53,10 @@ void BufferAllocator::LogAllocation(size_t requested,
     return;
   }
   if (buffer->size() < requested) {
-    VLOG(0) << "Memory allocation warning in Supersonic. "
-            << "Number of bytes requested to allocate: " << requested
-            << ", minimal: " << minimal
-            << ", and actually allocated: " << buffer->size();
+    DLOG(INFO) << "Memory allocation warning in Supersonic. "
+               << "Number of bytes requested to allocate: " << requested
+               << ", minimal: " << minimal
+               << ", and actually allocated: " << buffer->size();
   }
 }
 

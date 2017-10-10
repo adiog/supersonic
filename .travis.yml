@@ -36,17 +36,17 @@ script:
 #  - rm -fr gcov-html
   - cmake -DCMAKE_CXX_COMPILER=g++-6 -DCMAKE_C_COMPILER=gcc-6 ..
   - make -j4
-  - ./test_base_exception
-  - ./test_base_infrastructure
-  - ./test_base_memory
-  - ./test_cursor_base
-  - ./test_cursor_core
-  - ./test_cursor_infrastructure
-  - ./test_expression_core
-  - ./test_expression_infrastructure
-  - ./test_expression_templated
-  - ./test_expression_vector
-  - ./supersonicTests
+  - GLOG_minloglevel=2 ./test_base_exception
+  - GLOG_minloglevel=2 ./test_base_infrastructure
+  - GLOG_minloglevel=2 ./test_base_memory
+  - GLOG_minloglevel=2 ./test_cursor_base
+  - GLOG_minloglevel=2 ./test_cursor_core
+  - GLOG_minloglevel=2 ./test_cursor_infrastructure
+  - GLOG_minloglevel=2 ./test_expression_core
+  - GLOG_minloglevel=2 ./test_expression_infrastructure
+  - GLOG_minloglevel=2 ./test_expression_templated
+  - GLOG_minloglevel=2 ./test_expression_vector
+  - GLOG_minloglevel=2 ./supersonicTests
 #  - find . -name "*.gc*" -exec gcov {} \;
 #  - lcov -c -d . -o cov.info
 #  - genhtml cov.info --output-directory gcov-html
