@@ -25,8 +25,8 @@
 #ifndef UTIL_GTL_STL_UTIL_H_
 #define UTIL_GTL_STL_UTIL_H_
 
-#include <stddef.h>
-#include <string.h>
+#include <cstddef>
+#include <cstring>
 
 #include <algorithm>
 #include "supersonic/utils/std_namespace.h"
@@ -425,7 +425,7 @@ class TemplatedElementDeleter : public BaseDeleter {
 };
 
 // ElementDeleter is an RAII (go/raii) object that deletes the elements in the
-// given container when it goes out of scope. This is similar to scoped_ptr<>
+// given container when it goes out of scope. This is similar to std::unique_ptr<>
 // except that a container's elements will be deleted rather than the container
 // itself.
 //

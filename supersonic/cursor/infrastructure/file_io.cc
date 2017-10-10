@@ -31,7 +31,7 @@
 #include "supersonic/cursor/infrastructure/file_io.h"
 #include "supersonic/cursor/infrastructure/file_io-internal.h"
 
-#include <stddef.h>
+#include <cstddef>
 
 #include <algorithm>
 #include "supersonic/utils/std_namespace.h"
@@ -43,7 +43,6 @@
 #include <glog/logging.h>
 #include "supersonic/utils/logging-inl.h"
 #include "supersonic/utils/macros.h"
-#include "supersonic/utils/scoped_ptr.h"
 #include "supersonic/utils/exception/failureor.h"
 #include "supersonic/base/exception/exception.h"
 #include "supersonic/base/exception/exception_macros.h"

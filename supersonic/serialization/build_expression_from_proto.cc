@@ -15,8 +15,8 @@
 
 #include "supersonic/serialization/build_expression_from_proto.h"
 
-#include <stddef.h>
-#include <stdint.h>
+#include <cstddef>
+#include <cstdint>
 
 #include <memory>
 #include <string>
@@ -25,7 +25,6 @@ namespace supersonic {using std::string; }
 using std::vector;
 
 #include "supersonic/utils/integral_types.h"
-#include "supersonic/utils/scoped_ptr.h"
 #include "supersonic/utils/stringprintf.h"
 #include "supersonic/utils/exception/coowned_pointer.h"
 #include "supersonic/utils/exception/failureor.h"
@@ -717,7 +716,7 @@ ExpressionResult BuildOperationFromProto(
     ExpressionResult child_result =
         BuildExpressionFromProto(operation_descr.argument(i));
     PROPAGATE_ON_FAILURE(child_result);
-    args.push_back(child_result.release());
+    args.emplace_back(child_result.release());
   }
   ExpressionResult result = BuildStandardOperationFromProto(op_type, &args);
   PROPAGATE_ON_FAILURE_WITH_CONTEXT(result,

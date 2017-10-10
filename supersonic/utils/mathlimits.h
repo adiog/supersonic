@@ -27,7 +27,7 @@
 #define UTIL_MATH_MATHLIMITS_H__
 
 #include <cmath>
-#include <string.h>
+#include <cstring>
 #include <cfloat>
 
 // ========================================================================= //

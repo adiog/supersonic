@@ -35,6 +35,7 @@
 #ifndef DATAWAREHOUSE_COMMON_EXCEPTION_FAILUREOR_H_
 #define DATAWAREHOUSE_COMMON_EXCEPTION_FAILUREOR_H_
 
+
 // When the below flag is switched on invoking getter methods on FailureOr<T>
 // objects will fail, if the user has not checked the status of the returned
 // value beforehand.
@@ -46,9 +47,10 @@
 # endif
 #endif
 
+#include <memory>
+
 #include <glog/logging.h>
 #include "supersonic/utils/logging-inl.h"  // for CHECK macros
-#include "supersonic/utils/scoped_ptr.h"
 #include "supersonic/utils/exception/coowned_pointer.h"
 
 namespace common {
@@ -153,7 +155,7 @@ Exception* ConvertException(Exception* /* dummy */,
   if (observed == NULL) {
     return NULL;
   }
-  scoped_ptr<ObservedException> observed_scoped(observed);
+  std::unique_ptr<ObservedException> observed_scoped(observed);
   return new Exception(*observed);
 }
 

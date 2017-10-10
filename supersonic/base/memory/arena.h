@@ -18,8 +18,8 @@
 #ifndef SUPERSONIC_BASE_MEMORY_ARENA_H_
 #define SUPERSONIC_BASE_MEMORY_ARENA_H_
 
-#include <stddef.h>
-#include <string.h>
+#include <cstddef>
+#include <cstring>
 
 #include <memory>
 #include <new>
@@ -29,7 +29,6 @@ using std::vector;
 #include <glog/logging.h>
 #include "supersonic/utils/logging-inl.h"
 #include "supersonic/utils/macros.h"
-#include "supersonic/utils/scoped_ptr.h"
 #include "supersonic/base/memory/memory.h"
 #include "supersonic/utils/strings/stringpiece.h"
 #include "supersonic/utils/linked_ptr.h"
@@ -191,7 +190,7 @@ class Arena::Component {
   void Reset() { offset_ = 0; }
 
  private:
-  scoped_ptr<Buffer> buffer_;
+  std::unique_ptr<Buffer> buffer_;
   char* const data_;
   size_t offset_;
   const size_t size_;

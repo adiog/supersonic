@@ -1,13 +1,14 @@
 #include "supersonic/base/infrastructure/tuple_schema.h"
 
 #include "supersonic/utils/integral_types.h"
-#include "supersonic/utils/scoped_ptr.h"
 #include "supersonic/utils/exception/failureor.h"
 #include "supersonic/base/infrastructure/projector.h"
 #include "supersonic/proto/supersonic.pb.h"
 #include "supersonic/utils/strings/strcat.h"
 #include "gtest/gtest.h"
 #include "supersonic/utils/pointer_vector.h"
+
+using std::unique_ptr;
 
 namespace supersonic {
 
@@ -20,9 +21,9 @@ TEST(TupleSchemaTest, BigSchema) {
   }
   util::gtl::PointerVector<const BoundSingleSourceProjector> projectors;
   for (int i = 0; i < schema.attribute_count(); ++i) {
-    scoped_ptr<const SingleSourceProjector> projector(CHECK_NOTNULL(
+    unique_ptr<const SingleSourceProjector> projector(CHECK_NOTNULL(
         ProjectAttributeAt(i)));
-    projectors.push_back(common::SucceedOrDie(
+    projectors.emplace_back(common::SucceedOrDie(
         projector->Bind(schema)));
   }
 }

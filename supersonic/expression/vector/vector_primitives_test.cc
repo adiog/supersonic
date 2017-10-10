@@ -16,14 +16,14 @@
 
 #include "supersonic/expression/vector/vector_primitives.h"
 
-#include <limits.h>
-#include <math.h>
-#include <stdlib.h>
+#include <climits>
+#include <cmath>
+#include <cstdlib>
 #include <algorithm>
-#include "supersonic/utils/std_namespace.h"
 #include <memory>
+#include "supersonic/utils/std_namespace.h"
+using std::isnan;
 
-#include "supersonic/utils/scoped_ptr.h"
 #include "supersonic/base/infrastructure/bit_pointers.h"
 #include "supersonic/base/memory/memory.h"
 #include "gtest/gtest.h"
@@ -95,7 +95,7 @@ template <> struct Normalize<double> {
 
 template <> struct Normalize<float> {
   float operator()(float arg) const {
-    return  std::isnan(arg) ? 0.451 : arg;  // We want to have  nan == nan.
+    return std::isnan(arg) ? 0.451 : arg;  // We want to have  nan == nan.
   };
   void NormalizeVector(float* data, index_t size) const {}
 };
@@ -216,25 +216,6 @@ class VectorBinaryPrimitiveTest : public testing::Test, AbstractPrimitiveTest {
     ResultCppType* result = MallocAlignedPlusOffset<ResultCppType>(size, 8);
     LeftCppType*   left   = MallocAlignedPlusOffset<LeftCppType>(size, 0);
     RightCppType*  right  = MallocAlignedPlusOffset<RightCppType>(size, 8);
-    FillWithDataLeft(left, size);
-    FillWithDataRight(right, size);
-
-    computer(left, right, NULL, NULL, size, result, NULL);
-    VerifyDirect(left, right, size, result);
-
-    DemallocAligned(result);
-    DemallocAligned(left);
-    DemallocAligned(right);
-  }
-
-  void RunDirectNoSimdWithStrangeOffsetTest(int size) {
-    VectorBinaryPrimitive<operation_type,
-                          DirectIndexResolver, DirectIndexResolver,
-                          result_type, left_type, right_type, false> computer;
-
-    ResultCppType* result = MallocAlignedPlusOffset<ResultCppType>(size, 1);
-    LeftCppType*   left   = MallocAlignedPlusOffset<LeftCppType>(size, 1);
-    RightCppType*  right  = MallocAlignedPlusOffset<RightCppType>(size, 1);
     FillWithDataLeft(left, size);
     FillWithDataRight(right, size);
 
@@ -381,10 +362,6 @@ class VectorBinaryPrimitiveTest : public testing::Test, AbstractPrimitiveTest {
          RunDirectSimdWithOffsetTest) {                                        \
     for (int i = 0; i < 50; ++i) {RunDirectSimdWithOffsetTest(i);}             \
   }                                                                            \
-  TEST_F(VectorBinaryPrimitiveTest_##op##_##res_type##_##ltype##_##rtype,      \
-         RunDirectNoSimdWithStrangeOffsetTest) {                               \
-      for (int i = 0; i < 50; ++i) {RunDirectNoSimdWithStrangeOffsetTest(i);}  \
-    }                                                                          \
   TEST_F(VectorBinaryPrimitiveTest_##op##_##res_type##_##ltype##_##rtype,      \
          RunDirectNoSimdWithDiffrentOffsetTest) {                              \
       for (int i = 0; i < 50; ++i) {RunDirectNoSimdWithDiffrentOffsetTest(i);} \

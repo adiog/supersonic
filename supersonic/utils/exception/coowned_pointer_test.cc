@@ -18,6 +18,9 @@
 #include "gtest/gtest.h"
 #include "gtest/gtest.h"
 
+using std::unique_ptr;
+
+
 namespace common {
 
 // Helper class w/ external liveness test.
@@ -163,7 +166,7 @@ TEST(CoownedPointer, ReleaseReassignedUnreleases) {
 TEST(CoownedPointer, ReleaseWorks) {
   bool alive;
   {
-    testing::internal::scoped_ptr<Target> released;
+    unique_ptr<Target> released;
     {
       CoownedPointer<Target> p(new Target(&alive));
       EXPECT_TRUE(p.is_owner());
@@ -179,7 +182,7 @@ TEST(CoownedPointer, ReleaseWorks) {
 TEST(CoownedPointer, ReleaseAfterMultipleCopiesWorks) {
   bool alive;
   {
-    testing::internal::scoped_ptr<Target> released;
+    unique_ptr<Target> released;
     {
       CoownedPointer<Target> p1(new Target(&alive));
       CoownedPointer<Target> p2(p1);
@@ -214,7 +217,7 @@ TEST(CoownedPointer, ReleaseAfterMultipleCopiesWorks) {
 TEST(CoownedPointer, ReleaseMixedWithAssignmentWorks) {
   bool alive;
   {
-    testing::internal::scoped_ptr<Target> released;
+    unique_ptr<Target> released;
     {
       CoownedPointer<Target> p1(new Target(&alive));
       CoownedPointer<Target> p2;
