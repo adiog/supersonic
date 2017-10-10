@@ -19,6 +19,8 @@ add_subdirectory(deps)
 add_subdirectory(deps/googletest)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/abseil)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/googletest/googletest/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/googletest/googlemock/include)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/supersonic_benchmark)
