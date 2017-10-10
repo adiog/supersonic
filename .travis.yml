@@ -34,7 +34,7 @@ script:
   - mkdir -p build && cd build
 #  - find . -name "*.gcov" -or -name "*.gcda" -or -name "*.gcno" -exec rm {} \;
 #  - rm -fr gcov-html
-  - cmake -DCMAKE_CXX_COMPILER=g++-6.0 -DCMAKE_C_COMPILER=gcc-6.0 ..
+  - cmake -DCMAKE_CXX_COMPILER=g++-6 -DCMAKE_C_COMPILER=gcc-6 ..
   - make -j4
   - ./test_base_exception
   - ./test_base_infrastructure
