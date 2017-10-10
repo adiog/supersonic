@@ -1,0 +1,43 @@
+sudo: false
+dist: zesty
+language: cpp
+compiler: g++
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-6
+      - cmake
+      - libgoogle-glog-dev
+      - libgflags-dev
+      - libboost-system-dev
+      - libboost-timer-dev
+      - protobuf-c-compiler
+      - libprotobuf-c-dev
+      - libre2-dev
+      - gcov
+      - lcov
+before_install:
+  - cd $TRAVIS_BUILD_DIR
+script:
+  - git submodule update --init --recursive
+  - mkdir -p build && cd build
+  - find . -name "*.gcov" -or -name "*.gcda" -or -name "*.gcno" -exec rm {} \;
+  - rm -fr gcov-html
+  - cmake -DCMAKE_CXX_COMPILER=g++-6.0 -DCMAKE_C_COMPILER=gcc-6.0 ..
+  - make -j4
+  - ./test_base_exception
+  - ./test_base_infrastructure
+  - ./test_base_memory
+  - ./test_cursor_base
+  - ./test_cursor_core
+  - ./test_cursor_infrastructure
+  - ./test_expression_core
+  - ./test_expression_infrastructure
+  - ./test_expression_templated
+  - ./test_expression_vector
+  - ./supersonicTests
+  - find . -name "*.gc*" -exec gcov {} \;
+  - lcov -c -d . -o cov.info
+  - genhtml cov.info --output-directory gcov-html
