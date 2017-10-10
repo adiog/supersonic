@@ -21,9 +21,9 @@ addons:
       - lcov
 before_install:
   - sudo add-apt-repository main -y
-    sudo add-apt-repository universe -y
-    sudo add-apt-repository restricted -y
-    sudo add-apt-repository multiverse -y
+  - sudo add-apt-repository universe -y
+  - sudo add-apt-repository restricted -y
+  - sudo add-apt-repository multiverse -y
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - sudo apt-get update -q
   - sudo apt-get install g++ gcc cmake libgoogle-glog-dev libgflags-dev libboost-system-dev libboost-timer-dev protobuf-c-compiler libre2-dev lcov -y
