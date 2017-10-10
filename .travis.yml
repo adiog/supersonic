@@ -8,6 +8,7 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-6
+      - gcc-4
       - cmake
       - libgoogle-glog-dev
       - libgflags-dev
