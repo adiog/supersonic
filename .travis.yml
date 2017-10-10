@@ -26,7 +26,7 @@ before_install:
   - sudo add-apt-repository multiverse -y
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - sudo apt-get update -q
-  - sudo apt-get install g++ gcc cmake libgoogle-glog-dev libgflags-dev libboost-system-dev libboost-timer-dev protobuf-c-compiler libre2-dev lcov -y
+  - sudo apt-get install g++ gcc cmake libgoogle-glog-dev libgflags-dev libboost-system-dev libboost-timer-dev protobuf-c-compiler lcov -y
   - cd $TRAVIS_BUILD_DIR
 script:
   - git submodule update --init --recursive
