@@ -1,6 +1,8 @@
+# Supersonic [![Build Status](https://travis-ci.org/adiog/supersonic.svg?branch=modern)](https://travis-ci.org/adiog/supersonic)
+
 # Copyright 2012 Google Inc. All Rights Reserved.
-Installation instructions are provided in INSTALL.
-Basically ./config && make && make install .
+Original installation instructions are provided in INSTALL.
+Currently project can be built with cmake.
 
 Introducing Supersonic Query Engine
 ===================================
