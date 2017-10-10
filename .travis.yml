@@ -26,6 +26,7 @@ before_install:
   - sudo add-apt-repository multiverse -y
   - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
   - sudo apt-get update -q
+  - sudo apt-cache seach protobuf
   - sudo apt-get install g++ gcc cmake libgoogle-glog-dev libgflags-dev libboost-system-dev libboost-timer-dev protobuf-c-compiler libprotobuf-dev lcov -y
   - cd $TRAVIS_BUILD_DIR
 script:
