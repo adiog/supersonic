@@ -45,11 +45,10 @@ class ScalarAggregateCursor : public BasicCursor {
         child_(child),
         eos_(false),
         aggregator_(aggregator) {
-    std::fill(&zeros_[0], &zeros_[arraysize(zeros_)], 0);
     my_view()->ResetFrom(aggregator_->data());
   }
 
-  virtual ResultView Next(rowcount_t max_row_count) {
+  ResultView Next(rowcount_t max_row_count) override {
     if (eos_) return ResultView::EOS();
     while (child_.Next(arraysize(zeros_), false)) {
       PROPAGATE_ON_FAILURE(
@@ -67,15 +66,15 @@ class ScalarAggregateCursor : public BasicCursor {
     return ResultView::Success(my_view());
   }
 
-  virtual bool IsWaitingOnBarrierSupported() const { return true; }
+  bool IsWaitingOnBarrierSupported() const override { return true; }
 
-  virtual void Interrupt() { child_.Interrupt(); }
+  void Interrupt() override { child_.Interrupt(); }
 
-  virtual void ApplyToChildren(CursorTransformer* transformer) {
+  void ApplyToChildren(CursorTransformer* transformer) override {
     child_.ApplyToCursor(transformer);
   }
 
-  virtual CursorId GetCursorId() const { return SCALAR_AGGREGATE; }
+  CursorId GetCursorId() const override { return SCALAR_AGGREGATE; }
 
  private:
   CursorIterator child_;
@@ -86,7 +85,7 @@ class ScalarAggregateCursor : public BasicCursor {
   // block-by-block basis, and expect to be informed to which output row should
   // the particular input row be aggregated, so we pre-fill an array with zeros
   // and use it for all aggregations.
-  rowid_t zeros_[Cursor::kDefaultRowCount];
+  rowid_t zeros_[Cursor::kDefaultRowCount] = {0};
 
   DISALLOW_COPY_AND_ASSIGN(ScalarAggregateCursor);
 };
@@ -100,7 +99,7 @@ class ScalarAggregateOperation : public BasicOperation {
       : BasicOperation(child_operation),
         aggregation_specification_(aggregation_specification) {}
 
-  virtual FailureOrOwned<Cursor> CreateCursor() const {
+  FailureOrOwned<Cursor> CreateCursor() const override {
     FailureOrOwned<Cursor> child_cursor = child()->CreateCursor();
     PROPAGATE_ON_FAILURE(child_cursor);
     FailureOrOwned<Aggregator> aggregator = Aggregator::Create(

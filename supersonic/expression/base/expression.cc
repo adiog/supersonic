@@ -101,9 +101,9 @@ FailureOrOwned<BoundExpressionList> ExpressionList::DoBind(
     rowcount_t max_row_count) const {
   auto bound_list = make_unique<BoundExpressionList>();
 
-  for (int i = 0; i < expressions_.size(); ++i) {
+  for (auto& expression : expressions_) {
     FailureOrOwned<BoundExpression> result =
-        expressions_[i]->DoBind(input_schema, allocator, max_row_count);
+        expression->DoBind(input_schema, allocator, max_row_count);
     PROPAGATE_ON_FAILURE(result);
     bound_list->add(result.release());
   }
@@ -112,14 +112,13 @@ FailureOrOwned<BoundExpressionList> ExpressionList::DoBind(
 
 const string BoundExpressionList::ToString(bool verbose) const {
   string result_description;
-  for (vector<linked_ptr<BoundExpression> >::const_iterator it =
-      expressions_.begin(); it < expressions_.end(); ++it) {
-    if (it != expressions_.begin()) result_description.append(", ");
+  for (const auto &expression : expressions_) {
+    if (&expression != &expressions_.front()) result_description.append(", ");
     // The next for lines could be replaced by GetMultiExpressionName, but I
     // want to avoid a dependency on expression_utils.
-    const TupleSchema& subexpression_schema = it->get()->result_schema();
-    for (int i = 0; i < subexpression_schema.attribute_count(); ++i) {
-      result_description.append(subexpression_schema.attribute(i).name());
+    const TupleSchema& subexpression_schema = expression.get()->result_schema();
+    for (const auto& attribute : subexpression_schema.attributes()) {
+      result_description.append(attribute.name());
     }
   }
   return result_description;
@@ -127,18 +126,16 @@ const string BoundExpressionList::ToString(bool verbose) const {
 
 void BoundExpressionList::CollectReferredAttributeNames(
     set<string>* referred_attribute_names) const {
-  for (vector<linked_ptr<BoundExpression> >::const_iterator it =
-      expressions_.begin(); it < expressions_.end(); ++it) {
-    (*it)->CollectReferredAttributeNames(referred_attribute_names);
+  for (const auto& expression : expressions_) {
+    expression->CollectReferredAttributeNames(referred_attribute_names);
   }
 }
 
 const string ExpressionList::ToString(bool verbose) const {
   string result_description;
-  for (vector<linked_ptr<const Expression> >::const_iterator it =
-      expressions_.begin(); it < expressions_.end(); ++it) {
-    if (it != expressions_.begin()) result_description.append(", ");
-    result_description.append((*it)->ToString(verbose));
+  for (const auto& expression : expressions_) {
+    if (&expression != &expressions_.front()) result_description.append(", ");
+    result_description.append(expression->ToString(verbose));
   }
   return result_description;
 }

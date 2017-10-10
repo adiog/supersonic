@@ -140,7 +140,7 @@ bool ParseDoubleRange(const char* text, int len, const char** end,
     *from = -HUGE_VAL;
     *to = HUGE_VAL;
   }
-  if (opts.allow_currency && (is_currency != NULL))
+  if (opts.allow_currency && (is_currency != nullptr))
     *is_currency = false;
 
   assert(len >= -1);
@@ -157,10 +157,10 @@ bool ParseDoubleRange(const char* text, int len, const char** end,
       double* dest = (comparator == '>') ? from : to;
       EatAChar(&text, &len, "=", true, false);
       if (opts.allow_currency && EatAChar(&text, &len, "$", true, false))
-        if (is_currency != NULL)
+        if (is_currency != nullptr)
           *is_currency = true;
-      if (!EatADouble(&text, &len, opts.allow_unbounded_markers, dest, NULL,
-                      NULL))
+      if (!EatADouble(&text, &len, opts.allow_unbounded_markers, dest, nullptr,
+                      nullptr))
         return false;
       *end = text;
       return EatAChar(&text, &len, opts.acceptable_terminators, false,
@@ -181,9 +181,9 @@ bool ParseDoubleRange(const char* text, int len, const char** end,
   bool final_period = false;
   bool* check_initial_minus = (strchr(opts.separators, '-') && !seen_dollar
                                && (opts.num_required_bounds < 2)) ?
-                              (&initial_minus_sign) : NULL;
+                              (&initial_minus_sign) : nullptr;
   bool* check_final_period = strchr(opts.separators, '.') ? (&final_period)
-                             : NULL;
+                             : nullptr;
   bool double_seen = EatADouble(&text, &len, opts.allow_unbounded_markers,
                                 from, check_initial_minus, check_final_period);
 
@@ -237,7 +237,7 @@ bool ParseDoubleRange(const char* text, int len, const char** end,
                                || (opts.allow_currency && !double_seen))
                               && EatAChar(&text, &len, "$", true, false);
     bool second_double_seen = EatADouble(
-      &text, &len, opts.allow_unbounded_markers, to, NULL, NULL);
+      &text, &len, opts.allow_unbounded_markers, to, nullptr, nullptr);
     if (opts.num_required_bounds > double_seen + second_double_seen)
       return false;
     if (second_dollar_seen && !second_double_seen) {
@@ -249,7 +249,7 @@ bool ParseDoubleRange(const char* text, int len, const char** end,
     seen_dollar = seen_dollar || second_dollar_seen;
   }
 
-  if (seen_dollar && (is_currency != NULL))
+  if (seen_dollar && (is_currency != nullptr))
     *is_currency = true;
   // We're done. But we have to check that the next char is a proper
   // terminator.
@@ -297,7 +297,7 @@ void ConsumeStrayLeadingZeroes(string *const str) {
 int32 ParseLeadingInt32Value(const char *str, int32 deflt) {
   using std::numeric_limits;
 
-  char *error = NULL;
+  char *error = nullptr;
   long value = strtol(str, &error, 0);
   // Limit long values to int32 min/max.  Needed for lp64; no-op on 32 bits.
   if (value > numeric_limits<int32>::max()) {
@@ -305,7 +305,7 @@ int32 ParseLeadingInt32Value(const char *str, int32 deflt) {
   } else if (value < numeric_limits<int32>::min()) {
     value = numeric_limits<int32>::min();
   }
-  return (error == str) ? deflt : value;
+  return (error == str) ? deflt : static_cast<int32>(value);
 }
 
 uint32 ParseLeadingUInt32Value(const char *str, uint32 deflt) {
@@ -313,7 +313,7 @@ uint32 ParseLeadingUInt32Value(const char *str, uint32 deflt) {
 
   if (numeric_limits<unsigned long>::max() == numeric_limits<uint32>::max()) {
     // When long is 32 bits, we can use strtoul.
-    char *error = NULL;
+    char *error = nullptr;
     const uint32 value = strtoul(str, &error, 0);
     return (error == str) ? deflt : value;
   } else {
@@ -322,14 +322,14 @@ uint32 ParseLeadingUInt32Value(const char *str, uint32 deflt) {
     // it would be impossible to differentiate "-2" (that should wrap
     // around to the value UINT_MAX-1) from a string with ULONG_MAX-1
     // (that should be pegged to UINT_MAX due to overflow).
-    char *error = NULL;
+    char *error = nullptr;
     int64 value = strto64(str, &error, 0);
     if (value > numeric_limits<uint32>::max() ||
         value < -static_cast<int64>(numeric_limits<uint32>::max())) {
       value = numeric_limits<uint32>::max();
     }
     // Within these limits, truncation to 32 bits handles negatives correctly.
-    return (error == str) ? deflt : value;
+    return (error == str) ? deflt : static_cast<uint32>(value);
   }
 }
 

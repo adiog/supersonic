@@ -140,7 +140,8 @@ namespace supersonic {using std::string; }
 //   is signed
 //   is 32 bits in LP32, 64 bits in LP64, 64 bits in LLP64
 //
-typedef string::difference_type stringpiece_ssize_type;
+//typedef string::difference_type stringpiece_ssize_type;
+using stringpiece_ssize_type = size_t;
 
 // STRINGPIECE_CHECK_SIZE protects us from 32-bit overflows.
 // TODO(user): delete this after stringpiece_ssize_type goes 64 bit.
@@ -181,11 +182,11 @@ class StringPiece {
   //
   // Style guide exception granted:
   // http://goto/style-guide-exception-20978288
-  StringPiece() : ptr_(NULL), length_(0) {}
+  StringPiece() : ptr_(nullptr), length_(0) {}
 
   StringPiece(const char* str)  // NOLINT(runtime/explicit)
       : ptr_(str), length_(0) {
-    if (str != NULL) {
+    if (str != nullptr) {
       length_ = CheckedSsizeTFromSizeT(strlen(str));
     }
   }

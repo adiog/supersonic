@@ -42,7 +42,7 @@ namespace supersonic {
 class EnumDefinition {
  public:
   EnumDefinition();
-  FailureOrVoid AddEntry(const int32 number, StringPiece name);
+  FailureOrVoid AddEntry(int32 number, StringPiece name);
   FailureOr<StringPiece> NumberToName(int32 number) const;
   FailureOr<int32> NameToNumber(StringPiece name) const;
   size_t entry_count() const;
@@ -54,7 +54,7 @@ class EnumDefinition {
    public:
     explicit Rep(BufferAllocator* buffer_allocator);
     void CopyFrom(const Rep& other);
-    FailureOrVoid Add(const int32 number, StringPiece name);
+    FailureOrVoid Add(int32 number, StringPiece name);
     FailureOr<StringPiece> NumberToName(int32 number) const;
     FailureOr<int32> NameToNumber(StringPiece name) const;
     size_t entry_count() const { return name_to_number_.size(); }
@@ -79,19 +79,19 @@ class Attribute {
   // Creates an attribute with specified options. For ENUM attributes, you
   // probably want to use the other constructor instead, as this one would
   // create empty ENUM.
-  Attribute(const string& name,
+  Attribute(string name,
             const DataType type,
             const Nullability nullability)
-      : name_(name),
+      : name_(std::move(name)),
         type_(type),
         nullability_(nullability),
         enum_definition_() {}
 
   // Creates an ENUM attribute with the specified definition.
-  Attribute(const string& name,
+  Attribute(string name,
             const EnumDefinition enum_definition,
             const Nullability nullability)
-      : name_(name),
+      : name_(std::move(name)),
         type_(ENUM),
         nullability_(nullability),
         enum_definition_(enum_definition) {}
@@ -128,14 +128,12 @@ class TupleSchema {
   class Rep {
    public:
     // Creates a new, empty schema (with no attributes).
-    Rep() {}
+    Rep() = default;
 
     // A copy constructor.
-    Rep(const Rep& other)
-        : attributes_(other.attributes_),
-          attribute_names_(other.attribute_names_) {}
+    Rep(const Rep& other) = default;
 
-    int attribute_count() const { return attributes_.size(); }
+    auto attribute_count() const { return attributes_.size(); }
 
     const Attribute& attribute(const int position) const {
       DCHECK_GE(position, 0);
@@ -164,12 +162,13 @@ class TupleSchema {
     }
 
     int LookupAttributePosition(const string& attribute_name) const {
-      map<string, int>::const_iterator i = attribute_names_.find(
-          attribute_name);
+      auto i = attribute_names_.find(attribute_name);
       return (i == attribute_names_.end()) ? -1 : i->second;
     }
 
     string GetHumanReadableSpecification() const;
+
+    const vector<Attribute>& attributes() const {return attributes_;}
 
    private:
     vector<Attribute> attributes_;
@@ -181,10 +180,12 @@ class TupleSchema {
   TupleSchema() : rep_(new Rep()) {}
 
   // A copy constructor.
-  TupleSchema(const TupleSchema& other) : rep_(other.rep_) {}
+  TupleSchema(const TupleSchema& other) = default;
 
   // Returns the number of attributes.
-  int attribute_count() const { return rep_->attribute_count(); }
+  auto attribute_count() const { return rep_->attribute_count(); }
+
+  const vector<Attribute>& attributes() const {return rep_->attributes();}
 
   // Returns the attribute at the specified position.
   const Attribute& attribute(const int position) const {

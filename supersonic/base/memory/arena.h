@@ -123,15 +123,13 @@ template<class T> class ArenaAllocator {
   typedef const T* const_pointer;
   typedef T& reference;
   typedef const T& const_reference;
-  pointer index(reference r) const  { return &r; }
-  const_pointer index(const_reference r) const  { return &r; }
   size_type max_size() const  { return size_t(-1) / sizeof(T); }
 
   explicit ArenaAllocator(Arena* arena) : arena_(arena) {
     CHECK_NOTNULL(arena_);
   }
 
-  ~ArenaAllocator() { }
+  ~ArenaAllocator() = default;
 
   pointer allocate(size_type n, allocator<void>::const_pointer /*hint*/ = 0) {
     return reinterpret_cast<T*>(arena_->AllocateBytes(n * sizeof(T)));
@@ -149,15 +147,15 @@ template<class T> class ArenaAllocator {
     typedef ArenaAllocator<U> other;
   };
 
-  template<class U> ArenaAllocator(const ArenaAllocator<U>& other)
-      : arena_(other.arena()) { }
+  template<class U> explicit ArenaAllocator(const ArenaAllocator<U>& other)
+      : arena_(other.arena_) { }
 
   template<class U> bool operator==(const ArenaAllocator<U>& other) const {
-    return arena_ == other.arena();
+    return arena_ == other.arena_;
   }
 
   template<class U> bool operator!=(const ArenaAllocator<U>& other) const {
-    return arena_ != other.arena();
+    return arena_ != other.arena_;
   }
 
  private:
@@ -182,7 +180,7 @@ class Arena::Component {
       offset_ += size;
       return destination;
     } else {
-      return NULL;
+      return nullptr;
     }
   }
 
@@ -199,7 +197,7 @@ class Arena::Component {
 
 inline const char* Arena::AddStringPieceContent(const StringPiece& value) {
   void* destination = AllocateBytes(value.size());
-  if (destination == NULL) return NULL;
+  if (destination == nullptr) return nullptr;
   memcpy(destination, value.data(), value.size());
   return static_cast<const char*>(destination);
 }

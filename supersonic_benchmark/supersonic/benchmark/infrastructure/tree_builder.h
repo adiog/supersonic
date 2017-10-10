@@ -36,7 +36,7 @@ class CursorStatistics;
 // node and a wrapped cursor to be used for computation.
 class BenchmarkResult {
  public:
-  BenchmarkResult() {}
+  BenchmarkResult() = default;
 
   // Takes ownership of both the node and the cursor.
   BenchmarkResult(BenchmarkTreeNode* node, Cursor* cursor)

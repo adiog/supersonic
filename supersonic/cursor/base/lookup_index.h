@@ -32,7 +32,8 @@ class CursorTransformer;
 
 class LookupIndex {
  public:
-  virtual ~LookupIndex() {}
+  virtual ~LookupIndex() = default;
+
   // Performs in a single invocation a series of individual lookups, each of
   // them stored in the query block as a single row. Query blocks should only
   // hold key columns, meaning they should have identical schema as key_schema.
@@ -63,7 +64,9 @@ class LookupIndex {
 
 class LookupIndexBuilder {
  public:
-  LookupIndexBuilder() {}
+  LookupIndexBuilder() = default;
+  virtual ~LookupIndexBuilder() = default;
+
   virtual const TupleSchema& schema() const = 0;
 
   // Attempts to build the index. May fail (return an Exception), or return
@@ -78,8 +81,7 @@ class LookupIndexBuilder {
   // Runs the cursor transformer on the input cursor (if it has one).
   virtual void ApplyToChildren(CursorTransformer* transformer) = 0;
 
-  virtual ~LookupIndexBuilder() {}
- private:
+private:
   DISALLOW_COPY_AND_ASSIGN(LookupIndexBuilder);
 };
 

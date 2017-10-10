@@ -101,9 +101,9 @@ class AggregationSpecification {
     // Copyable.
   };
 
-  AggregationSpecification() {}
+  AggregationSpecification() = default;
 
-  // Defines aggregation function to be computed with given input and output
+    // Defines aggregation function to be computed with given input and output
   // columns. Output column will have a default type (UINT64 for COUNT, and type
   // of input column for all other aggregations).
   AggregationSpecification* AddAggregation(Aggregation aggregation,
@@ -149,7 +149,7 @@ class AggregationSpecification {
     return this;
   }
 
-  const int size() const { return aggregations_.size(); }
+  const auto size() const { return aggregations_.size(); }
   const Element& aggregation(int pos) const { return aggregations_[pos]; }
 
  private:

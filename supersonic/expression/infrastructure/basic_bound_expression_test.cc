@@ -76,7 +76,7 @@ class BasicBoundExpressionTest : public ::testing::Test {
     EXPECT_FALSE(is_null);
   }
 
-  BoundExpression* GetNamedAttribute(const string attribute_name) {
+  BoundExpression* GetNamedAttribute(const string& attribute_name) {
     return SucceedOrDie(BoundNamedAttribute(GetTestSchema(), attribute_name));
   }
 

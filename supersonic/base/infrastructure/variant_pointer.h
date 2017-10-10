@@ -37,7 +37,7 @@ namespace supersonic {
 class VariantPointer {
  public:
   // Creates an uninitialized pointer. (Don't rely on it being initialized).
-  VariantPointer() : pointer_(NULL) {}
+  VariantPointer() : pointer_(nullptr) {}
 
   // Initialize the pointer given the start address of its memory block.
   VariantPointer(void* pointer) : pointer_(pointer) {}
@@ -60,20 +60,18 @@ class VariantPointer {
   }
 
   // Returns true if this pointer is NULL.
-  bool is_null() const { return pointer_ == NULL; }
+  bool is_null() const { return pointer_ == nullptr; }
 
   // Returns a pointer equal to this pointer + offset, where the offset
   // specifies the count of typed items, as indicated by type_info.
   VariantPointer offset(int64 offset, const TypeInfo& type_info) const {
-    return VariantPointer(
-        static_cast<char*>(pointer_) + (offset << type_info.log2_size()));
+    return VariantPointer(static_cast<char*>(pointer_) + (offset << type_info.log2_size()));
   }
 
   // As above, for when the offset is known at compile time.
   template<int64 typed_offset>
   VariantPointer static_offset(const TypeInfo& type_info) const {
-    return VariantPointer(static_cast<void*>(
-        static_cast<char*>(pointer_) + typed_offset * type_info.size()));
+    return VariantPointer(static_cast<void*>(static_cast<char*>(pointer_) + typed_offset * type_info.size()));
   }
 
  private:
@@ -87,7 +85,7 @@ class VariantPointer {
 class VariantConstPointer {
  public:
   // Creates an uninitialized pointer. (Don't rely on it being initialized).
-  VariantConstPointer() : pointer_(NULL) {}
+  VariantConstPointer() : pointer_(nullptr) {}
 
   // Initialize the pointer given the start address of its memory block.
   VariantConstPointer(const void* pointer) : pointer_(pointer) {}
@@ -116,13 +114,12 @@ class VariantConstPointer {
   const void* raw() const { return pointer_; }
 
   // Returns true if this pointer is NULL.
-  bool is_null() const { return pointer_ == NULL; }
+  bool is_null() const { return pointer_ == nullptr; }
 
   // Returns a pointer equal to this pointer + offset, where the offset
   // specifies the count of typed items, as indicated by type_info.
   VariantConstPointer offset(int64 offset, const TypeInfo& type_info) const {
-    return VariantConstPointer(
-        static_cast<const char*>(pointer_) + (offset << type_info.log2_size()));
+    return VariantConstPointer(static_cast<const char*>(pointer_) + (offset << type_info.log2_size()));
   }
 
   // As above, for when the offset is known at compile time.

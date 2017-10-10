@@ -199,7 +199,7 @@ class AggregateClustersKeySet {
         << "Init() must be called first";
     indexed_block_.ResetArenas();
     indexed_block_row_count_ = 0;
-    last_added_.reset(NULL);
+    last_added_.reset();
   }
 
   ~AggregateClustersKeySet();
@@ -233,7 +233,7 @@ class AggregateClustersKeySet {
                       bool all_equal, bool* diff);
 
   // Calculates actual positions, where to aggregate rows from view.
-  bool GetIndexTable(const View& view, bool all_equal, rowid_t* result);
+  bool GetIndexTable(const View& query, bool all_equal, rowid_t* result);
 
   // Result of Insert.
   rowid_t key_result_index_map_[Cursor::kDefaultRowCount];
@@ -289,7 +289,7 @@ bool AggregateClustersKeySet::GetIndexTable(const View& query,
   DCHECK_GT(indexed_block_.row_capacity(), 0) << "Init() must be called first";
   DCHECK(query.schema().EqualByType(indexed_block_.schema()));
   for (rowid_t i = 0; i < query.row_count(); ++i) row_diff_[i] = false;
-  if (last_added_.get() == NULL) row_diff_[0] = true;
+  if (last_added_ == nullptr) row_diff_[0] = true;
   for (int i = 0; i < query.column_count(); ++i)
     column_compare(query, last_added_.get(), i, all_equal, row_diff_);
 
@@ -302,7 +302,7 @@ bool AggregateClustersKeySet::GetIndexTable(const View& query,
       RowSourceAdapter source(query, row_id);
       if (!copier_.Copy(reader, source, writer, &sink))
         return false;
-      if (last_added_.get() == NULL) {
+      if (last_added_ == nullptr) {
         last_added_ = make_unique<Row>(&indexed_block_.view(), row_id);
       } else {
         ++last_added_->row_id;
@@ -323,7 +323,7 @@ const rowid_t* AggregateClustersKeySet::Insert(const View& view,
   child_key_view_.set_row_count(view.row_count());
 
   if (!GetIndexTable(child_key_view_, all_equal, key_result_index_map_)) {
-    return NULL;
+    return nullptr;
   }
   return key_result_index_map_;
 }

@@ -90,7 +90,7 @@ rowcount_t BaseViewCopier::Copy(
   DCHECK(TupleSchema::AreEqual(source_schema_, input_view.schema(), false))
       << "Expected: " << source_schema_.GetHumanReadableSpecification() << ", "
       << "Got: " << input_view.schema().GetHumanReadableSpecification();
-  DCHECK(output_block != NULL) << "Missing output for view copy";
+  DCHECK(output_block != nullptr) << "Missing output for view copy";
   DCHECK(TupleSchema::AreEqual(result_schema_, output_block->schema(), false))
       << "Expected: " << result_schema_.GetHumanReadableSpecification() << ", "
       << "Got: " << output_block->schema().GetHumanReadableSpecification();
@@ -112,7 +112,7 @@ rowcount_t ViewCopier::Copy(
     const View& input_view,
     const rowcount_t output_offset,
     Block* output_block) const {
-  return BaseViewCopier::Copy(row_count, input_view, NULL, output_offset,
+  return BaseViewCopier::Copy(row_count, input_view, nullptr, output_offset,
                               output_block);
 }
 
