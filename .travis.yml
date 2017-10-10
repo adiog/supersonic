@@ -24,8 +24,8 @@ before_install:
 script:
   - git submodule update --init --recursive
   - mkdir -p build && cd build
-  - find . -name "*.gcov" -or -name "*.gcda" -or -name "*.gcno" -exec rm {} \;
-  - rm -fr gcov-html
+#  - find . -name "*.gcov" -or -name "*.gcda" -or -name "*.gcno" -exec rm {} \;
+#  - rm -fr gcov-html
   - cmake -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc ..
   - make -j4
   - ./test_base_exception
@@ -39,6 +39,6 @@ script:
   - ./test_expression_templated
   - ./test_expression_vector
   - ./supersonicTests
-  - find . -name "*.gc*" -exec gcov {} \;
-  - lcov -c -d . -o cov.info
-  - genhtml cov.info --output-directory gcov-html
+#  - find . -name "*.gc*" -exec gcov {} \;
+#  - lcov -c -d . -o cov.info
+#  - genhtml cov.info --output-directory gcov-html
