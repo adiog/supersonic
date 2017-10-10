@@ -46,7 +46,7 @@ script:
   - GLOG_minloglevel=2 ./test_expression_infrastructure
   - GLOG_minloglevel=2 ./test_expression_templated
   - GLOG_minloglevel=2 ./test_expression_vector
-  - GLOG_minloglevel=2 ./supersonicTests
+  - GLOG_minloglevel=2 ./supersonicTest
 #  - find . -name "*.gc*" -exec gcov {} \;
 #  - lcov -c -d . -o cov.info
 #  - genhtml cov.info --output-directory gcov-html
