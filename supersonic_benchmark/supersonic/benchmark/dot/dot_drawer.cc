@@ -256,8 +256,7 @@ void DOTDrawer::DrawDOT(const BenchmarkTreeNode& node) {
   already_used_ = true;
 }
 
-using const_iterator = int
-    const_node_iterator;
+using const_node_iterator = PointerVector<BenchmarkTreeNode>::const_iterator;
 
 void DOTDrawer::DrawBenchmarkSubtree(
     const BenchmarkTreeNode& node,

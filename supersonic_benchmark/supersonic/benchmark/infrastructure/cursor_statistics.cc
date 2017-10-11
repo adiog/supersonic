@@ -284,7 +284,7 @@ CursorStatistics::CursorStatistics(
   Init(output, timing_reference, cursor_type);
 }
 
-using const_entry_iterator = int;
+using const_entry_iterator = vector<CursorWithBenchmarkListener*>::const_iterator;
 
 CursorStatistics::CursorStatistics(
     const vector<CursorWithBenchmarkListener*>& input,
