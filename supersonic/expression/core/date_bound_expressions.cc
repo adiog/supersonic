@@ -77,7 +77,7 @@ class BoundMakeDatetimeExpression : public BasicBoundExpression {
         minute_(minute),
         second_(second) {}
 
-  virtual rowcount_t row_capacity() const {
+  rowcount_t row_capacity() const override {
     rowcount_t capacity = my_const_block()->row_capacity();
     for (int i = 0; i < 6; ++i) {
       capacity = std::min(capacity, child(i)->row_capacity());
@@ -85,13 +85,13 @@ class BoundMakeDatetimeExpression : public BasicBoundExpression {
     return capacity;
   }
 
-  virtual bool can_be_resolved() const {
+  bool can_be_resolved() const override {
     for (int i = 0; i < 6; ++i) if (!child(i)->is_constant()) return false;
     return true;
   }
 
-  virtual EvaluationResult DoEvaluate(const View& input,
-                                      const BoolView& skip_vectors) {
+  EvaluationResult DoEvaluate(const View& input,
+                                      const BoolView& skip_vectors) override {
     CHECK_EQ(1, skip_vectors.column_count());
     // Usually we would call my_block()->ResetArenas(), but here we know the
     // block contains only DATETIME type data.
@@ -161,7 +161,7 @@ class BoundMakeDatetimeExpression : public BasicBoundExpression {
       default: LOG(FATAL) << "Unexpected call to child in MakeDateTime, "
                           << "requesting child indexed " << index;
     }
-    return NULL;
+    return nullptr;
   }
 
   unique_ptr<BoundExpression> year_;

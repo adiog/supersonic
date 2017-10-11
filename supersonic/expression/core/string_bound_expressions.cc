@@ -68,7 +68,7 @@ class BoundConcatExpression : public BasicBoundExpression {
                              allocator),
         arguments_(arguments) {}
 
-  rowcount_t row_capacity() const {
+  rowcount_t row_capacity() const override {
     rowcount_t capacity = my_const_block()->row_capacity();
     for (int i = 0; i < arguments_->size(); ++i) {
       capacity = std::min(capacity, arguments_->get(i)->row_capacity());
@@ -76,15 +76,15 @@ class BoundConcatExpression : public BasicBoundExpression {
     return capacity;
   }
 
-  bool can_be_resolved() const {
+  bool can_be_resolved() const override {
     for (int i = 0; i < arguments_->size(); ++i) {
       if (!arguments_->get(i)->is_constant()) return false;
     }
     return true;
   }
 
-  virtual EvaluationResult DoEvaluate(const View& input,
-                                      const BoolView& skip_vectors) {
+  EvaluationResult DoEvaluate(const View& input,
+                                      const BoolView& skip_vectors) override {
     CHECK_EQ(1, skip_vectors.column_count());
     my_block()->ResetArenas();
     bool_ptr skip_vector = skip_vectors.column(0);
@@ -112,7 +112,7 @@ class BoundConcatExpression : public BasicBoundExpression {
         size_t length = 0;
         for (int n = 0; n < arguments_->size(); ++n)
           length += sources[n]->size();
-        char* new_str = static_cast<char *>(arena->AllocateBytes(length));
+        auto* new_str = static_cast<char *>(arena->AllocateBytes(length));
         char* current_position = new_str;
         for (int n = 0; n < arguments_->size(); ++n) {
           strncpy(current_position, sources[n]->data(), sources[n]->size());
@@ -127,7 +127,7 @@ class BoundConcatExpression : public BasicBoundExpression {
           size_t length = 0;
           for (int n = 0; n < arguments_->size(); ++n)
             length += sources[n]->size();
-          char* new_str = static_cast<char *>(arena->AllocateBytes(length));
+          auto* new_str = static_cast<char *>(arena->AllocateBytes(length));
           char* current_position = new_str;
           for (int n = 0; n < arguments_->size(); ++n) {
             strncpy(current_position, sources[n]->data(), sources[n]->size());

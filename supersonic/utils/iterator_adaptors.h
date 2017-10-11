@@ -30,7 +30,7 @@ namespace gtl {
 // detect that the reference parameter is not equal to value_type&.
 template<typename It, typename Val>
 struct adaptor_helper {
-  typedef Val                                             value_type;
+  using value_type = Val;
   typedef typename base::if_<
       base::type_equals_<typename std::iterator_traits<It>::reference,
                          typename std::iterator_traits<It>::value_type&>::value,
@@ -39,9 +39,8 @@ struct adaptor_helper {
       base::type_equals_<typename std::iterator_traits<It>::reference,
                          typename std::iterator_traits<It>::value_type&>::value,
       Val&, const Val&>::type reference;
-  typedef typename std::iterator_traits<It>::difference_type difference_type;
-  typedef typename std::iterator_traits<It>::iterator_category
-      iterator_category;
+  using difference_type = typename std::iterator_traits<It>::difference_type;
+  using iterator_category = typename std::iterator_traits<It>::iterator_category;
 };
 
 // ptr_adaptor_helper is similar to adaptor_helper, but the second argument is a
@@ -52,12 +51,11 @@ struct adaptor_helper {
 // original pointer values.
 template<typename It, typename PtrVal>
 struct ptr_adaptor_helper {
-  typedef typename base::remove_pointer<PtrVal>::type     value_type;
-  typedef const PtrVal&                                   pointer;
-  typedef typename base::remove_pointer<PtrVal>::type&    reference;
-  typedef typename std::iterator_traits<It>::difference_type difference_type;
-  typedef typename std::iterator_traits<It>::iterator_category
-      iterator_category;
+  using value_type = typename base::remove_pointer<PtrVal>::type;
+  using pointer = const PtrVal &;
+  using reference = typename base::remove_pointer<PtrVal>::type &;
+  using difference_type = typename std::iterator_traits<It>::difference_type;
+  using iterator_category = typename std::iterator_traits<It>::iterator_category;
 };
 
 }  // namespace gtl
@@ -91,11 +89,11 @@ class iterator_first {
 
  public:
   typedef iterator_first<It, Val>                     iterator;
-  typedef typename helper::iterator_category          iterator_category;
-  typedef typename helper::value_type                 value_type;
-  typedef typename helper::pointer                    pointer;
-  typedef typename helper::reference                  reference;
-  typedef typename helper::difference_type            difference_type;
+  using iterator_category = typename helper::iterator_category;
+  using value_type = typename helper::value_type;
+  using pointer = typename helper::pointer;
+  using reference = typename helper::reference;
+  using difference_type = typename helper::difference_type;
 
   iterator_first() : it_() {}
   iterator_first(const It& it) : it_(it) {}  // NOLINT(runtime/explicit)
@@ -178,11 +176,11 @@ class iterator_second {
 
  public:
   typedef iterator_second<It, Val>                    iterator;
-  typedef typename helper::iterator_category          iterator_category;
-  typedef typename helper::value_type                 value_type;
-  typedef typename helper::pointer                    pointer;
-  typedef typename helper::reference                  reference;
-  typedef typename helper::difference_type            difference_type;
+  using iterator_category = typename helper::iterator_category;
+  using value_type = typename helper::value_type;
+  using pointer = typename helper::pointer;
+  using reference = typename helper::reference;
+  using difference_type = typename helper::difference_type;
 
   iterator_second() : it_() {}
   iterator_second(const It& it) : it_(it) {}  // NOLINT(runtime/explicit)
@@ -278,11 +276,11 @@ class iterator_second_ptr {
 
  public:
   typedef iterator_second_ptr<It, _PtrVal>            iterator;
-  typedef typename helper::iterator_category          iterator_category;
-  typedef typename helper::value_type                 value_type;
-  typedef typename helper::pointer                    pointer;
-  typedef typename helper::reference                  reference;
-  typedef typename helper::difference_type            difference_type;
+  using iterator_category = typename helper::iterator_category;
+  using value_type = typename helper::value_type;
+  using pointer = typename helper::pointer;
+  using reference = typename helper::reference;
+  using difference_type = typename helper::difference_type;
 
   iterator_second_ptr() : it_() {}
   iterator_second_ptr(const It& it) : it_(it) {}  // NOLINT(runtime/explicit)
@@ -380,11 +378,11 @@ class iterator_ptr {
 
  public:
   typedef iterator_ptr<It, _PtrVal>                   iterator;
-  typedef typename helper::iterator_category          iterator_category;
-  typedef typename helper::value_type                 value_type;
-  typedef typename helper::pointer                    pointer;
-  typedef typename helper::reference                  reference;
-  typedef typename helper::difference_type            difference_type;
+  using iterator_category = typename helper::iterator_category;
+  using value_type = typename helper::value_type;
+  using pointer = typename helper::pointer;
+  using reference = typename helper::reference;
+  using difference_type = typename helper::difference_type;
 
   iterator_ptr() : it_() {}
   iterator_ptr(const It& it) : it_(it) {}  // NOLINT(runtime/explicit)
@@ -455,8 +453,8 @@ template<typename C>
 struct container_traits {
  private:
   // Provide Yes and No to make the SFINAE tests clearer.
-  typedef base::small_  Yes;
-  typedef base::big_    No;
+  using Yes = base::small_;
+  using No = base::big_;
 
   // Test for availability of C::size_typae.
   template<typename U>
@@ -467,11 +465,11 @@ struct container_traits {
   // Conditional provisioning of a size_type which defaults to size_t.
   template<bool Cond, typename U = void>
   struct size_type_def {
-    typedef typename U::size_type type;
+    using type = typename U::size_type;
   };
   template<typename U>
   struct size_type_def<false, U> {
-    typedef size_t type;
+    using type = size_t;
   };
 
  public:
@@ -484,9 +482,9 @@ struct container_traits {
 
 template<typename C>
 struct IterGenerator {
-  typedef C container_type;
-  typedef typename C::iterator iterator;
-  typedef typename C::const_iterator const_iterator;
+  using container_type = C;
+  using iterator = typename C::iterator;
+  using const_iterator = typename C::const_iterator;
 
   static iterator begin(container_type& c) {  // NOLINT(runtime/references)
     return c.begin();
@@ -500,10 +498,9 @@ struct IterGenerator {
 
 template<typename SubIterGenerator>
 struct ReversingIterGeneratorAdaptor {
-  typedef typename SubIterGenerator::container_type container_type;
-  typedef std::reverse_iterator<typename SubIterGenerator::iterator> iterator;
-  typedef std::reverse_iterator<typename SubIterGenerator::const_iterator>
-      const_iterator;
+  using container_type = typename SubIterGenerator::container_type;
+  using iterator = std::reverse_iterator<typename SubIterGenerator::iterator>;
+  using const_iterator = std::reverse_iterator<typename SubIterGenerator::const_iterator>;
 
   static iterator begin(container_type& c) {  // NOLINT(runtime/references)
     return iterator(SubIterGenerator::end(c));
@@ -528,12 +525,11 @@ template<typename C, typename Iter, typename ConstIter,
          typename IterGenerator = util::gtl::internal::IterGenerator<C> >
 class iterator_view_helper {
  public:
-  typedef C container_type;
-  typedef Iter iterator;
-  typedef ConstIter const_iterator;
-  typedef typename std::iterator_traits<iterator>::value_type value_type;
-  typedef typename util::gtl::internal::container_traits<C>::size_type
-      size_type;
+  using container_type = C;
+  using iterator = Iter;
+  using const_iterator = ConstIter;
+  using value_type = typename std::iterator_traits<iterator>::value_type;
+  using size_type = typename util::gtl::internal::container_traits<C>::size_type;
 
   explicit iterator_view_helper(
       container_type& c)  // NOLINT(runtime/references)
@@ -567,11 +563,10 @@ template<typename C, typename ConstIter,
          typename IterGenerator = util::gtl::internal::IterGenerator<C> >
 class const_iterator_view_helper {
  public:
-  typedef C container_type;
-  typedef ConstIter const_iterator;
-  typedef typename std::iterator_traits<const_iterator>::value_type value_type;
-  typedef typename util::gtl::internal::container_traits<C>::size_type
-      size_type;
+  using container_type = C;
+  using const_iterator = ConstIter;
+  using value_type = typename std::iterator_traits<const_iterator>::value_type;
+  using size_type = typename util::gtl::internal::container_traits<C>::size_type;
 
   explicit const_iterator_view_helper(const container_type& c) : c_(&c) { }
 
@@ -741,8 +736,7 @@ typename deref_view_type<const C>::type deref_view(const C& map) {
 template<typename C>
 struct reversed_view_type {
  private:
-  typedef internal::ReversingIterGeneratorAdaptor<
-      internal::IterGenerator<C> > policy;
+  using policy = internal::ReversingIterGeneratorAdaptor<internal::IterGenerator<C> >;
 
  public:
   typedef internal::iterator_view_helper<
@@ -755,8 +749,7 @@ struct reversed_view_type {
 template<typename C>
 struct reversed_view_type<const C> {
  private:
-  typedef internal::ReversingIterGeneratorAdaptor<
-      internal::IterGenerator<C> > policy;
+  using policy = internal::ReversingIterGeneratorAdaptor<internal::IterGenerator<C> >;
 
  public:
   typedef internal::const_iterator_view_helper<

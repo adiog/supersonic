@@ -163,7 +163,7 @@ void SubstituteAndAppendArray(
 // See file comments above for usage.
 inline void SubstituteAndAppend(
     string* output, StringPiece format) {
-  substitute_internal::SubstituteAndAppendArray(output, format, NULL, 0);
+  substitute_internal::SubstituteAndAppendArray(output, format, nullptr, 0);
 }
 
 inline void SubstituteAndAppend(

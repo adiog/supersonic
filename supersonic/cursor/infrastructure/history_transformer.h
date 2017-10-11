@@ -83,10 +83,9 @@ class CursorTransformerWithVectorHistory : public CursorTransformer {
   std::unique_ptr<util::gtl::PointerVector<T> > run_history_;
 };
 
-typedef OwnershipRevoker<Cursor> CursorOwnershipRevoker;
+using CursorOwnershipRevoker = OwnershipRevoker<Cursor>;
 
-typedef CursorTransformerWithVectorHistory<CursorOwnershipRevoker>
-CursorTransformerWithSimpleHistory;
+using CursorTransformerWithSimpleHistory = CursorTransformerWithVectorHistory<CursorOwnershipRevoker>;
 
 }  // namespace supersonic
 #endif  // SUPERSONIC_CURSOR_INFRASTRUCTURE_HISTORY_TRANSFORMER_H_

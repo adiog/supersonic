@@ -196,7 +196,7 @@ inline FailureOrVoid UpdateAggregation(
   if (input_position != -1) {
     input = &view.column(input_position);
   } else {
-    input = NULL;
+    input = nullptr;
   }
   return column_aggregator->UpdateAggregation(
       input, view.row_count(), result_index_map);

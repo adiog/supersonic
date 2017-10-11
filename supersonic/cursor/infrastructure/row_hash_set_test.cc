@@ -44,7 +44,7 @@ namespace row_hash_set {
 
 class RowHashSetTest : public testing::Test {
  public:
-  void SetUp() {
+  void SetUp() override {
     row_hash_set_block_schema_.add_attribute(
         Attribute("c1", INT64, NULLABLE));
     row_hash_set_block_schema_.add_attribute(

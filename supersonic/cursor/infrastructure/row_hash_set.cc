@@ -61,7 +61,7 @@ namespace row_hash_set {
 // Abstract interface of classes that compare particular values (table cells)
 // in corresponding columns for equality.
 struct ValueComparatorInterface {
-  virtual ~ValueComparatorInterface() {}
+  virtual ~ValueComparatorInterface() = default;
   virtual bool Equal(rowid_t row_id_a, rowid_t row_id_b) const = 0;
   virtual void set_left_column(const Column* left_column) = 0;
   virtual void set_right_column(const Column* right_column) = 0;
@@ -75,15 +75,15 @@ template <DataType type>
 class ValueComparator : public ValueComparatorInterface {
  public:
   ValueComparator()
-      : any_column_nullable_(false),
-        left_column_(NULL),
-        right_column_(NULL) {}
+      : 
+        left_column_(nullptr),
+        right_column_(nullptr) {}
 
-  bool Equal(rowid_t row_id_a, rowid_t row_id_b) const {
+  bool Equal(rowid_t row_id_a, rowid_t row_id_b) const override {
     if (any_column_nullable_) {
-      const bool is_null_a = (left_column_->is_null() != NULL) &&
+      const bool is_null_a = (left_column_->is_null() != nullptr) &&
           left_column_->is_null()[row_id_a];
-      const bool is_null_b = (right_column_->is_null() != NULL) &&
+      const bool is_null_b = (right_column_->is_null() != nullptr) &&
           right_column_->is_null()[row_id_b];
       if (is_null_a || is_null_b) {
         return is_null_a == is_null_b;
@@ -93,34 +93,34 @@ class ValueComparator : public ValueComparatorInterface {
                        (right_column_->typed_data<type>() + row_id_b));
   }
 
-  void set_left_column(const Column* left_column) {
+  void set_left_column(const Column* left_column) override {
     left_column_ = left_column;
     update_any_column_nullable();
   }
 
-  void set_right_column(const Column* right_column) {
+  void set_right_column(const Column* right_column) override {
     right_column_ = right_column;
     update_any_column_nullable();
   }
 
-  bool non_colliding_hash_type() {
+  bool non_colliding_hash_type() override {
     return type == INT64 || type == INT32 || type == UINT64 || type == UINT32
         || type == BOOL;
   }
 
-  bool any_column_nullable() {
+  bool any_column_nullable() override {
     return any_column_nullable_;
   }
 
  private:
   void update_any_column_nullable() {
     if (left_column_ != NULL && right_column_ != NULL) {
-      any_column_nullable_ = (left_column_->is_null() != NULL ||
-                              right_column_->is_null() != NULL);
+      any_column_nullable_ = (left_column_->is_null() != nullptr ||
+                              right_column_->is_null() != nullptr);
     }
   }
   EqualityWithNullsComparator<type, type, false, false> comparator_;
-  bool any_column_nullable_;
+  bool any_column_nullable_{false};
   const Column* left_column_;
   const Column* right_column_;
 };
@@ -144,8 +144,8 @@ ValueComparatorInterface* CreateValueComparator(DataType type) {
 class RowComparator {
  public:
   explicit RowComparator(const TupleSchema& key_schema) :
-    left_view_(NULL),
-    right_view_(NULL),
+    left_view_(nullptr),
+    right_view_(nullptr),
     hash_comparison_only_(false) {
     for (int i = 0; i < key_schema.attribute_count(); i++) {
       comparators_.push_back(
@@ -434,7 +434,7 @@ void RowHashSetImpl::FindInternal(
   while (iterator.next()) {
     const rowid_t query_row_id = iterator.current_row_index();
     rowid_t* const result_row_id = result_row_ids + query_row_id;
-    if (selection_vector != NULL && !selection_vector[query_row_id]) {
+    if (selection_vector != nullptr && !selection_vector[query_row_id]) {
       *result_row_id = kInvalidRowId;
     } else {
       int hash_index = (hash_mask_ & query_hash_[query_row_id]);
@@ -474,8 +474,8 @@ size_t RowHashSetImpl::InsertUnique(
   while (iterator.next()) {
     const int64 query_row_id = iterator.current_row_index();
     rowid_t* const result_row_id =
-        result ? (result->mutable_row_ids() + query_row_id) : NULL;
-    if (selection_vector != NULL && !selection_vector[query_row_id]) {
+        result ? (result->mutable_row_ids() + query_row_id) : nullptr;
+    if (selection_vector != nullptr && !selection_vector[query_row_id]) {
       if (result_row_id)
           *result_row_id = kInvalidRowId;
     } else {
@@ -541,8 +541,8 @@ size_t RowHashSetImpl::InsertMany(
   while (iterator.next()) {
     const rowid_t query_row_id = iterator.current_row_index();
     rowid_t* const result_row_id =
-        (result != NULL) ? (result->mutable_row_ids() + query_row_id) : NULL;
-    if (selection_vector != NULL && !selection_vector[query_row_id]) {
+        (result != nullptr) ? (result->mutable_row_ids() + query_row_id) : nullptr;
+    if (selection_vector != nullptr && !selection_vector[query_row_id]) {
       if (result_row_id)
         *result_row_id = kInvalidRowId;
     } else {
@@ -654,7 +654,7 @@ void RowIdSetIterator::Next() {
 
 RowHashSet::RowHashSet(const TupleSchema& block_schema,
                        BufferAllocator* const allocator)
-    : impl_(new RowHashSetImpl(block_schema, allocator, NULL, false,
+    : impl_(new RowHashSetImpl(block_schema, allocator, nullptr, false,
                                kint64max)) {}
 
 RowHashSet::RowHashSet(
@@ -667,7 +667,7 @@ RowHashSet::RowHashSet(
 RowHashSet::RowHashSet(const TupleSchema& block_schema,
                        BufferAllocator* const allocator,
                        const int64 max_unique_keys_in_result)
-    : impl_(new RowHashSetImpl(block_schema, allocator, NULL, false,
+    : impl_(new RowHashSetImpl(block_schema, allocator, nullptr, false,
                                max_unique_keys_in_result)) {}
 
 RowHashSet::RowHashSet(
@@ -687,7 +687,7 @@ bool RowHashSet::ReserveRowCapacity(rowcount_t capacity) {
 }
 
 void RowHashSet::Find(const View& query, FindResult* result) const {
-  impl_->FindUnique(query, bool_ptr(NULL), result);
+  impl_->FindUnique(query, bool_ptr(nullptr), result);
 }
 
 void RowHashSet::Find(const View& query, const bool_const_ptr selection_vector,
@@ -696,7 +696,7 @@ void RowHashSet::Find(const View& query, const bool_const_ptr selection_vector,
 }
 
 size_t RowHashSet::Insert(const View& query, FindResult* result) {
-  return impl_->InsertUnique(query, bool_ptr(NULL), result);
+  return impl_->InsertUnique(query, bool_ptr(nullptr), result);
 }
 
 size_t RowHashSet::Insert(const View& query,
@@ -706,12 +706,12 @@ size_t RowHashSet::Insert(const View& query,
 }
 
 size_t RowHashSet::Insert(const View& query) {
-  return impl_->InsertUnique(query, bool_ptr(NULL), NULL);
+  return impl_->InsertUnique(query, bool_ptr(nullptr), nullptr);
 }
 
 size_t RowHashSet::Insert(const View& query,
                           const bool_const_ptr selection_vector) {
-  return impl_->InsertUnique(query, selection_vector, NULL);
+  return impl_->InsertUnique(query, selection_vector, nullptr);
 }
 
 void RowHashSet::Clear() {
@@ -728,7 +728,7 @@ rowcount_t RowHashSet::size() const { return indexed_view().row_count(); }
 
 RowHashMultiSet::RowHashMultiSet(const TupleSchema& block_schema,
                                  BufferAllocator* const allocator)
-    : impl_(new RowHashSetImpl(block_schema, allocator, NULL, true,
+    : impl_(new RowHashSetImpl(block_schema, allocator, nullptr, true,
                                kint64max)) {}
 
 RowHashMultiSet::RowHashMultiSet(
@@ -747,7 +747,7 @@ bool RowHashMultiSet::ReserveRowCapacity(rowcount_t capacity) {
 }
 
 void RowHashMultiSet::Find(const View& query, FindMultiResult* result) const {
-  impl_->FindMany(query, bool_ptr(NULL), result);
+  impl_->FindMany(query, bool_ptr(nullptr), result);
 }
 
 void RowHashMultiSet::Find(
@@ -757,7 +757,7 @@ void RowHashMultiSet::Find(
 }
 
 size_t RowHashMultiSet::Insert(const View& query, FindMultiResult* result) {
-  return impl_->InsertMany(query, bool_ptr(NULL), result);
+  return impl_->InsertMany(query, bool_ptr(nullptr), result);
 }
 
 size_t RowHashMultiSet::Insert(
@@ -767,12 +767,12 @@ size_t RowHashMultiSet::Insert(
 }
 
 size_t RowHashMultiSet::Insert(const View& query) {
-  return impl_->InsertMany(query, bool_ptr(NULL), NULL);
+  return impl_->InsertMany(query, bool_ptr(nullptr), nullptr);
 }
 
 size_t RowHashMultiSet::Insert(
     const View& query, const bool_const_ptr selection_vector) {
-  return impl_->InsertMany(query, selection_vector, NULL);
+  return impl_->InsertMany(query, selection_vector, nullptr);
 }
 
 void RowHashMultiSet::Clear() {

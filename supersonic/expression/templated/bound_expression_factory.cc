@@ -133,7 +133,7 @@ FailureOrOwned<BoundExpression> RunUnaryFactory(
   // return pointer.
   // TODO(onufry): factory functions should return a FailureOr<Factory> instead
   // of signalizing error with NULLs.
-  if (factory_ptr == NULL) {
+  if (factory_ptr == nullptr) {
     LOG(WARNING) << "Binding failed due to lack of factory.";
     THROW(new Exception(
         ERROR_ATTRIBUTE_TYPE_MISMATCH,
@@ -153,7 +153,7 @@ FailureOrOwned<BoundExpression> RunBinaryFactory(
     const string& operation_name) {
   std::unique_ptr<BoundExpression> left(left_ptr);
   std::unique_ptr<BoundExpression> right(right_ptr);
-  if (factory_ptr == NULL) {
+  if (factory_ptr == nullptr) {
     THROW(new Exception(
         ERROR_ATTRIBUTE_TYPE_MISMATCH,
         StrCat("Factory creation of operation ", operation_name,

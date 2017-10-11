@@ -499,7 +499,7 @@ FailurePropagator<Exception> Failure(Exception* exception) {
   return FailurePropagator<Exception>(exception);
 }
 
-inline VoidPropagator Success() { return VoidPropagator(); }
+inline VoidPropagator Success() { return {}; }
 
 template<typename Result>
 ReferencePropagator<Result> Success(Result& result) {  // NOLINT

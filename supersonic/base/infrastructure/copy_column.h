@@ -44,12 +44,7 @@ enum RowSelectorType {
 // Returns the number rows successfully copied. It can be less than row_count
 // iff the data being copied is of variable-length type and the destination
 // arena can't accommodate a copy of a variable-length data buffer.
-typedef rowcount_t (*ColumnCopier)(
-    const rowcount_t row_count,
-    const Column& source,
-    const rowid_t* const selected_row_ids,
-    const rowcount_t destination_offset,
-    OwnedColumn* const destination);
+using ColumnCopier = rowcount_t (*)(const rowcount_t, const Column &, const rowid_t *const, const rowcount_t, OwnedColumn *const);
 
 // Returns the specialization of a copy column function appropriate for the
 // arguments given. row_selector_type should be different from NO_SELECTOR iff

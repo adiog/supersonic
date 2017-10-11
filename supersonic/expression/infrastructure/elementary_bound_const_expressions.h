@@ -30,7 +30,7 @@ template <DataType type,
           bool is_variable_length = TypeTraits<type>::is_variable_length>
 class BoundConstExpression : public BasicBoundConstExpression {
  public:
-  typedef typename TypeTraits<type>::cpp_type cpp_type;
+  using cpp_type = typename TypeTraits<type>::cpp_type;
 
   explicit BoundConstExpression(BufferAllocator* const allocator,
                                 const cpp_type& value)
@@ -42,7 +42,7 @@ class BoundConstExpression : public BasicBoundConstExpression {
         value_(value) {}
 
   // Pre-fills data with the value provided.
-  virtual FailureOrVoid PostInit() {
+  FailureOrVoid PostInit() override {
     size_t count = my_block()->row_capacity();
     cpp_type* data = my_block()->mutable_column(0)->
         template mutable_typed_data<type>();
@@ -60,7 +60,7 @@ class BoundConstExpression : public BasicBoundConstExpression {
 template <DataType type>
 class BoundConstExpression<type, true> : public BasicBoundConstExpression {
  public:
-  typedef typename TypeTraits<type>::cpp_type cpp_type;
+  using cpp_type = typename TypeTraits<type>::cpp_type;
 
   explicit BoundConstExpression(BufferAllocator* const allocator,
                                 const cpp_type& value)
@@ -72,7 +72,7 @@ class BoundConstExpression<type, true> : public BasicBoundConstExpression {
         string_value_(value.data(), value.size()) {}
 
   // Pre-fills data with the value provided.
-  virtual FailureOrVoid PostInit() {
+  FailureOrVoid PostInit() override {
     StringPiece value(string_value_);
     size_t count = my_block()->row_capacity();
     cpp_type* data = my_block()->mutable_column(0)->

@@ -34,14 +34,14 @@
 namespace supersonic {
 
 CompoundSingleSourceProjector* column_0_selector() {
-  CompoundSingleSourceProjector* selector =
+  auto* selector =
       new CompoundSingleSourceProjector();
   selector->add(ProjectAttributeAt(0));
   return selector;
 }
 
 CompoundSingleSourceProjector* column_01_selector() {
-  CompoundSingleSourceProjector* selector =
+  auto* selector =
       new CompoundSingleSourceProjector();
   selector->add(ProjectAttributeAt(0));
   selector->add(ProjectAttributeAt(1));
@@ -49,7 +49,7 @@ CompoundSingleSourceProjector* column_01_selector() {
 }
 
 CompoundMultiSourceProjector* all_columns_projector() {
-  CompoundMultiSourceProjector* projector =
+  auto* projector =
       new CompoundMultiSourceProjector();
   projector->add(0, ProjectAllAttributes("L."));
   projector->add(1, ProjectAllAttributes("R."));

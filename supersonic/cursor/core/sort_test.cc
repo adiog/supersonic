@@ -38,7 +38,7 @@ class Operation;
 
 class SortTest : public testing::TestWithParam<int> {
  public:
-  SortTest() {}
+  SortTest() = default;
   Operation* CreateSortOperation(const SortOrder* sort_order,
                                  const SingleSourceProjector* result_projector,
                                  Operation* input) {
@@ -95,14 +95,14 @@ class SortTest : public testing::TestWithParam<int> {
 
 class ExtendedSortTest : public testing::TestWithParam<int> {
  public:
-  ExtendedSortTest() {}
+  ExtendedSortTest() = default;
   Operation* CreateExtendedSortOperation(
       const ExtendedSortSpecification* specification,
       Operation* input) {
     const size_t soft_quota = GetParam();
     return ExtendedSort(
         specification,
-        /* result projector = */ static_cast<SingleSourceProjector*>(NULL),
+        /* result projector = */ static_cast<SingleSourceProjector*>(nullptr),
         soft_quota,
         input);
   }

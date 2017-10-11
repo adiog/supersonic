@@ -19,7 +19,7 @@ class Bits {
 
   // Auxilliary struct for figuring out an unsigned type for a given type.
   template<typename T> struct UnsignedType {
-    typedef typename UnsignedTypeBySize<sizeof(T)>::Type Type;
+    using Type = typename UnsignedTypeBySize<sizeof(T)>::Type;
   };
 
   // Return the number of one bits in the given integer.
@@ -125,7 +125,7 @@ class Bits {
   static typename UnsignedType<T>::Type GetBits(const T src,
                                                 const int offset,
                                                 const int nbits) {
-    typedef typename UnsignedType<T>::Type UnsignedT;
+    using UnsignedT = typename UnsignedType<T>::Type;
     const UnsignedT unsigned_src = bit_cast<UnsignedT>(src);
     DCHECK_GT(sizeof(UnsignedT) * 8, offset);
     DCHECK_GE(sizeof(UnsignedT) * 8, offset + nbits);
@@ -142,7 +142,7 @@ class Bits {
                       const int offset,
                       const int nbits,
                       T* const dest) {
-    typedef typename UnsignedType<T>::Type UnsignedT;
+    using UnsignedT = typename UnsignedType<T>::Type;
     const UnsignedT unsigned_dest = bit_cast<UnsignedT>(*dest);
     DCHECK_GT(sizeof(UnsignedT) * 8, offset);
     DCHECK_GE(sizeof(UnsignedT) * 8, offset + nbits);
@@ -269,7 +269,7 @@ inline int Bits::Log2FloorNonZero_Portable(uint32 n) {
 
 // Log2Floor64() is defined in terms of Log2Floor32(), Log2FloorNonZero32()
 inline int Bits::Log2Floor64_Portable(uint64 n) {
-  const uint32 topbits = static_cast<uint32>(n >> 32);
+  const auto topbits = static_cast<uint32>(n >> 32);
   if (topbits == 0) {
     // Top bits are zero, so scan in bottom bits
     return Log2Floor(static_cast<uint32>(n));
@@ -280,7 +280,7 @@ inline int Bits::Log2Floor64_Portable(uint64 n) {
 
 // Log2FloorNonZero64() is defined in terms of Log2FloorNonZero32()
 inline int Bits::Log2FloorNonZero64_Portable(uint64 n) {
-  const uint32 topbits = static_cast<uint32>(n >> 32);
+  const auto topbits = static_cast<uint32>(n >> 32);
   if (topbits == 0) {
     // Top bits are zero, so scan in bottom bits
     return Log2FloorNonZero(static_cast<uint32>(n));
@@ -291,7 +291,7 @@ inline int Bits::Log2FloorNonZero64_Portable(uint64 n) {
 
 // FindLSBSetNonZero64() is defined in terms of FindLSBSetNonZero()
 inline int Bits::FindLSBSetNonZero64_Portable(uint64 n) {
-  const uint32 bottombits = static_cast<uint32>(n);
+  const auto bottombits = static_cast<uint32>(n);
   if (bottombits == 0) {
     // Bottom bits are zero, so scan in top bits
     return 32 + FindLSBSetNonZero(static_cast<uint32>(n >> 32));
@@ -337,22 +337,22 @@ inline bool Bits::BytesAllInRange(T bytes, uint8 lo, uint8 hi) {
 // sizes, a compile-time error will be generated.
 template<>
 struct Bits::UnsignedTypeBySize<1> {
-  typedef uint8 Type;
+  using Type = uint8;
 };
 
 template<>
 struct Bits::UnsignedTypeBySize<2> {
-  typedef uint16 Type;
+  using Type = uint16;
 };
 
 template<>
 struct Bits::UnsignedTypeBySize<4> {
-  typedef uint32 Type;
+  using Type = uint32;
 };
 
 template<>
 struct Bits::UnsignedTypeBySize<8> {
-  typedef uint64 Type;
+  using Type = uint64;
 };
 
 #endif // _BITS_H_

@@ -37,12 +37,7 @@ namespace supersonic {
 template <typename RowReader, typename RowWriter>
 class RowCopier {
  public:
-  typedef bool (*CopyFn)(const RowReader& reader,
-                         const typename RowReader::ValueType& input,
-                         size_t input_column_index,
-                         const RowWriter& writer,
-                         typename RowWriter::ValueType* output,
-                         size_t output_column_index);
+  using CopyFn = bool (*)(const RowReader &, const typename RowReader::ValueType &, size_t, const RowWriter &, typename RowWriter::ValueType *, size_t);
 
   // Creates a copier that copies all columns from the given schema.
   RowCopier(const TupleSchema& schema, bool deep_copy);

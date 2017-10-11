@@ -61,7 +61,7 @@ struct FirstColumnZeroFailer {
                  bool_const_ptr right_is_null,
                  size_t row_count) {
     int failures = 0;
-    if (left_is_null == NULL) {
+    if (left_is_null == nullptr) {
       for (int i = 0; i < row_count; ++i) {
         failures += (left_data[i] == 0.);
       }

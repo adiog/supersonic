@@ -28,7 +28,7 @@ namespace {
 TEST(BitPointersTest, Normalization) {
   char data[100];
   for (int i = 0; i < 100; ++i) data[i] = i;
-  for (int i = 0; i < 100; ++i) data[i] = bit_pointer::normalize(data[i]);
+  for (char & i : data) i = bit_pointer::normalize(i);
   for (int i = 0; i < 100; ++i) EXPECT_EQ((i == 0) ? 0 : 1, data[i]);
 }
 
@@ -305,7 +305,7 @@ TEST(BitPointersTest, BitArrayReallocateFailurePreservesData) {
 // data. Expects the const pointer also to be aligned, and to read the data
 // the non-const pointer writes.
 void ExpectAlignedPointer(bit_ptr ptr, bit_const_ptr const_ptr) {
-  int64 int_ptr = reinterpret_cast<int64>(ptr.data());
+  auto int_ptr = reinterpret_cast<int64>(ptr.data());
   EXPECT_EQ(0, int_ptr & 15) << int_ptr;  // Expect to be 16-byte aligned.
   int_ptr = reinterpret_cast<int64>(ptr.data());
   EXPECT_EQ(0, int_ptr & 15) << int_ptr;

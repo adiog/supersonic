@@ -126,7 +126,7 @@ FailureOrVoid WriteVariableLengthData(const Column& column,
   // Write lengths of strings first (0 for null and empty strings).
   for (rowid_t row = 0; row < row_count; row++) {
     uint64 string_length = 0;
-    if (!(column.is_null() != NULL && column.is_null()[row])) {
+    if (!(column.is_null() != nullptr && column.is_null()[row])) {
       string_length = string_pieces[row].length();
     }
     PROPAGATE_ON_FAILURE(WriteUint64(string_length, output_file));
@@ -135,7 +135,7 @@ FailureOrVoid WriteVariableLengthData(const Column& column,
   // Write data for all not null, not empty strings in a single continuous
   // block.
   for (rowid_t row = 0; row < row_count; row++) {
-    if ((column.is_null() != NULL && column.is_null()[row])
+    if ((column.is_null() != nullptr && column.is_null()[row])
         || string_pieces[row].length() == 0) {
       continue;
     }
@@ -198,26 +198,26 @@ class FileSink : public Sink {
     CHECK_NOTNULL(output_file_);
   }
 
-  ~FileSink() {
+  ~FileSink() override {
     CHECK(output_file_ == NULL);
   }
 
   // Writes view to the output file, splits it into small chunks that can be
   // read back without allocating much memory.
-  virtual FailureOr<rowcount_t> Write(const View& data) {
+  FailureOr<rowcount_t> Write(const View& data) override {
     PROPAGATE_ON_FAILURE(
         WriteViewWithMaxChunkRowCount(data, kMaxChunkRowCount, output_file_));
     return Success(data.row_count());
   }
 
-  virtual FailureOrVoid Finalize() {
+  FailureOrVoid Finalize() override {
     if (file_ownership_ == TAKE_OWNERSHIP) {
       if (!output_file_->Close()) {
-        output_file_ = NULL;
+        output_file_ = nullptr;
         THROW(new Exception(ERROR_GENERAL_IO_ERROR, "Error closing the file."));
       }
     }
-    output_file_ = NULL;
+    output_file_ = nullptr;
     return Success();
   }
 
@@ -326,7 +326,7 @@ class FileInputCursor : public BasicCursor {
         first_pending_row_offset_(0),
         strings_length_buffer_(new uint64[kMaxChunkRowCount]) {}
 
-  virtual ~FileInputCursor() {
+  ~FileInputCursor() override {
     if (delete_when_done_) {
       if (!input_file_->Delete()) {
         LOG(WARNING) << "Failed to delete file in FileInputCursor.";
@@ -335,7 +335,7 @@ class FileInputCursor : public BasicCursor {
     input_file_->Close();
   }
 
-  virtual ResultView Next(const rowcount_t max_row_count);
+  ResultView Next(const rowcount_t max_row_count) override;
 
   virtual CursorId GetCursorId() const { return FILE_INPUT; }
 
@@ -449,7 +449,7 @@ FailureOrVoid FileInputCursor::ReadVariableLengthData(
   for (size_t row = 0; row < row_count; ++row) {
     total_strings_length += strings_length_buffer_[row];
   }
-  char* strings_data = NULL;
+  char* strings_data = nullptr;
 
   if (total_strings_length != 0) {
     strings_data = static_cast<char*>(

@@ -33,8 +33,7 @@ namespace supersonic {
 class LimitCursorTest : public testing::Test {
  protected:
 
-  LimitCursorTest() {
-  }
+  LimitCursorTest() = default;
 
   void SetupInput(size_t input_size) {
     TestDataBuilder<STRING, INT64, UINT64, DOUBLE, DATETIME> builder;

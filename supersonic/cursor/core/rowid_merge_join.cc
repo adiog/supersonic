@@ -84,7 +84,7 @@ class RowidMergeJoinCursor : public BasicCursor {
     CHECK(canonical_right_flattened_block_.Reallocate(kDefaultRowCount));
   }
 
-  virtual ResultView Next(rowcount_t max_row_count) {
+  ResultView Next(rowcount_t max_row_count) override {
     max_row_count = std::min(max_row_count, indirector_.row_capacity());
     // Counts the number of left-side rows we'll consume.
     rowcount_t row_count = 0;
@@ -155,14 +155,14 @@ class RowidMergeJoinCursor : public BasicCursor {
     return ResultView::Success(my_view());
   }
 
-  virtual bool IsWaitingOnBarrierSupported() const { return true; }
+  bool IsWaitingOnBarrierSupported() const override { return true; }
 
-  virtual void Interrupt() {
+  void Interrupt() override {
     left_.Interrupt();
     right_.Interrupt();
   }
 
-  virtual void ApplyToChildren(CursorTransformer* transformer) {
+  void ApplyToChildren(CursorTransformer* transformer) override {
     left_.ApplyToCursor(transformer);
     right_.ApplyToCursor(transformer);
   }
@@ -219,7 +219,7 @@ class RowidMergeJoinOperation : public BasicOperation {
         left_key_selector_(left_key_selector),
         result_projector_(result_projector) {}
 
-  virtual FailureOrOwned<Cursor> CreateCursor() const {
+  FailureOrOwned<Cursor> CreateCursor() const override {
     FailureOrOwned<Cursor> left = child_at(0)->CreateCursor();
     PROPAGATE_ON_FAILURE(left);
     FailureOrOwned<Cursor> right = child_at(1)->CreateCursor();

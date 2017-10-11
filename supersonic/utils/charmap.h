@@ -64,8 +64,8 @@ class Charmap {
   }
 
   bool IsZero() const {
-    for (int i = 0; i < 8; ++i) {
-      if (m_[i] != 0)
+    for (unsigned int i : m_) {
+      if (i != 0)
         return false;
     }
     return true;
@@ -77,7 +77,7 @@ class Charmap {
   void Init(const char* str, int len) {
     memset(&m_, 0, sizeof m_);
     for (int i = 0; i < len; ++i) {
-      unsigned char value = static_cast<unsigned char>(str[i]);
+      auto value = static_cast<unsigned char>(str[i]);
       m_[value >> 5] |= 1UL << (value & 0x1f);
     }
   }

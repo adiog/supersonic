@@ -53,7 +53,7 @@ namespace base {
 
 // Types small_ and big_ are guaranteed such that sizeof(small_) <
 // sizeof(big_)
-typedef char small_;
+using small_ = char;
 
 struct big_ {
   char dummy[2];
@@ -62,7 +62,7 @@ struct big_ {
 // Identity metafunction.
 template <class T>
 struct identity_ {
-  typedef T type;
+  using type = T;
 };
 
 // integral_constant, defined in tr1, is a wrapper for an integer
@@ -73,7 +73,7 @@ struct identity_ {
 template<class T, T v>
 struct integral_constant {
   static const T value = v;
-  typedef T value_type;
+  using value_type = bool;
   typedef integral_constant<T, v> type;
 };
 
@@ -85,20 +85,20 @@ template <class T, T v> const T integral_constant<T, v>::value;
 // true_ and false_.
 typedef integral_constant<bool, true>  true_type;
 typedef integral_constant<bool, false> false_type;
-typedef true_type  true_;
-typedef false_type false_;
+using true_ = true_type;
+using false_ = false_type;
 
 // if_ is a templatized conditional statement.
 // if_<cond, A, B> is a compile time evaluation of cond.
 // if_<>::type contains A if cond is true, B otherwise.
 template<bool cond, typename A, typename B>
 struct if_{
-  typedef A type;
+  using type = A;
 };
 
 template<typename A, typename B>
 struct if_<false, A, B> {
-  typedef B type;
+  using type = B;
 };
 
 

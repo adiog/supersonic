@@ -58,12 +58,12 @@ class BoundProjectingCastExpression : public BoundExpression {
       : BoundExpression(CreateCastSchema(child_ptr)),
         child_(child_ptr) {}
 
-  virtual ~BoundProjectingCastExpression() {}
+  ~BoundProjectingCastExpression() override = default;
 
-  virtual rowcount_t row_capacity() const { return child_->row_capacity(); }
+  rowcount_t row_capacity() const override { return child_->row_capacity(); }
 
-  virtual EvaluationResult DoEvaluate(const View& input,
-                                      const BoolView& skip_vectors) {
+  EvaluationResult DoEvaluate(const View& input,
+                                      const BoolView& skip_vectors) override {
     CHECK_EQ(1, skip_vectors.column_count());
     EvaluationResult child_result = child_->DoEvaluate(input, skip_vectors);
     PROPAGATE_ON_FAILURE(child_result);
@@ -74,7 +74,7 @@ class BoundProjectingCastExpression : public BoundExpression {
     return Success(my_view());
   }
 
-  virtual bool is_constant() const { return child_->is_constant(); }
+  bool is_constant() const override { return child_->is_constant(); }
 
   virtual void CollectReferredAttributeNames(
       set<string>* referred_attribute_names) const {
@@ -203,7 +203,7 @@ Exception* IllicitCastFromNumeric(DataType from_type,
     case DATA_TYPE: return IllicitCast(from_type, DATA_TYPE, description);
     default: LOG(FATAL) << "Unexpected type encountered when trying to cast";
   }
-  return NULL;  // Not going to be called.
+  return nullptr;  // Not going to be called.
 }
 
 Exception* IllicitCastFromString(DataType to_type, const string& description) {

@@ -68,8 +68,7 @@ DEFINE_bool(allocator_aligned_mode, false,
             "unless explicitly specified otherwise - to boost SIMD");
 
 HeapBufferAllocator::HeapBufferAllocator()
-  : aligned_mode_(FLAGS_allocator_aligned_mode) {
-}
+  : aligned_mode_(FLAGS_allocator_aligned_mode) {};
 
 Buffer* HeapBufferAllocator::AllocateInternal(
     const size_t requested,

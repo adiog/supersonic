@@ -28,7 +28,7 @@ namespace supersonic {
 
 class BinaryColumnComputersTest : public ::testing::Test {
  public:
-  BinaryColumnComputersTest() {}
+  BinaryColumnComputersTest() = default;
 };
 
 class BinaryComputersTestBlockWrapper {

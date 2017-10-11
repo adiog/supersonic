@@ -58,14 +58,14 @@ class BoundInputProjectionExpression : public BoundExpression {
       : BoundExpression(projector->result_schema()),
         projector_(projector) {}
 
-  virtual ~BoundInputProjectionExpression() {}
+  ~BoundInputProjectionExpression() override = default;
 
-  virtual rowcount_t row_capacity() const {
+  rowcount_t row_capacity() const override {
     return MathLimits<rowcount_t>::kMax;
   }
 
-  virtual EvaluationResult DoEvaluate(const View& input,
-                                      const BoolView& skip_vector) {
+  EvaluationResult DoEvaluate(const View& input,
+                                      const BoolView& skip_vector) override {
     CHECK_EQ(projector_->result_schema().attribute_count(),
              skip_vector.column_count());
     projector_->Project(input, my_view());
@@ -81,7 +81,7 @@ class BoundInputProjectionExpression : public BoundExpression {
     return Success(*my_view());
   }
 
-  bool is_constant() const { return false; }
+  bool is_constant() const override { return false; }
 
   virtual void CollectReferredAttributeNames(
       set<string>* referred_attribute_names) const {
@@ -128,14 +128,14 @@ class BoundProjectionExpression : public BoundExpression {
           }
         }
 
-  virtual ~BoundProjectionExpression() {}
+  ~BoundProjectionExpression() override = default;
 
-  virtual rowcount_t row_capacity() const {
+  rowcount_t row_capacity() const override {
     return MathLimits<rowcount_t>::kMax;
   }
 
-  virtual EvaluationResult DoEvaluate(const View& input,
-                                      const BoolView& skip_vectors) {
+  EvaluationResult DoEvaluate(const View& input,
+                                      const BoolView& skip_vectors) override {
     // We did not reallocate memory at binding time, so we have to do it at
     // evaluation time. Hopefully still only once (this is a sort of a delayed
     // binding).
@@ -239,7 +239,7 @@ class BoundProjectionExpression : public BoundExpression {
     return Success(*my_view());
   }
 
-  bool is_constant() const { return false; }
+  bool is_constant() const override { return false; }
 
   // Ignores whether the input is projected or not (because the input attribute
   // is still required to exists in the input schema).

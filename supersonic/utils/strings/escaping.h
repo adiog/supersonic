@@ -137,7 +137,7 @@ bool CUnescape(StringPiece source, string* dest, string* error);
 
 // A version with no error reporting.
 inline bool CUnescape(StringPiece source, string* dest) {
-  return CUnescape(source, dest, NULL);
+  return CUnescape(source, dest, nullptr);
 }
 
 // ----------------------------------------------------------------------
@@ -164,7 +164,7 @@ bool CUnescapeForNullTerminatedString(StringPiece source,
 // A version with no error reporting.
 inline bool CUnescapeForNullTerminatedString(StringPiece source,
                                              string* dest) {
-  return CUnescapeForNullTerminatedString(source, dest, NULL);
+  return CUnescapeForNullTerminatedString(source, dest, nullptr);
 }
 
 // ----------------------------------------------------------------------

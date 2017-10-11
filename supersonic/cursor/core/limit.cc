@@ -49,9 +49,9 @@ class LimitCursor : public BasicCursor {
         start_offset_(start_offset),
         num_rows_(num_rows) {}
 
-  virtual ~LimitCursor() {}
+  ~LimitCursor() override = default;
 
-  virtual ResultView Next(rowcount_t max_row_count) {
+  ResultView Next(rowcount_t max_row_count) override {
     if (num_rows_ == 0) {
       return ResultView::EOS();
     }
@@ -75,9 +75,9 @@ class LimitCursor : public BasicCursor {
     return result;
   }
 
-  virtual bool IsWaitingOnBarrierSupported() const { return true; }
+  bool IsWaitingOnBarrierSupported() const override { return true; }
 
-  virtual void AppendDebugDescription(string* target) const {
+  void AppendDebugDescription(string* target) const override {
     StrAppend(target,
               "LimitCursor with current limit ",
               start_offset_,
@@ -103,7 +103,7 @@ class LimitOperation : public BasicOperation {
         start_offset_(start_offset),
         num_rows_(num_rows) {}
 
-  virtual FailureOrOwned<Cursor> CreateCursor() const {
+  FailureOrOwned<Cursor> CreateCursor() const override {
     FailureOrOwned<Cursor> child_cursor = child()->CreateCursor();
     PROPAGATE_ON_FAILURE(child_cursor);
     return Success(

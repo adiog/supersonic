@@ -68,7 +68,7 @@ void FindNotNullKeys(const View& view, bool_ptr is_not_null) {
   bit_pointer::FillWithTrue(is_not_null, view.row_count());
   for (int c = 0; c < view.column_count(); ++c) {
     bool_const_ptr column_is_null = view.column(c).is_null();
-    if (column_is_null != NULL) {
+    if (column_is_null != nullptr) {
       vector_logic::AndNot(column_is_null, is_not_null,
                            view.row_count(), is_not_null);
     }
@@ -102,18 +102,18 @@ class HashIndexOnMaterializedCursor : public LookupIndex {
   FailureOrVoid Init();
 
   // Not thread-safe as there is only one instance of storage blocks for result.
-  virtual FailureOrOwned<LookupIndexCursor> MultiLookup(
-      const View* query) const;
-  virtual const TupleSchema& schema() const {
+  FailureOrOwned<LookupIndexCursor> MultiLookup(
+      const View* query) const override;
+  const TupleSchema& schema() const override {
     return schema_;
   }
-  virtual const BoundSingleSourceProjector& key_selector() const {
+  const BoundSingleSourceProjector& key_selector() const override {
     return *key_selector_;
   }
 
   FailureOr<bool> MaterializeInputAndBuildIndex(Cursor* input);
 
-  bool empty() const { return index_.size() == 0; }
+  bool empty() const override { return index_.size() == 0; }
 
  private:
   // Subclass of LookupIndexCursor returned by MultiLookup; implements
@@ -164,9 +164,9 @@ class HashIndexMaterializer : public LookupIndexBuilder {
     return Success(materializer.release());
   }
 
-  virtual const TupleSchema& schema() const { return index_->schema(); }
+  const TupleSchema& schema() const override { return index_->schema(); }
 
-  FailureOrOwned<LookupIndex> Build() {
+  FailureOrOwned<LookupIndex> Build() override {
     CHECK(input_.get() != NULL) << "Already materialized.";
     FailureOr<bool> materialized =
         index_->MaterializeInputAndBuildIndex(input_.get());
@@ -179,11 +179,11 @@ class HashIndexMaterializer : public LookupIndexBuilder {
     }
   }
 
-  void Interrupt() {
+  void Interrupt() override {
     if (input_.get() != NULL) input_->Interrupt();
   }
 
-  void ApplyToChildren(CursorTransformer* transformer) {
+  void ApplyToChildren(CursorTransformer* transformer) override {
     input_.reset(transformer->Transform(input_.release()));
   }
 
@@ -217,21 +217,21 @@ class HashJoinCursor : public Cursor {
       const BoundMultiSourceProjector& result_projector,
       LookupIndexBuilder* rhs,
       Cursor* lhs);
-  virtual ~HashJoinCursor() { }
+  ~HashJoinCursor() override = default;
 
   // Allocates index' internal block and reads input into it.
   FailureOrVoid Init();
 
-  virtual const TupleSchema& schema() const;
-  virtual ResultView Next(rowcount_t max_row_count);
-  virtual bool IsWaitingOnBarrierSupported() const { return true; }
+  const TupleSchema& schema() const override;
+  ResultView Next(rowcount_t max_row_count) override;
+  bool IsWaitingOnBarrierSupported() const override { return true; }
 
-  virtual void Interrupt() {
+  void Interrupt() override {
     lhs_->Interrupt();
     if (rhs_builder_ != NULL) rhs_builder_->Interrupt();
   }
 
-  virtual void ApplyToChildren(CursorTransformer* transformer) {
+  void ApplyToChildren(CursorTransformer* transformer) override {
     if (rhs_builder_ == NULL) {
       string description;
       AppendDebugDescription(&description);
@@ -245,7 +245,7 @@ class HashJoinCursor : public Cursor {
     rhs_builder_->ApplyToChildren(transformer);
   }
 
-  virtual void AppendDebugDescription(string* target) const;
+  void AppendDebugDescription(string* target) const override;
 
   virtual CursorId GetCursorId() const { return HASH_JOIN; }
 
@@ -378,7 +378,7 @@ HashJoinCursor::HashJoinCursor(
       lhs_result_(lhs_result_projector_.result_schema(), allocator),
       lhs_result_copier_(&lhs_result_projector_, false),
       result_view_(result_projector.result_schema()),
-      lhs_view_(NULL),
+      lhs_view_(nullptr),
       lookup_query_(lhs_key_selector_->result_schema()) {
   DCHECK(lhs_key_selector_->source_schema().EqualByType(lhs->schema()));
 
@@ -456,14 +456,14 @@ ResultView HashJoinCursor::Next(rowcount_t max_row_count) {
         // The cursor of matches is exhausted. The main loop will advance to
         // the next lhs view.
         matches_.reset(NULL);
-        lhs_view_ = NULL;
+        lhs_view_ = nullptr;
       } else {
         // TODO(user): handle WAITING_ON_BARRIER.
         LOG(FATAL) << "Unexpected iteration result";
       }
     }
 
-    if (lhs_view_ == NULL) {
+    if (lhs_view_ == nullptr) {
       ResultView lhs_result = lhs_->Next(Cursor::kDefaultRowCount);
       PROPAGATE_ON_FAILURE(lhs_result);
       // Early termination if lhs is empty.
@@ -630,8 +630,7 @@ template <KeyUniqueness key_uniqueness>
 template <JoinType join_type>
 class HashIndexOnMaterializedCursor<key_uniqueness>::ResultCursor
     : public LookupIndexCursor {
-  typedef typename HashIndexOnMaterializedCursor<key_uniqueness>::RowHashSetType
-    RowHashSetType;
+  using RowHashSetType = typename HashIndexOnMaterializedCursor<key_uniqueness>::RowHashSetType;
 
  public:
   // result_block and query_ids are placeholders allocated by the caller.
@@ -639,8 +638,8 @@ class HashIndexOnMaterializedCursor<key_uniqueness>::ResultCursor
       const RowHashSetType& index, const View& query,
       Block* result_block, rowid_t* query_ids);
 
-  const TupleSchema& schema() const { return result_block_->schema(); }
-  ResultLookupIndexView Next(rowcount_t max_row_count);
+  const TupleSchema& schema() const override { return result_block_->schema(); }
+  ResultLookupIndexView Next(rowcount_t max_row_count) override;
 
   void AppendDebugDescription(string* target) const;
 

@@ -41,7 +41,7 @@ const int MTRandom::kMTNumWords;
 // number of bytes written to buffer. (Always less than or equal to length.)
 static int WeakSeed(uint8* buffer, int bufferlen) {
   int offset = 0;
-  char * seed_buffer = reinterpret_cast<char*>(buffer);
+  auto * seed_buffer = reinterpret_cast<char*>(buffer);
   // TID. (Probably only 16 bits)
   if (bufferlen >= offset + 2) {
     UNALIGNED_STORE16(seed_buffer + offset, getpid());
@@ -57,7 +57,7 @@ static int WeakSeed(uint8* buffer, int bufferlen) {
   // Time of day.
   if (bufferlen >= offset + 4) {
     struct timeval start_time;
-    gettimeofday(&start_time, NULL);
+    gettimeofday(&start_time, nullptr);
     UNALIGNED_STORE32(seed_buffer + offset, start_time.tv_usec);
     offset += 4;
     if (bufferlen >= offset + 4) {
@@ -247,7 +247,7 @@ MTRandom::~MTRandom() {
 }
 
 MTRandom* MTRandom::Clone() const {
-  MTRandom *twin = new MTRandom(0);
+  auto *twin = new MTRandom(0);
   memcpy(&(twin->context_), &context_, sizeof(MTContext));
   return twin;
 }

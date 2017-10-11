@@ -61,7 +61,7 @@ class FileRemover {
   File* operator->() const { return fp_; }
   File* release() {
     File* fp = fp_;
-    fp_ = NULL;
+    fp_ = nullptr;
     return fp;
   }
   // TODO(user): Change reset() to return a bool (the result
@@ -74,7 +74,7 @@ class FileRemover {
     fp_ = new_fp;
   }
   // Delete (unlink, remove) the underlying file.
-  ~FileRemover() { reset(NULL); }
+  ~FileRemover() { reset(nullptr); }
 
  private:
   File* fp_;
@@ -93,7 +93,7 @@ class FileCloser {
   File* operator->() const { return fp_; }
   File* release() {
     File* fp = fp_;
-    fp_ = NULL;
+    fp_ = nullptr;
     return fp;
   }
   void reset(File* new_fp) {
@@ -106,7 +106,7 @@ class FileCloser {
     return fp_ ? release()->Close() : true;
   }
   // Delete (unlink, remove) the underlying file.
-  ~FileCloser() { reset(NULL); }
+  ~FileCloser() { reset(nullptr); }
 
  private:
   File* fp_;

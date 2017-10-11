@@ -133,7 +133,7 @@ FailureOrOwned<Cursor> BoundExtendedSort(
 // An interface for storing sorted parts of data for later merging.
 class Merger {
  public:
-  virtual ~Merger() {}
+  virtual ~Merger() = default;
 
   // Takes ownership of cursor, reads all the data and deletes cursor before
   // returning (this is important, for example, when the cursor iterates over a
@@ -152,7 +152,7 @@ class Merger {
   virtual bool empty() const = 0;
 
  protected:
-  Merger() {}
+  Merger() = default;
 
  private:
   DISALLOW_COPY_AND_ASSIGN(Merger);
@@ -172,7 +172,7 @@ Merger* CreateMerger(TupleSchema schema,
 // files that can be read at once.
 class Sorter {
  public:
-  virtual ~Sorter() {}
+  virtual ~Sorter() = default;
 
   // Writes a new chunk of data to the Sorter. Returns the number of rows
   // successfully written (or exception). Write() shouldn't be called after
@@ -184,7 +184,7 @@ class Sorter {
   virtual FailureOrOwned<Cursor> GetResultCursor() = 0;
 
  protected:
-  Sorter() {}
+  Sorter() = default;
 
  private:
   DISALLOW_COPY_AND_ASSIGN(Sorter);
@@ -210,10 +210,10 @@ Sorter* CreateBufferingSorter(const TupleSchema& schema,
 class SorterSink : public Sink {
  public:
   explicit SorterSink(Sorter* sorter) : sorter_(sorter) {}
-  virtual FailureOr<rowcount_t> Write(const View& data) {
+  FailureOr<rowcount_t> Write(const View& data) override {
     return sorter_->Write(data);
   }
-  virtual FailureOrVoid Finalize() {
+  FailureOrVoid Finalize() override {
     return Success();
   }
 

@@ -109,12 +109,12 @@ class ResultLookupIndexView {
  public:
   // A result that indicates END_OF_INPUT.
   static ResultLookupIndexView EOS() {
-    return ResultLookupIndexView(NULL, true);
+    return {nullptr, true};
   }
 
   // A result that indicates a success, with a valid value.
   static ResultLookupIndexView Success(const LookupIndexView* view) {
-    return ResultLookupIndexView(view, false);
+    return {view, false};
   }
 
   // A result that indicates a failure, with a given exception.
@@ -154,14 +154,14 @@ class ResultLookupIndexView {
 // A stream of LookupIndexView results modeled after Cursor.
 class LookupIndexCursor {
  public:
-  virtual ~LookupIndexCursor() {}
+  virtual ~LookupIndexCursor() = default;
 
   virtual const TupleSchema& schema() const = 0;
   virtual ResultLookupIndexView Next(rowcount_t max_row_count) = 0;
 
  protected:
   // To allow instantiation in subclasses.
-  LookupIndexCursor() {}
+  LookupIndexCursor() = default;
 
  private:
   DISALLOW_COPY_AND_ASSIGN(LookupIndexCursor);

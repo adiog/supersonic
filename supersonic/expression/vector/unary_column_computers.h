@@ -130,7 +130,7 @@ template<OperatorId op, DataType input_type, DataType result_type>
 FailureOrVoid CheckAndNull(const Column& input_column,
                            bool_ptr skip_vector,
                            size_t row_count) {
-  typedef typename TypeTraits<input_type>::cpp_type input_cpp_type;
+  using input_cpp_type = typename TypeTraits<input_type>::cpp_type;
   const input_cpp_type* input = input_column.typed_data<input_type>();
 
   UnaryFailureChecker<op, UnaryExpressionTraits<op>::can_fail,
@@ -157,8 +157,8 @@ struct ColumnUnaryComputer {};
 // The non-allocating version of the column unary computer.
 template<OperatorId op, DataType input_type, DataType result_type>
 struct ColumnUnaryComputer<op, input_type, result_type, false> {
-  typedef typename TypeTraits<result_type>::cpp_type ResultCppType;
-  typedef typename TypeTraits<input_type>::cpp_type InputCppType;
+  using ResultCppType = typename TypeTraits<result_type>::cpp_type;
+  using InputCppType = typename TypeTraits<input_type>::cpp_type;
 
   FailureOrVoid operator()(const Column& input,
                            size_t const row_count,
@@ -202,8 +202,8 @@ struct ColumnUnaryComputer<op, input_type, result_type, false> {
 // arena to the operator.
 template<OperatorId op, DataType input_type, DataType result_type>
 struct ColumnUnaryComputer<op, input_type, result_type, true> {
-  typedef typename TypeTraits<result_type>::cpp_type ResultCppType;
-  typedef typename TypeTraits<input_type>::cpp_type InputCppType;
+  using ResultCppType = typename TypeTraits<result_type>::cpp_type;
+  using InputCppType = typename TypeTraits<input_type>::cpp_type;
 
   FailureOrVoid operator()(const Column& input,
                            size_t const row_count,

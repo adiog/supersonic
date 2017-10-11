@@ -253,7 +253,7 @@ class OwnedColumn {
   // Returns NULL for columns that are not nullable according to the schema;
   // non-NULL otherwise.
   bool_ptr mutable_is_null_plus_offset(rowcount_t offset) {
-    return (is_nullable()) ? mutable_is_null() + offset : bool_ptr(NULL);
+    return (is_nullable()) ? mutable_is_null() + offset : bool_ptr(nullptr);
   }
 
   // Returns the arena used by this column, if it is variable-length.
@@ -262,7 +262,7 @@ class OwnedColumn {
  private:
   // Only the block is to create an uninitialized owned column.
   friend class Block;
-  OwnedColumn() : column_(NULL), data_buffer_(), is_null_array_(), arena_() {}
+  OwnedColumn() : column_(nullptr), data_buffer_(), is_null_array_(), arena_() {}
 
   // Called by the Block's constructor.
   void Init(BufferAllocator* allocator, Column* column);

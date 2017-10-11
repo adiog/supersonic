@@ -61,10 +61,10 @@ class CoalesceCursor : public BasicCursor {
     }
   }
 
-  virtual ResultView Next(rowcount_t max_row_count);
-  virtual bool IsWaitingOnBarrierSupported() const { return true; }
+  ResultView Next(rowcount_t max_row_count) override;
+  bool IsWaitingOnBarrierSupported() const override { return true; }
 
-  virtual void ApplyToChildren(CursorTransformer* transformer) {
+  void ApplyToChildren(CursorTransformer* transformer) override {
     for (int i = 0; i < inputs_.size(); ++i) {
       inputs_[i]->ApplyToCursor(transformer);
     }
@@ -109,12 +109,12 @@ ResultView CoalesceCursor::Next(rowcount_t max_row_count) {
 
 class CoalesceOperation : public BasicOperation {
  public:
-  virtual ~CoalesceOperation() {}
+  ~CoalesceOperation() override = default;
 
   explicit CoalesceOperation(const vector<Operation*>& children)
       : BasicOperation(children) {}
 
-  virtual FailureOrOwned<Cursor> CreateCursor() const {
+  FailureOrOwned<Cursor> CreateCursor() const override {
     vector<Cursor*> child_cursors(children_count());
     ElementDeleter child_cursors_deleter(&child_cursors);
     for (int i = 0; i < children_count(); ++i) {

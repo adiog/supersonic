@@ -82,7 +82,7 @@ FailureOrOwned<BoundExpression> BoundInExpressionSet(
     BoundExpression* arg_set2,
     BufferAllocator* allocator,
     rowcount_t max_row_count) {
-  BoundExpressionList* explist = new BoundExpressionList();
+  auto* explist = new BoundExpressionList();
   explist->add(arg_set0);
   explist->add(arg_set1);
   explist->add(arg_set2);
@@ -98,7 +98,7 @@ FailureOrOwned<BoundExpression> BoundInExpressionSetSmaller(
     BoundExpression* arg_set1,
     BufferAllocator* allocator,
     rowcount_t max_row_count) {
-  BoundExpressionList* explist = new BoundExpressionList();
+  auto* explist = new BoundExpressionList();
   explist->add(arg_set0);
   explist->add(arg_set1);
   return BoundInSet(arg_base, explist, allocator, max_row_count);
@@ -109,7 +109,7 @@ FailureOrOwned<BoundExpression> BoundInExpressionSetEmpty(
     BoundExpression* arg_base,
     BufferAllocator* allocator,
     rowcount_t max_row_count) {
-  BoundExpressionList* explist = new BoundExpressionList();
+  auto* explist = new BoundExpressionList();
   return BoundInSet(arg_base, explist, allocator, max_row_count);
 }
 

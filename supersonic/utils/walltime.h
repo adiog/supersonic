@@ -37,7 +37,7 @@ static const int64 kNumMillisPerSecond = 1000LL;
 static const int64 kNumMicrosPerMilli = 1000LL;
 static const int64 kNumMicrosPerSecond = kNumMicrosPerMilli * 1000LL;
 
-typedef double WallTime;
+using WallTime = double;
 
 // Append result to a supplied string.
 // If an error occurs during conversion 'dst' is not modified.
@@ -59,7 +59,7 @@ bool WallTime_Parse_Timezone(const char* time_spec,
 // Return current time in seconds as a WallTime.
 WallTime WallTime_Now();
 
-typedef int64 MicrosecondsInt64;
+using MicrosecondsInt64 = int64;
 
 // Returns the time since the Epoch measured in microseconds.
 inline MicrosecondsInt64 GetCurrentTimeMicros() {
@@ -91,7 +91,7 @@ class CycleClock {
   static inline int64 Now();
 
  private:
-  CycleClock();
+  CycleClock() = delete;
 };
 
 #include "supersonic/utils/cycleclock-inl.h"  // inline method bodies

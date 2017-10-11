@@ -46,7 +46,7 @@ TEST_F(ResultTest, FailureOrReferenceWorksOnSuccess) {
 }
 
 TEST_F(ResultTest, FailureOrOwnedWorksOnSuccess) {
-  int* result_content = new int(5);
+  auto* result_content = new int(5);
   FailureOrOwned<int> result = Success(result_content);
   ASSERT_TRUE(result.is_success());
   EXPECT_FALSE(result.is_failure());

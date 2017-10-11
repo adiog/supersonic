@@ -46,17 +46,17 @@ class ConcatExpression : public Expression {
   explicit ConcatExpression(const ExpressionList* const list) : args_(list) {}
 
  private:
-  virtual FailureOrOwned<BoundExpression> DoBind(
+  FailureOrOwned<BoundExpression> DoBind(
       const TupleSchema& input_schema,
       BufferAllocator* allocator,
-      rowcount_t max_row_count) const {
+      rowcount_t max_row_count) const override {
     FailureOrOwned<BoundExpressionList> args = args_->DoBind(
         input_schema, allocator, max_row_count);
     PROPAGATE_ON_FAILURE(args);
     return BoundConcat(args.release(), allocator, max_row_count);
   }
 
-  virtual string ToString(bool verbose) const {
+  string ToString(bool verbose) const override {
     return StrCat("CONCAT(", args_.get()->ToString(verbose), ")");
   }
 

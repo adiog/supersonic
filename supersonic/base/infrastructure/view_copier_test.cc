@@ -36,7 +36,7 @@ namespace supersonic {
 
 class ViewCopierTest : public testing::Test {
  public:
-  void SetUp() {
+  void SetUp() override {
     // BlockBuilder should set 3rd column as not nullable.
     input_.reset(
         BlockBuilder<INT64, STRING, STRING>().

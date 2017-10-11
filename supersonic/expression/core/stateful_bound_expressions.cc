@@ -76,9 +76,9 @@ class BoundChangedExpression : public BoundUnaryExpression {
         assignment_operator_(allocator) {}
 
  private:
-  typedef typename TypeTraits<input_type>::cpp_type CppType;
+  using CppType = typename TypeTraits<input_type>::cpp_type;
 
-  virtual FailureOrVoid PostInit() {
+  FailureOrVoid PostInit() override {
     PROPAGATE_ON_FAILURE_WITH_CONTEXT(
         local_skip_vector_storage_.TryReallocate(my_block()->row_capacity()),
         "", result_schema().GetHumanReadableSpecification());
@@ -98,8 +98,8 @@ class BoundChangedExpression : public BoundUnaryExpression {
     return Success();
   }
 
-  virtual EvaluationResult DoEvaluate(const View& input,
-                                      const BoolView& skip_vectors) {
+  EvaluationResult DoEvaluate(const View& input,
+                                      const BoolView& skip_vectors) override {
     // We are ignoring the skip vector.
     // TODO(onufry): In the case of this expression, what we need is just the
     // previous expression to the one that we currently evaluate, so we could
@@ -222,17 +222,17 @@ class BoundRunningMinWithFlushExpression : public BoundBinaryExpression {
   }
 
  private:
-  typedef typename TypeTraits<input_type>::cpp_type CppType;
+  using CppType = typename TypeTraits<input_type>::cpp_type;
 
-  virtual FailureOrVoid PostInit() {
+  FailureOrVoid PostInit() override {
     PROPAGATE_ON_FAILURE_WITH_CONTEXT(
         local_skip_vector_storage_.TryReallocate(my_block()->row_capacity()),
         "", result_schema().GetHumanReadableSpecification());
     return Success();
   }
 
-  virtual EvaluationResult DoEvaluate(const View& input,
-                                      const BoolView& skip_vectors) {
+  EvaluationResult DoEvaluate(const View& input,
+                                      const BoolView& skip_vectors) override {
     CHECK_EQ(1, skip_vectors.column_count());
     my_block()->ResetArenas();
     rowcount_t row_count = input.row_count();
@@ -263,7 +263,7 @@ class BoundRunningMinWithFlushExpression : public BoundBinaryExpression {
     // We branch on input_is_null outside the for loop so the code can be as
     // efficient as possible inside the loop. This leads to a bit of code
     // duplication but this slight overhead seems worthwhile.
-    if (input_is_null != NULL) {
+    if (input_is_null != nullptr) {
       bool_ptr skip_data = skip_vectors.column(0);
       for (rowid_t row = 0; row < row_count; ++row) {
         if (!*input_is_null) {
@@ -402,7 +402,7 @@ struct Persister<true> {
   FailureOrVoid FetchToArena(bool initialized, StringPiece* state) {
     if (initialized) {
       const char* data_in_arena = arena_->AddStringPieceContent(*state);
-      if (data_in_arena == NULL) {
+      if (data_in_arena == nullptr) {
         THROW(new Exception(ERROR_MEMORY_EXCEEDED, StrCat(
               "Unable to copy state from buffer to the arena in: ",
               description_)));
@@ -440,12 +440,12 @@ class BoundRunningAggregationExpression : public BoundUnaryExpression {
             my_view()->schema().GetHumanReadableSpecification()) {}
 
   // I mean, c'mon, RunningSum(ConstInt32(1)) is not constant.
-  virtual bool can_be_resolved() const { return false; }
+  bool can_be_resolved() const override { return false; }
 
  private:
-  typedef typename TypeTraits<input_type>::cpp_type CppType;
+  using CppType = typename TypeTraits<input_type>::cpp_type;
 
-  virtual FailureOrVoid PostInit() {
+  FailureOrVoid PostInit() override {
     PROPAGATE_ON_FAILURE_WITH_CONTEXT(
         local_skip_vector_storage_.TryReallocate(my_block()->row_capacity()),
         "",
@@ -455,8 +455,8 @@ class BoundRunningAggregationExpression : public BoundUnaryExpression {
     return Success();
   }
 
-  virtual EvaluationResult DoEvaluate(const View& input,
-                                      const BoolView& skip_vectors) {
+  EvaluationResult DoEvaluate(const View& input,
+                                      const BoolView& skip_vectors) override {
     // If we are storing any variable-length data, clear the arenas.
     if (TypeTraits<input_type>::is_variable_length) {
       my_block()->ResetArenas();
@@ -606,10 +606,10 @@ class BoundSmudgeIfExpression : public BoundBinaryExpression {
         has_output_any_value_(false) {}
 
  private:
-  typedef typename TypeTraits<data_type>::cpp_type CppType;
-  typedef typename TypeTraits<data_type>::hold_type HoldType;
+  using CppType = typename TypeTraits<data_type>::cpp_type;
+  using HoldType = typename TypeTraits<data_type>::hold_type;
 
-  virtual FailureOrVoid PostInit() {
+  FailureOrVoid PostInit() override {
     PROPAGATE_ON_FAILURE_WITH_CONTEXT(
         local_skip_vector_storage_.TryReallocate(my_block()->row_capacity()),
         "", result_schema().GetHumanReadableSpecification());
@@ -631,8 +631,8 @@ class BoundSmudgeIfExpression : public BoundBinaryExpression {
   // 4) Memorize the last output value. We cannot discard the previous value
   // until next call to next because it may get referenced by the current view.
   // 5) Reset the isnull column.
-  virtual EvaluationResult DoEvaluate(const View& input,
-                                      const BoolView& skip_vectors) {
+  EvaluationResult DoEvaluate(const View& input,
+                                      const BoolView& skip_vectors) override {
     CHECK_EQ(1, skip_vectors.column_count());
     my_block()->ResetArenas();
     rowcount_t row_count = input.row_count();

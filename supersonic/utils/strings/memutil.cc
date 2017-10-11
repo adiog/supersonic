@@ -9,8 +9,8 @@
 #include "supersonic/utils/strings/ascii_ctype.h"  // for ascii_tolower
 
 int memcasecmp(const char *s1, const char *s2, size_t len) {
-  const unsigned char *us1 = reinterpret_cast<const unsigned char *>(s1);
-  const unsigned char *us2 = reinterpret_cast<const unsigned char *>(s2);
+  const auto *us1 = reinterpret_cast<const unsigned char *>(s1);
+  const auto *us2 = reinterpret_cast<const unsigned char *>(s2);
 
   for ( int i = 0; i < len; i++ ) {
     const int diff =
@@ -23,8 +23,8 @@ int memcasecmp(const char *s1, const char *s2, size_t len) {
 
 char *memdup(const char *s, size_t slen) {
   void *copy;
-  if ( (copy=malloc(slen)) == NULL )
-    return NULL;
+  if ( (copy=malloc(slen)) == nullptr )
+    return nullptr;
   memcpy(copy, s, slen);
   return reinterpret_cast<char *>(copy);
 }
@@ -34,7 +34,7 @@ char *memrchr(const char *s, int c, size_t slen) {
     if (*e == c)
       return const_cast<char *>(e);
   }
-  return NULL;
+  return nullptr;
 }
 
 size_t memspn(const char *s, size_t slen, const char *accept) {
@@ -74,7 +74,7 @@ char *mempbrk(const char *s, size_t slen, const char *accept) {
       if (sc == *s)
         return const_cast<char *>(s);
   }
-  return NULL;
+  return nullptr;
 }
 
 template<bool case_sensitive>
@@ -83,10 +83,10 @@ const char *int_memmatch(const char *phaystack, size_t haylen,
   if (0 == neelen) {
     return phaystack;  // even if haylen is 0
   }
-  const unsigned char *haystack = (const unsigned char *) phaystack;
+  const auto *haystack = (const unsigned char *) phaystack;
   const unsigned char *hayend = (const unsigned char *) phaystack + haylen;
-  const unsigned char *needlestart = (const unsigned char *) pneedle;
-  const unsigned char *needle = (const unsigned char *) pneedle;
+  const auto *needlestart = (const unsigned char *) pneedle;
+  const auto *needle = (const unsigned char *) pneedle;
   const unsigned char *needleend = (const unsigned char *) pneedle + neelen;
 
   for (; haystack < hayend; ++haystack) {
@@ -104,7 +104,7 @@ const char *int_memmatch(const char *phaystack, size_t haylen,
       needle = needlestart;
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 // explicit template instantiations
@@ -121,7 +121,7 @@ const char *memmatch(const char *phaystack, size_t haylen,
     return phaystack;  // even if haylen is 0
   }
   if (haylen < neelen)
-    return NULL;
+    return nullptr;
 
   const char* match;
   const char* hayend = phaystack + haylen - neelen + 1;
@@ -134,5 +134,5 @@ const char *memmatch(const char *phaystack, size_t haylen,
     else
       phaystack = match + 1;
   }
-  return NULL;
+  return nullptr;
 }

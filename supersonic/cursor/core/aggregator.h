@@ -69,7 +69,7 @@ class Aggregator {
   void Reset();
 
  private:
-  Aggregator() {}
+  Aggregator() = default;
 
   FailureOrVoid Init(const AggregationSpecification& aggregation_specification,
                      const TupleSchema& result_schema,

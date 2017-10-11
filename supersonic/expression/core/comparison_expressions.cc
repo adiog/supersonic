@@ -55,10 +55,10 @@ class InExpressionSetExpression : public Expression {
         haystack_arguments_(haystack_arguments) {}
 
  private:
-  virtual FailureOrOwned<BoundExpression> DoBind(
+  FailureOrOwned<BoundExpression> DoBind(
       const TupleSchema& input_schema,
       BufferAllocator* allocator,
-      rowcount_t max_row_count) const {
+      rowcount_t max_row_count) const override {
     FailureOrOwned<BoundExpression> bound_needle =
         needle_expression_->DoBind(input_schema, allocator, max_row_count);
     PROPAGATE_ON_FAILURE(bound_needle);
@@ -71,7 +71,7 @@ class InExpressionSetExpression : public Expression {
                       max_row_count);
   }
 
-  virtual string ToString(bool verbose) const {
+  string ToString(bool verbose) const override {
     return StrCat(needle_expression_->ToString(verbose),
                   " IN (",
                   haystack_arguments_->ToString(verbose),

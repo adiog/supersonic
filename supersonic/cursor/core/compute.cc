@@ -43,9 +43,9 @@ class ComputeCursor : public BasicCursor {
         row_capacity_(row_capacity),
         computation_(computation) {}
 
-  virtual ~ComputeCursor() {}
+  ~ComputeCursor() override = default;
 
-  virtual ResultView Next(rowcount_t max_row_count) {
+  ResultView Next(rowcount_t max_row_count) override {
     if (max_row_count > row_capacity_) max_row_count = row_capacity_;
     ResultView result = child()->Next(max_row_count);
     if (!result.has_data()) return result;
@@ -54,7 +54,7 @@ class ComputeCursor : public BasicCursor {
     return ResultView::Success(&evaluated.get());
   }
 
-  virtual bool IsWaitingOnBarrierSupported() const { return true; }
+  bool IsWaitingOnBarrierSupported() const override { return true; }
 
   virtual CursorId GetCursorId() const { return COMPUTE; }
 
@@ -70,7 +70,7 @@ class ComputeOperation : public BasicOperation {
       : BasicOperation(child),
         computation_(computation) {}
 
-  virtual FailureOrOwned<Cursor> CreateCursor() const {
+  FailureOrOwned<Cursor> CreateCursor() const override {
     FailureOrOwned<Cursor> bound_child(child()->CreateCursor());
     PROPAGATE_ON_FAILURE(bound_child);
     FailureOrOwned<BoundExpressionTree> bound_computation(

@@ -44,7 +44,7 @@ namespace {
 
 class HybridGroupTransformCursor : public BasicCursor {
  public:
-  virtual ~HybridGroupTransformCursor() {}
+  ~HybridGroupTransformCursor() override = default;
 
   // Doesn't take ownership of allocator.
   // Takes ownership of input.
@@ -54,16 +54,16 @@ class HybridGroupTransformCursor : public BasicCursor {
       BufferAllocator* allocator,
       Cursor* input);
 
-  virtual ResultView Next(rowcount_t max_row_count);
+  ResultView Next(rowcount_t max_row_count) override;
 
-  virtual bool IsWaitingOnBarrierSupported() const {
+  bool IsWaitingOnBarrierSupported() const override {
     return child()->IsWaitingOnBarrierSupported();
   }
 
   virtual CursorId GetCursorId() const { return HYBRID_GROUP_TRANSFORM; }
 
  private:
-  typedef PointerVector<const BoundMultiSourceProjector> ProjectorVector;
+  using ProjectorVector = PointerVector<const BoundMultiSourceProjector>;
 
   // Doesn't take ownership of allocator.
   // Takes ownership of input.
@@ -218,7 +218,7 @@ HybridGroupTransformCursor::HybridGroupTransformCursor(
       nulls_block_(nulls_block_schema, allocator),
       transformation_projectors_(transformation_projectors),
       next_projector_(transformation_projectors_->end()),
-      child_view_(NULL),
+      child_view_(nullptr),
       projection_result_(schema()),
       view_iterator_(schema()) {}
 

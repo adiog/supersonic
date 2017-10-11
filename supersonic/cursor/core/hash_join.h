@@ -51,7 +51,7 @@ class HashJoinOperation : public BasicOperation {
       KeyUniqueness rhs_key_uniqueness,
       Operation* lhs_child, Operation* rhs_child);
 
-  virtual FailureOrOwned<Cursor> CreateCursor() const;
+  FailureOrOwned<Cursor> CreateCursor() const override;
 
  private:
   template <KeyUniqueness rhs_key_uniqueness>

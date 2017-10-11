@@ -133,7 +133,7 @@ class ParserTest : public testing::Test {
   template<DataType type>
   void TestParser(const char* value,
                   const typename TypeTraits<type>::cpp_type& expected_value) {
-    typedef typename TypeTraits<type>::cpp_type cpp_type;
+    using cpp_type = typename TypeTraits<type>::cpp_type;
     cpp_type target = cpp_type();
     EXPECT_TRUE(GetDefaultParserFn(type)(value, &target))
         << "Failed to parse: " << value;
@@ -528,7 +528,7 @@ TEST_F(ColumnHasherTest, ShouldHashNotNullColumns) {
   const int32 data[] = { -5, 0, 4, 4 };
   ColumnHasher hasher = GetColumnHasher(INT32, false, true);
   size_t result[4];
-  hasher(data, bool_ptr(NULL), 4, result);
+  hasher(data, bool_ptr(nullptr), 4, result);
   std::hash<int32> reference;
   EXPECT_EQ(reference(data[0]), result[0]);
   EXPECT_EQ(reference(data[1]), result[1]);
@@ -545,7 +545,7 @@ struct TestFunctor {
 
 TEST(IntegerTypeSpecializationTest, TestReturnTypes) {
   TestFunctor functor;
-  typedef FailureOr<DataType> ResultType;
+  using ResultType = FailureOr<DataType>;
 
   ResultType result =
       IntegerTypeSpecialization<ResultType, TestFunctor>(INT32, functor);
@@ -593,7 +593,7 @@ TEST(IntegerTypeSpecializationTest, TestReturnTypes) {
 
 TEST(NumericTypeSpecializationTest, TestReturnTypes) {
   TestFunctor functor;
-  typedef FailureOr<DataType> ResultType;
+  using ResultType = FailureOr<DataType>;
 
   ResultType result =
       NumericTypeSpecialization<ResultType, TestFunctor>(INT32, functor);

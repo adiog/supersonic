@@ -303,7 +303,7 @@ inline bool HashMapEquality(const map<K, V, C, A>& map_a,
 
 template <typename HashMap>
 inline bool HashMapEquality(const HashMap& a, const HashMap& b) {
-  typedef typename HashMap::mapped_type Mapped;
+  using Mapped = typename HashMap::mapped_type;
   return HashMapEquality(a, b, std::equal_to<Mapped>());
 }
 
@@ -394,10 +394,10 @@ void STLDeleteValues(T* v) {
 // Clients should NOT use this class directly.
 class BaseDeleter {
  public:
-  virtual ~BaseDeleter() {}
+  virtual ~BaseDeleter() = default;
 
  protected:
-  BaseDeleter() {}
+  BaseDeleter() = default;
 
  private:
   DISALLOW_COPY_AND_ASSIGN(BaseDeleter);
@@ -414,7 +414,7 @@ class TemplatedElementDeleter : public BaseDeleter {
       : container_ptr_(ptr) {
   }
 
-  virtual ~TemplatedElementDeleter<STLContainer>() {
+  ~TemplatedElementDeleter<STLContainer>() override {
     STLDeleteElements(container_ptr_);
   }
 
@@ -465,7 +465,7 @@ class TemplatedValueDeleter : public BaseDeleter {
       : container_ptr_(ptr) {
   }
 
-  virtual ~TemplatedValueDeleter<STLContainer>() {
+  ~TemplatedValueDeleter<STLContainer>() override {
     STLDeleteValues(container_ptr_);
   }
 
@@ -891,7 +891,7 @@ template<typename Pair, typename UnaryOp>
 class UnaryOperateOnFirst
     : public std::unary_function<Pair, typename UnaryOp::result_type> {
  public:
-  UnaryOperateOnFirst() {}
+  UnaryOperateOnFirst() = default;
   UnaryOperateOnFirst(const UnaryOp& f) : f_(f) {}
   typename UnaryOp::result_type operator()(const Pair& p) const {
     return f_(p.first);
@@ -913,7 +913,7 @@ template<typename Pair, typename UnaryOp>
 class UnaryOperateOnSecond
     : public std::unary_function<Pair, typename UnaryOp::result_type> {
  public:
-  UnaryOperateOnSecond() {}
+  UnaryOperateOnSecond() = default;
   UnaryOperateOnSecond(const UnaryOp& f) : f_(f) {}
   typename UnaryOp::result_type operator()(const Pair& p) const {
     return f_(p.second);
@@ -935,7 +935,7 @@ template<typename Pair, typename BinaryOp>
 class BinaryOperateOnFirst
     : public std::binary_function<Pair, Pair, typename BinaryOp::result_type> {
  public:
-  BinaryOperateOnFirst() {}
+  BinaryOperateOnFirst() = default;
   BinaryOperateOnFirst(const BinaryOp& f) : f_(f) {}
   typename BinaryOp::result_type operator()(const Pair& p1,
                                             const Pair& p2) const {
@@ -958,7 +958,7 @@ template<typename Pair, typename BinaryOp>
 class BinaryOperateOnSecond
     : public std::binary_function<Pair, Pair, typename BinaryOp::result_type> {
  public:
-  BinaryOperateOnSecond() {}
+  BinaryOperateOnSecond() = default;
   BinaryOperateOnSecond(const BinaryOp& f) : f_(f) {}
   typename BinaryOp::result_type operator()(const Pair& p1,
                                             const Pair& p2) const {
@@ -1035,11 +1035,11 @@ BinaryComposeBinary<F, G1, G2> BinaryCompose2(F f, G1 g1, G2 g2) {
 template<typename T, typename Alloc = std::allocator<T> >
 class STLCountingAllocator : public Alloc {
  public:
-  typedef Alloc Base;
-  typedef typename Alloc::pointer pointer;
-  typedef typename Alloc::size_type size_type;
+  using Base = Alloc;
+  using pointer = typename Alloc::pointer;
+  using size_type = typename Alloc::size_type;
 
-  STLCountingAllocator() : bytes_used_(NULL) { }
+  STLCountingAllocator() : bytes_used_(nullptr) { }
   STLCountingAllocator(int64* b) : bytes_used_(b) {}
 
   // Constructor used for rebinding
@@ -1049,7 +1049,7 @@ class STLCountingAllocator : public Alloc {
         bytes_used_(x.bytes_used()) {
   }
 
-  pointer allocate(size_type n, std::allocator<void>::const_pointer hint = 0) {
+  pointer allocate(size_type n, std::allocator<void>::const_pointer hint = nullptr) {
     assert(bytes_used_ != NULL);
     *bytes_used_ += n * sizeof(T);
     return Alloc::allocate(n, hint);

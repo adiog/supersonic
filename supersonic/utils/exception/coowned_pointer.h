@@ -36,7 +36,7 @@ template<typename T>
 class CoownedPointer {
  public:
   // Creates a pointer to NULL.
-  explicit CoownedPointer() {}
+  explicit CoownedPointer() = default;
 
   // If the value is not NULL, creates a pointer that is a sole owner of the
   // value. Otherwise, creates a pointer to NULL.

@@ -190,7 +190,7 @@ class SplitIterator
         return *this;
       }
       StringPiece found_delimiter = delimiter_.Find(text_, position_);
-      assert(found_delimiter.data() != NULL);
+      assert(found_delimiter.data() != nullptr);
       assert(text_.begin() + position_ <= found_delimiter.begin());
       assert(found_delimiter.end() <= text_.end());
       // found_delimiter is allowed to be empty.

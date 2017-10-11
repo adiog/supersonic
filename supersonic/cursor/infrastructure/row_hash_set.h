@@ -63,7 +63,7 @@ class RowHashSetImpl;
 // Find / Insert.
 class RowHashSet {
  public:
-  typedef FindResult ResultType;
+  using ResultType = FindResult;
 
   ~RowHashSet();
 
@@ -147,7 +147,7 @@ class RowHashSet {
 
 class RowHashMultiSet {
  public:
-  typedef FindMultiResult ResultType;
+  using ResultType = FindMultiResult;
 
   ~RowHashMultiSet();
 
@@ -260,7 +260,7 @@ struct EqualRowIdsLink;
 class RowIdSetIterator {
  public:
   // Public constructor; the iterator starts AtEnd().
-  RowIdSetIterator() : equal_row_ids_(NULL), current_(kInvalidRowId) { }
+  RowIdSetIterator() : equal_row_ids_(nullptr), current_(kInvalidRowId) { }
 
   bool AtEnd() const { return current_ == kInvalidRowId; }
   rowid_t Get() const {
@@ -290,7 +290,7 @@ class FindMultiResult {
   explicit FindMultiResult(rowcount_t query_row_count)
       : query_row_count_(query_row_count),
         row_ids_(new rowid_t[query_row_count]),
-        equal_row_ids_(NULL) {}
+        equal_row_ids_(nullptr) {}
 
   RowIdSetIterator Result(rowid_t query_id) const {
     return RowIdSetIterator(equal_row_ids_, row_ids_[query_id]);

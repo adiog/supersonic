@@ -79,7 +79,7 @@ namespace util {
 namespace gtl {
 namespace internal {
 // Local implementation of RemoveConst to avoid including base/type_traits.h.
-template <class T> struct RemoveConst { typedef T type; };
+template <class T> struct RemoveConst { using type = T; };
 template <class T> struct RemoveConst<const T> : RemoveConst<T> {};
 }  // namespace internal
 }  // namespace gtl
@@ -280,7 +280,7 @@ template <class Collection, class Key, class Value>
 bool ContainsKeyValuePair(const Collection& collection,
                           const Key& key,
                           const Value& value) {
-  typedef typename Collection::const_iterator const_iterator;
+  using const_iterator = typename Collection::const_iterator;
   std::pair<const_iterator, const_iterator> range = collection.equal_range(key);
   for (const_iterator it = range.first; it != range.second; ++it) {
     if (it->second == value) {
@@ -387,7 +387,7 @@ template <class Collection>
 void InsertOrDie(Collection* const collection,
                  const typename Collection::value_type::first_type& key,
                  const typename Collection::value_type::second_type& data) {
-  typedef typename Collection::value_type value_type;
+  using value_type = typename Collection::value_type;
   CHECK(InsertIfNotPresent(collection, key, data))
       << "duplicate key: " << key;
 }
@@ -398,7 +398,7 @@ void InsertOrDieNoPrint(
     Collection* const collection,
     const typename Collection::value_type::first_type& key,
     const typename Collection::value_type::second_type& data) {
-  typedef typename Collection::value_type value_type;
+  using value_type = typename Collection::value_type;
   CHECK(InsertIfNotPresent(collection, key, data)) << "duplicate key.";
 }
 
@@ -412,7 +412,7 @@ template <class Collection>
 typename Collection::value_type::second_type& InsertKeyOrDie(
     Collection* const collection,
     const typename Collection::value_type::first_type& key) {
-  typedef typename Collection::value_type value_type;
+  using value_type = typename Collection::value_type;
   std::pair<typename Collection::iterator, bool> res =
       collection->insert(value_type(key, typename value_type::second_type()));
   CHECK(res.second) << "duplicate key: " << key;
@@ -477,8 +477,7 @@ template <class Collection>
 typename Collection::value_type::second_type&
 LookupOrInsertNew(Collection* const collection,
                   const typename Collection::value_type::first_type& key) {
-  typedef typename std::iterator_traits<
-      typename Collection::value_type::second_type>::value_type Element;
+  using Element = typename std::iterator_traits<typename Collection::value_type::second_type>::value_type;
   std::pair<typename Collection::iterator, bool> ret =
       collection->insert(typename Collection::value_type(
           key,
@@ -496,8 +495,7 @@ typename Collection::value_type::second_type&
 LookupOrInsertNew(Collection* const collection,
                   const typename Collection::value_type::first_type& key,
                   const Arg& arg) {
-  typedef typename std::iterator_traits<
-      typename Collection::value_type::second_type>::value_type Element;
+  using Element = typename std::iterator_traits<typename Collection::value_type::second_type>::value_type;
   std::pair<typename Collection::iterator, bool> ret =
       collection->insert(typename Collection::value_type(
           key,
@@ -532,7 +530,7 @@ typename Collection::value_type::second_type::element_type*
 LookupOrInsertNewLinkedPtr(
     Collection* const collection,
     const typename Collection::value_type::first_type& key) {
-  typedef typename Collection::value_type::second_type Value;
+  using Value = typename Collection::value_type::second_type;
   std::pair<typename Collection::iterator, bool> ret =
       collection->insert(typename Collection::value_type(key, Value()));
   if (ret.second) {
@@ -552,7 +550,7 @@ LookupOrInsertNewLinkedPtr(
     Collection* const collection,
     const typename Collection::value_type::first_type& key,
     const Arg& arg) {
-  typedef typename Collection::value_type::second_type Value;
+  using Value = typename Collection::value_type::second_type;
   std::pair<typename Collection::iterator, bool> ret =
       collection->insert(typename Collection::value_type(key, Value()));
   if (ret.second) {
@@ -570,8 +568,8 @@ typename Collection::value_type::second_type&
 LookupOrInsertNewSharedPtr(
     Collection* const collection,
     const typename Collection::value_type::first_type& key) {
-  typedef typename Collection::value_type::second_type SharedPtr;
-  typedef typename Collection::value_type::second_type::element_type Element;
+  using SharedPtr = typename Collection::value_type::second_type;
+  using Element = typename Collection::value_type::second_type::element_type;
   std::pair<typename Collection::iterator, bool> ret =
       collection->insert(typename Collection::value_type(key, SharedPtr()));
   if (ret.second) {
@@ -591,8 +589,8 @@ LookupOrInsertNewSharedPtr(
     Collection* const collection,
     const typename Collection::value_type::first_type& key,
     const Arg& arg) {
-  typedef typename Collection::value_type::second_type SharedPtr;
-  typedef typename Collection::value_type::second_type::element_type Element;
+  using SharedPtr = typename Collection::value_type::second_type;
+  using Element = typename Collection::value_type::second_type::element_type;
   std::pair<typename Collection::iterator, bool> ret =
       collection->insert(typename Collection::value_type(key, SharedPtr()));
   if (ret.second) {

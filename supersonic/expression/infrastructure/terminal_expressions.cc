@@ -43,14 +43,14 @@ namespace {
 class NullExpression : public Expression {
  public:
   explicit NullExpression(DataType type) : type_(type) {}
-  virtual FailureOrOwned<BoundExpression> DoBind(
+  FailureOrOwned<BoundExpression> DoBind(
       const TupleSchema& input_schema,
       BufferAllocator* allocator,
-      rowcount_t max_row_count) const {
+      rowcount_t max_row_count) const override {
     return BoundNull(type_, allocator, max_row_count);
   }
 
-  string ToString(bool verbose) const {
+  string ToString(bool verbose) const override {
     if (verbose)
       return StrCat("<", DataType_Name(type_), ">NULL");
     else
@@ -65,15 +65,15 @@ class NullExpression : public Expression {
 
 class SequenceExpression : public Expression {
  public:
-  SequenceExpression() {}
-  virtual FailureOrOwned<BoundExpression> DoBind(
+  SequenceExpression() = default;
+  FailureOrOwned<BoundExpression> DoBind(
       const TupleSchema& input_schema,
       BufferAllocator* allocator,
-      rowcount_t max_row_count) const {
+      rowcount_t max_row_count) const override {
     return BoundSequence(allocator, max_row_count);
   }
 
-  string ToString(bool verbose) const { return "SEQUENCE()"; }
+  string ToString(bool verbose) const override { return "SEQUENCE()"; }
 
  private:
   DISALLOW_COPY_AND_ASSIGN(SequenceExpression);
@@ -83,16 +83,16 @@ class RandInt32Expression : public Expression {
  public:
   explicit RandInt32Expression(RandomBase* random_generator)
     : random_generator_(random_generator) {}
-  virtual FailureOrOwned<BoundExpression> DoBind(
+  FailureOrOwned<BoundExpression> DoBind(
       const TupleSchema& input_schema,
       BufferAllocator* allocator,
-      rowcount_t max_row_count) const {
+      rowcount_t max_row_count) const override {
     RandomBase* generator_clone = random_generator_->Clone();
     CHECK_NOTNULL(generator_clone);
     return BoundRandInt32(generator_clone, allocator, max_row_count);
   }
 
-  string ToString(bool verbose) const { return "RANDINT32()"; }
+  string ToString(bool verbose) const override { return "RANDINT32()"; }
 
  private:
   std::unique_ptr<RandomBase> random_generator_;

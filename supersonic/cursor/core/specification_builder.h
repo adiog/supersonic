@@ -37,7 +37,7 @@ class ExtendedSortSpecificationBuilder {
   ExtendedSortSpecificationBuilder() :
     specification_(new ExtendedSortSpecification()) {}
 
-  ~ExtendedSortSpecificationBuilder() {}
+  ~ExtendedSortSpecificationBuilder() = default;
 
   // Adds a key to the sort specification. If the attribute is not a string,
   // is_case_sensitive can be filled with any value.

@@ -59,15 +59,15 @@ template <typename T, ssize_t inline_elements = -1>
 class FixedArray {
  public:
   // For playing nicely with stl:
-  typedef T value_type;
-  typedef T* iterator;
-  typedef T const* const_iterator;
-  typedef T& reference;
-  typedef T const& const_reference;
-  typedef T* pointer;
-  typedef T const* const_pointer;
-  typedef ptrdiff_t difference_type;
-  typedef size_t size_type;
+  using value_type = T;
+  using iterator = T *;
+  using const_iterator = const T *;
+  using reference = T &;
+  using const_reference = const T &;
+  using pointer = T *;
+  using const_pointer = const T *;
+  using difference_type = ptrdiff_t;
+  using size_type = size_t;
 
   // Creates an array object that can store "n" elements.
   //
@@ -142,7 +142,7 @@ class FixedArray {
   class HolderTraits {
     template <typename U>
     struct SelectImpl {
-      typedef U type;
+      using type = U;
       static pointer AsValue(type* p) { return p; }
     };
 
@@ -150,13 +150,13 @@ class FixedArray {
     template <typename U, size_t N>
     struct SelectImpl<U[N]> {
       struct Holder { U v[N]; };
-      typedef Holder type;
+      using type = Holder;
       static pointer AsValue(type* p) { return &p->v; }
     };
-    typedef SelectImpl<value_type> Impl;
+    using Impl = SelectImpl<value_type>;
 
    public:
-    typedef typename Impl::type type;
+    using type = typename Impl::type;
 
     static pointer AsValue(type *p) { return Impl::AsValue(p); }
 
@@ -164,7 +164,7 @@ class FixedArray {
                   "Holder must be same size as value_type");
   };
 
-  typedef typename HolderTraits::type Holder;
+  using Holder = typename HolderTraits::type;
   static pointer AsValue(Holder *p) { return HolderTraits::AsValue(p); }
 
   // ----------------------------------------
@@ -179,7 +179,7 @@ class FixedArray {
   //   b. Never use 0 length arrays (not ISO C++)
   //
   class InlineSpace {
-    typedef base::ManualConstructor<Holder> Buffer;
+    using Buffer = base::ManualConstructor<Holder>;
     static const size_type kDefaultBytes = 256;
 
     template <ssize_t N, typename Ignored>
@@ -276,7 +276,7 @@ class FixedArray {
 
   template <typename Iter>
   Rep MakeRep(Iter first, Iter last) {
-    typedef typename std::iterator_traits<Iter> IterTraits;
+    using IterTraits = typename std::iterator_traits<Iter>;
     return MakeRep(first, last, typename IterTraits::iterator_category());
   }
 

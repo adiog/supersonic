@@ -121,10 +121,10 @@ TEST_F(ExpressionUtilsTest, CheckExpressionType) {
 TEST_F(ExpressionUtilsTest, CheckExpressionListMembersType) {
   int member_count[] = {0, 1, 5};
   for (int i = 0; i < kNumberOfTypes; ++i) {
-    for (int j = 0; j < 3; ++j) {
+    for (int j : member_count) {
       std::unique_ptr<BoundExpressionList> expression_list(
           new BoundExpressionList);
-      for (int k = 0; k < member_count[j]; ++k) {
+      for (int k = 0; k < j; ++k) {
         expression_list->add(GetNull(kTypes[i]));
       }
       for (int k = 0; k < kNumberOfTypes; ++k) {

@@ -105,9 +105,9 @@ inline void TimerBase::Restart() {
 // TODO(tkaftal): Add more precise info on accuracy, based on boost doc.
 class WallTimer : public TimerBase {
  public:
-  virtual double Get() const;
-  virtual int64 GetInUsec() const;
-  virtual int64 GetInNanos() const;
+  double Get() const override;
+  int64 GetInUsec() const override;
+  int64 GetInNanos() const override;
 };
 
 inline double WallTimer::Get() const {
@@ -126,9 +126,9 @@ inline int64 WallTimer::GetInNanos() const {
 // TODO(tkaftal): Add more precise info on accuracy, based on boost doc.
 class UserTimer : public TimerBase {
  public:
-  virtual double Get() const;
-  virtual int64 GetInUsec() const;
-  virtual int64 GetInNanos() const;
+  double Get() const override;
+  int64 GetInUsec() const override;
+  int64 GetInNanos() const override;
 };
 
 inline double UserTimer::Get() const {
@@ -147,9 +147,9 @@ inline int64 UserTimer::GetInNanos() const {
 // TODO(tkaftal): Add more precise info on accuracy, based on boost doc.
 class SystemTimer : public TimerBase {
  public:
-  virtual double Get() const;
-  virtual int64 GetInUsec() const;
-  virtual int64 GetInNanos() const;
+  double Get() const override;
+  int64 GetInUsec() const override;
+  int64 GetInNanos() const override;
 };
 
 inline double SystemTimer::Get() const {

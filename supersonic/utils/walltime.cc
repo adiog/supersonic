@@ -52,7 +52,7 @@ static void StringAppendStrftime(string* dst,
   int length = sizeof(space);
   for (int sanity = 0; sanity < 5; ++sanity) {
     length *= 2;
-    char* buf = new char[length];
+    auto* buf = new char[length];
 
     result = strftime(buf, length, format, tm);
     if ((result >= 0) && (result < length)) {
@@ -120,7 +120,7 @@ bool WallTime_Parse_Timezone(const char* time_spec,
      memset(&split_time, 0, sizeof(split_time));
   }
   const char* parsed = strptime(time_spec, format, &split_time);
-  if (parsed == NULL) return false;
+  if (parsed == nullptr) return false;
 
   double fraction = 0.0;
   // On OSX I observed behavior where strptime upon successful execution
@@ -177,9 +177,9 @@ void StringAppendStrftime(string* dst,
   struct tm tm;
   bool conversion_error;
   if (local) {
-    conversion_error = (localtime_r(&when, &tm) == NULL);
+    conversion_error = (localtime_r(&when, &tm) == nullptr);
   } else {
-    conversion_error = (gmtime_r(&when, &tm) == NULL);
+    conversion_error = (gmtime_r(&when, &tm) == nullptr);
   }
   if (conversion_error) {
     // If we couldn't convert the time, don't append anything.

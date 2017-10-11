@@ -62,19 +62,19 @@ class ChangeTypeExpression : public UnaryExpression {
   ChangeTypeExpression(DataType type, const Expression* const source)
       : UnaryExpression(source),
         to_type_(type) {}
-  virtual ~ChangeTypeExpression() {}
+  ~ChangeTypeExpression() override = default;
 
-  virtual string ToString(bool verbose) const {
+  string ToString(bool verbose) const override {
     return UnaryExpressionTraits<op>::FormatDescription(
         child_expression_->ToString(verbose), to_type_);
   }
 
  private:
-  virtual FailureOrOwned<BoundExpression> CreateBoundUnaryExpression(
+  FailureOrOwned<BoundExpression> CreateBoundUnaryExpression(
       const TupleSchema& input_schema,
       BufferAllocator* const allocator,
       rowcount_t row_capacity,
-      BoundExpression* child) const;
+      BoundExpression* child) const override;
 
   DataType to_type_;
   DISALLOW_COPY_AND_ASSIGN(ChangeTypeExpression);
@@ -123,10 +123,10 @@ class CaseExpression : public Expression {
   explicit CaseExpression(const ExpressionList* const arguments)
       : arguments_(arguments) {}
 
-  virtual FailureOrOwned<BoundExpression> DoBind(
+  FailureOrOwned<BoundExpression> DoBind(
       const TupleSchema& input_schema,
       BufferAllocator* allocator,
-      rowcount_t max_row_count) const {
+      rowcount_t max_row_count) const override {
     // Bind all arguments.
     FailureOrOwned<BoundExpressionList> bound_arguments = arguments_->DoBind(
         input_schema, allocator, max_row_count);
@@ -153,7 +153,7 @@ class CaseExpression : public Expression {
     return BoundCase(bound_arguments.release(), allocator, max_row_count);
   }
 
-  virtual string ToString(bool verbose) const {
+  string ToString(bool verbose) const override {
     return StringPrintf("CASE(%s)", arguments_->ToString(verbose).c_str());
   }
 

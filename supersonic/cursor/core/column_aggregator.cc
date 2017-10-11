@@ -49,16 +49,16 @@ using std::vector;
 namespace supersonic {
 namespace aggregations {
 
-ColumnAggregator::ColumnAggregator() {}
-ColumnAggregator::~ColumnAggregator() {}
+ColumnAggregator::ColumnAggregator() = default;
+ColumnAggregator::~ColumnAggregator() = default;
 
 // Internal interface for updating and reseting result of an aggregation.
 // Extends ColumnAggregator interface with a method needed by
 // DistinctAggregator.
 class ColumnAggregatorInternal : public ColumnAggregator {
  public:
-  ColumnAggregatorInternal() {}
-  virtual ~ColumnAggregatorInternal() {}
+  ColumnAggregatorInternal() = default;
+  ~ColumnAggregatorInternal() override = default;
 
   // Like UpdateAggregation, but takes into account only input values which
   // indexes are in selected_inputs_indexes.
@@ -76,8 +76,8 @@ class ColumnAggregatorInternal : public ColumnAggregator {
 template<Aggregation Aggregation, DataType InputType, DataType OutputType>
 class ColumnAggregatorImpl : public ColumnAggregatorInternal {
  public:
-  typedef typename TypeTraits<InputType>::cpp_type cpp_input_type;
-  typedef typename TypeTraits<OutputType>::cpp_type cpp_output_type;
+  using cpp_input_type = typename TypeTraits<InputType>::cpp_type;
+  using cpp_output_type = typename TypeTraits<OutputType>::cpp_type;
 
   ColumnAggregatorImpl(Block* result_block, int result_column_index)
       : allocated_buffers_(),
@@ -86,13 +86,13 @@ class ColumnAggregatorImpl : public ColumnAggregatorInternal {
         result_block_(result_block),
         result_column_index_(result_column_index),
         result_data_(NULL),
-        result_is_null_(NULL) {
+        result_is_null_(nullptr) {
     Rebind(0, result_block->row_capacity());
   }
 
-  virtual ~ColumnAggregatorImpl() {}
+  ~ColumnAggregatorImpl() override = default;
 
-  virtual void Rebind(rowcount_t previous_capacity, rowcount_t new_capacity) {
+  void Rebind(rowcount_t previous_capacity, rowcount_t new_capacity) override {
     result_data_ = result_block_->mutable_column(result_column_index_)->
         template mutable_typed_data<OutputType>();
     result_is_null_ = result_block_->mutable_column(result_column_index_)->
@@ -104,10 +104,10 @@ class ColumnAggregatorImpl : public ColumnAggregatorInternal {
     }
   }
 
-  virtual FailureOrVoid UpdateAggregation(const Column* input,
+  FailureOrVoid UpdateAggregation(const Column* input,
                                           rowcount_t input_row_count,
-                                          const rowid_t result_index_map[]) {
-    bool input_always_not_null = (input->is_null() == NULL);
+                                          const rowid_t result_index_map[]) override {
+    bool input_always_not_null = (input->is_null() == nullptr);
     for (rowid_t i = 0; i < input_row_count; ++i) {
       if (input_always_not_null || !input->is_null()[i]) {
         if (!UpdateAggregatedValue(
@@ -123,7 +123,7 @@ class ColumnAggregatorImpl : public ColumnAggregatorInternal {
     return Success();
   }
 
-  virtual void Reset() {
+  void Reset() override {
     if (TypeTraits<OutputType>::is_variable_length) {
       FreeAllocatedBuffers();
     }
@@ -197,7 +197,7 @@ template<DataType OutputType>
 class CountColumnAggregatorImpl : public ColumnAggregatorInternal {
  public:
   COMPILE_ASSERT(TypeTraits<OutputType>::is_integer, output_type_not_integer);
-  typedef typename TypeTraits<OutputType>::cpp_type cpp_output_type;
+  using cpp_output_type = typename TypeTraits<OutputType>::cpp_type;
 
   CountColumnAggregatorImpl(Block* result_block,
                             int result_column_index) :
@@ -207,12 +207,12 @@ class CountColumnAggregatorImpl : public ColumnAggregatorInternal {
     Rebind(0, row_capacity_);
   }
 
-  virtual ~CountColumnAggregatorImpl() {}
+  ~CountColumnAggregatorImpl() override = default;
 
-  virtual FailureOrVoid UpdateAggregation(const Column* input,
+  FailureOrVoid UpdateAggregation(const Column* input,
                                           rowcount_t input_row_count,
-                                          const rowid_t result_index_map[]) {
-    bool check_input_nullability = (input != NULL && input->is_null() != NULL);
+                                          const rowid_t result_index_map[]) override {
+    bool check_input_nullability = (input != nullptr && input->is_null() != nullptr);
     for (rowid_t i = 0; i < input_row_count; ++i) {
       // Do not count NULL values.
       if (check_input_nullability && input->is_null()[i]) {
@@ -224,7 +224,7 @@ class CountColumnAggregatorImpl : public ColumnAggregatorInternal {
     return Success();
   }
 
-  virtual void Rebind(rowcount_t previous_capacity, rowcount_t new_capacity) {
+  void Rebind(rowcount_t previous_capacity, rowcount_t new_capacity) override {
     result_data_ = result_column_->template mutable_typed_data<OutputType>();
     row_capacity_ = new_capacity;
     if (new_capacity > previous_capacity) {
@@ -232,7 +232,7 @@ class CountColumnAggregatorImpl : public ColumnAggregatorInternal {
     }
   }
 
-  virtual void Reset() {
+  void Reset() override {
     Clear(0, row_capacity_);
   }
 
@@ -306,19 +306,19 @@ struct HashSet<StringPiece> {
 template<DataType InputType>
 class DistinctAggregator : public ColumnAggregator {
  public:
-  typedef typename TypeTraits<InputType>::cpp_type cpp_input_type;
+  using cpp_input_type = typename TypeTraits<InputType>::cpp_type;
 
   DistinctAggregator(ColumnAggregatorInternal* aggregator, Block* result_block)
       : aggregator_(aggregator) {}
 
-  virtual ~DistinctAggregator() {}
+  ~DistinctAggregator() override = default;
 
-  virtual FailureOrVoid UpdateAggregation(const Column* input,
+  FailureOrVoid UpdateAggregation(const Column* input,
                                           rowcount_t input_row_count,
-                                          const rowid_t result_index_map[]) {
+                                          const rowid_t result_index_map[]) override {
     vector<rowid_t> selected_inputs_indexes;
     CHECK_NOTNULL(input);
-    bool check_input_nullability = input->is_null() != NULL;
+    bool check_input_nullability = input->is_null() != nullptr;
     for (rowid_t i = 0; i < input_row_count; ++i) {
       // NULL values do not count as distinct.
       if (check_input_nullability && input->is_null()[i]) {
@@ -345,11 +345,11 @@ class DistinctAggregator : public ColumnAggregator {
     return Success();
   }
 
-  virtual void Rebind(rowcount_t previous_capacity, rowcount_t new_capacity) {
+  void Rebind(rowcount_t previous_capacity, rowcount_t new_capacity) override {
     aggregator_->Rebind(previous_capacity, new_capacity);
   }
 
-  virtual void Reset() {
+  void Reset() override {
     for (rowid_t i = 0; i < distinct_values_.size(); ++i) {
       distinct_values_[i].Reset();
     }
@@ -398,17 +398,11 @@ class ColumnAggregatorFactoryImpl {
 
 
  private:
-  typedef ColumnAggregator* (*AggregatorCreatorFunction)(
-      Block* result_block,
-      int result_column_index);
+  using AggregatorCreatorFunction = ColumnAggregator *(*)(Block *, int);
 
-  typedef ColumnAggregator* (*CountAggregatorCreatorFunction)(
-      Block* result_block,
-      int result_column_index);
+  using CountAggregatorCreatorFunction = ColumnAggregator *(*)(Block *, int);
 
-  typedef ColumnAggregator* (*DistinctAggregatorCreatorFunction)(
-      ColumnAggregatorInternal* aggregator,
-      Block* result_block);
+  using DistinctAggregatorCreatorFunction = ColumnAggregator *(*)(ColumnAggregatorInternal *, Block *);
 
   bool IsAggregationSupported(Aggregation aggregation_operator, DataType t1,
                               DataType t2);
@@ -534,7 +528,7 @@ ColumnAggregatorFactoryImpl::ColumnAggregatorFactoryImpl() {
 #undef NUMERIC_TYPE_FACTORY_INIT_SECOND_TYPE
 #undef NON_NUMERIC_TYPE_FACTORY_INIT
 
-ColumnAggregatorFactoryImpl::~ColumnAggregatorFactoryImpl() {}
+ColumnAggregatorFactoryImpl::~ColumnAggregatorFactoryImpl() = default;
 
 FailureOrOwned<ColumnAggregator> ColumnAggregatorFactoryImpl::CreateAggregator(
     Aggregation aggregation_operator,
@@ -644,7 +638,7 @@ bool ColumnAggregatorFactoryImpl::IsAggregationSupported(
 ColumnAggregatorFactory::ColumnAggregatorFactory()
     : pimpl_(new ColumnAggregatorFactoryImpl) {}
 
-ColumnAggregatorFactory::~ColumnAggregatorFactory() {}
+ColumnAggregatorFactory::~ColumnAggregatorFactory() = default;
 
 FailureOrOwned<ColumnAggregator> ColumnAggregatorFactory::CreateAggregator(
     Aggregation aggregation_operator,

@@ -42,7 +42,7 @@ namespace supersonic {
 // Type used to describe indexes used by indirection vectors.
 class Arena;
 
-typedef int64 index_t;
+using index_t = int64;
 
 // ===================== IndexResolvers ======================================
 // IndexResolver is a policy to translate position using indirection vector
@@ -80,12 +80,11 @@ template <OperatorId operation_type,
 struct VectorBinaryPrimitive<operation_type,
                              IndexResolverLeft, IndexResolverRight,
                              result_type, left_type, right_type, false> {
-  typedef typename TypeTraits<result_type>::cpp_type ResultCppType;
-  typedef typename TypeTraits<left_type>::cpp_type LeftCppType;
-  typedef typename TypeTraits<right_type>::cpp_type RightCppType;
+  using ResultCppType = typename TypeTraits<result_type>::cpp_type;
+  using LeftCppType = typename TypeTraits<left_type>::cpp_type;
+  using RightCppType = typename TypeTraits<right_type>::cpp_type;
 
-  typedef typename BinaryExpressionTraits<operation_type>::basic_operator
-      Operator;
+  using Operator = typename BinaryExpressionTraits<operation_type>::basic_operator;
 
   // Returns true if operation has been successful.
   bool operator()(const LeftCppType* left, const RightCppType* right,
@@ -135,12 +134,11 @@ template <OperatorId operation_type,
 struct VectorBinaryPrimitive <operation_type,
                               IndexResolverLeft, IndexResolverRight,
                               result_type, left_type, right_type, true> {
-  typedef typename TypeTraits<result_type>::cpp_type ResultCppType;
-  typedef typename TypeTraits<left_type>::cpp_type LeftCppType;
-  typedef typename TypeTraits<right_type>::cpp_type RightCppType;
+  using ResultCppType = typename TypeTraits<result_type>::cpp_type;
+  using LeftCppType = typename TypeTraits<left_type>::cpp_type;
+  using RightCppType = typename TypeTraits<right_type>::cpp_type;
 
-  typedef typename BinaryExpressionTraits<operation_type>::basic_operator
-      Operator;
+  using Operator = typename BinaryExpressionTraits<operation_type>::basic_operator;
 
   // Returns true if operation has been successful.
   bool operator()(const LeftCppType* left, const RightCppType* right,
@@ -224,7 +222,7 @@ void EvaluateSimd(const DataCppType* left, const DataCppType* right,
                   const index_t size, DataCppType* result) {
   typedef typename SimdTraits<operation_type, DataCppType>::simd_operator
       SimdOperator;
-  typedef SimdLoader<typename SimdOperator::simd_arg> SimdLoaderType;
+  using SimdLoaderType = SimdLoader<typename SimdOperator::simd_arg>;
   SimdOperator operation_simd;
   SimdLoaderType simd_loader;
 
@@ -359,7 +357,7 @@ template<OperatorId operation_type, DataType data_type>
 struct VectorBinaryPrimitive<operation_type,
                              DirectIndexResolver, DirectIndexResolver,
                              data_type, data_type, data_type, false> {
-  typedef typename TypeTraits<data_type>::cpp_type DataCppType;
+  using DataCppType = typename TypeTraits<data_type>::cpp_type;
 
   // Returns true if operation has been successful.
   bool operator()(const DataCppType* left, const DataCppType* right,
@@ -393,10 +391,9 @@ struct VectorBinaryPrimitive<operation_type,
 template <OperatorId operation_type, typename IndexResolver,
           DataType result_type, DataType input_type>
 struct VectorUnaryPrimitive {
-  typedef typename TypeTraits<result_type>::cpp_type ResultCppType;
-  typedef typename TypeTraits<input_type>::cpp_type InputCppType;
-  typedef typename UnaryExpressionTraits<operation_type>::basic_operator
-      Operator;
+  using ResultCppType = typename TypeTraits<result_type>::cpp_type;
+  using InputCppType = typename TypeTraits<input_type>::cpp_type;
+  using Operator = typename UnaryExpressionTraits<operation_type>::basic_operator;
 
   // Returns true if operation has been successful.
   bool operator()(const InputCppType* input,

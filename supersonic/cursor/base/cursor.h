@@ -132,7 +132,7 @@ class Cursor {
  public:
   static const rowcount_t kDefaultRowCount = 1024;
 
-  virtual ~Cursor() {}
+  virtual ~Cursor() = default;
 
   // Returns the schema associated with this cursor.
   virtual const TupleSchema& schema() const = 0;
@@ -222,7 +222,7 @@ class Cursor {
 
  protected:
   // To allow instantiation in subclasses.
-  Cursor() {}
+  Cursor() = default;
 
  private:
   DISALLOW_COPY_AND_ASSIGN(Cursor);

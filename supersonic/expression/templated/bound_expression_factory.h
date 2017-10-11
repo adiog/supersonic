@@ -89,7 +89,7 @@ struct UnaryExpressionFactory {
       BufferAllocator* const allocator, rowcount_t row_capacity,
       BoundExpression* child) = 0;
 
-  virtual ~UnaryExpressionFactory() {}
+  virtual ~UnaryExpressionFactory() = default;
 };
 
 // A factory of unary expressions. The sense of having it as a separate
@@ -109,9 +109,9 @@ struct UnaryExpressionFactory {
 template<OperatorId op, DataType from_type, DataType to_type>
 struct SpecializedUnaryFactory : public UnaryExpressionFactory {
  public:
-  virtual FailureOrOwned<BoundExpression> create_expression(
+  FailureOrOwned<BoundExpression> create_expression(
       BufferAllocator* const allocator,
-      rowcount_t row_capacity, BoundExpression* child) {
+      rowcount_t row_capacity, BoundExpression* child) override {
     return CreateTypedBoundUnaryExpression<op, from_type, to_type>(
        allocator, row_capacity, child);
   }
@@ -230,7 +230,7 @@ UnaryExpressionFactory* CreateArbitraryOutputUnaryFactory(DataType type) {
     case DATA_TYPE:
         return new SpecializedUnaryFactory<op, from_type, DATA_TYPE>();
   }
-  return NULL;  // This should never be used.
+  return nullptr;  // This should never be used.
 }
 
 // The input type is given on the input, the output type is equal to the input
@@ -407,16 +407,16 @@ class BinaryExpressionFactory {
       BufferAllocator* const allocator, rowcount_t row_capacity,
       BoundExpression* left, BoundExpression* right) = 0;
 
-  virtual ~BinaryExpressionFactory() {}
+  virtual ~BinaryExpressionFactory() = default;
 };
 
 template<OperatorId op, DataType left_type, DataType right_type,
     DataType to_type>
 class SpecializedBinaryFactory : public BinaryExpressionFactory {
  public:
-  virtual FailureOrOwned<BoundExpression> create_expression(
+  FailureOrOwned<BoundExpression> create_expression(
       BufferAllocator* const allocator, rowcount_t row_capacity,
-      BoundExpression* left, BoundExpression* right) {
+      BoundExpression* left, BoundExpression* right) override {
     return CreateTypedBoundBinaryExpression<op, left_type, right_type, to_type>(
        allocator, row_capacity, left, right);
   }

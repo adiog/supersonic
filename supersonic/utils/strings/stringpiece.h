@@ -182,7 +182,7 @@ class StringPiece {
   //
   // Style guide exception granted:
   // http://goto/style-guide-exception-20978288
-  StringPiece() : ptr_(nullptr), length_(0) {}
+  StringPiece() : ptr_{nullptr}, length_{0} {}
 
   StringPiece(const char* str)  // NOLINT(runtime/explicit)
       : ptr_(str), length_(0) {
@@ -231,7 +231,7 @@ class StringPiece {
   bool empty() const { return length_ == 0; }
 
   void clear() {
-    ptr_ = NULL;
+    ptr_ = nullptr;
     length_ = 0;
   }
 
@@ -243,7 +243,7 @@ class StringPiece {
 
   void set(const char* str) {
     ptr_ = str;
-    if (str != NULL)
+    if (str != nullptr)
       length_ = CheckedSsizeTFromSizeT(strlen(str));
     else
       length_ = 0;
@@ -292,7 +292,7 @@ class StringPiece {
   // for a StringPiece be called "as_string()".  We also leave the
   // "as_string()" method defined here for existing code.
   string ToString() const {
-    if (ptr_ == NULL) return string();
+    if (ptr_ == nullptr) return string();
     return string(data(), size());
   }
 
@@ -309,17 +309,17 @@ class StringPiece {
   }
 
   // standard STL container boilerplate
-  typedef char value_type;
-  typedef const char* pointer;
-  typedef const char& reference;
-  typedef const char& const_reference;
-  typedef size_t size_type;
-  typedef ptrdiff_t difference_type;
+  using value_type = char;
+  using pointer = const char *;
+  using reference = const char &;
+  using const_reference = const char &;
+  using size_type = size_t;
+  using difference_type = ptrdiff_t;
   static const size_type npos;
-  typedef const char* const_iterator;
-  typedef const char* iterator;
-  typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
-  typedef std::reverse_iterator<iterator> reverse_iterator;
+  using const_iterator = const char *;
+  using iterator = const char *;
+  using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+  using reverse_iterator = std::reverse_iterator<iterator>;
   iterator begin() const { return ptr_; }
   iterator end() const { return ptr_ + length_; }
   const_reverse_iterator rbegin() const {

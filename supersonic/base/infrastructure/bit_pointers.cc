@@ -82,7 +82,7 @@ void FillWithTrue(bit_ptr dest, size_t bit_count) {
       ++dest;
     }
   } else {
-    char* dest_ptr = reinterpret_cast<char*>(dest.data());
+    auto* dest_ptr = reinterpret_cast<char*>(dest.data());
     // We omit the bytes that were before dest due to dest.shift() > 7.
     dest_ptr += dest.shift() >> 3;
     *dest_ptr |= ((~'\0') << char_shift);
@@ -118,7 +118,7 @@ void FillWithFalse(bit_ptr dest, size_t bit_count) {
       ++dest;
     }
   } else {
-    char* dest_ptr = reinterpret_cast<char*>(dest.data());
+    auto* dest_ptr = reinterpret_cast<char*>(dest.data());
     dest_ptr += dest.shift() >> 3;
     *dest_ptr &= ~((~'\0') << char_shift);
     bit_count -= (8 - dest.shift());
@@ -151,8 +151,8 @@ void FillFromAligned(bit_ptr dest, bit_const_ptr source,
       ++source;
     }
   } else {
-    char* dest_ptr = reinterpret_cast<char*>(dest.data());
-    const char* source_ptr = reinterpret_cast<const char*>(source.data());
+    auto* dest_ptr = reinterpret_cast<char*>(dest.data());
+    const auto* source_ptr = reinterpret_cast<const char*>(source.data());
     // We omit the bytes that were before dest/source due to shift > 7.
     dest_ptr += dest.shift() >> 3;
     source_ptr += source.shift() >> 3;
@@ -171,7 +171,7 @@ void FillFromAligned(bit_ptr dest, bit_const_ptr source,
     // on the first bit_count & 7 bits.
     // See comment in FillWithTrue.
     if ((bit_count & 7) != 0) {
-      const char mask2 = static_cast<char>((1 << (bit_count & 7)) - 1);
+      const auto mask2 = static_cast<char>((1 << (bit_count & 7)) - 1);
       dest_ptr[bit_count / 8] &= ~mask2;
       dest_ptr[bit_count / 8] |= (source_ptr[bit_count / 8] & mask2);
     }

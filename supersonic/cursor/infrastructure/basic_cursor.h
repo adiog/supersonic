@@ -46,15 +46,15 @@ namespace supersonic {
 // * possibly have children.
 class BasicCursor : public Cursor {
  public:
-  virtual ~BasicCursor() {}
+  ~BasicCursor() override = default;
 
-  virtual const TupleSchema& schema() const { return schema_; }
-  virtual void AppendDebugDescription(string* target) const;
+  const TupleSchema& schema() const override { return schema_; }
+  void AppendDebugDescription(string* target) const override;
 
   // Propagates interruption request to the children, and sets the interrupted_
   // status. Thread-safe wrt Next(). (But, doesn't introduce memory barriers,
   // i.e. doesn't guarantee happens-before).
-  virtual void Interrupt() {
+  void Interrupt() override {
     interrupted_.store(true, std::memory_order_relaxed);
     for (int i = 0; i < children_.size(); ++i) {
       children_[i]->Interrupt();
@@ -65,7 +65,7 @@ class BasicCursor : public Cursor {
   // which it has access. This means that all classes derived from BasicCursor
   // which do not pass the ownership of its children to the base class have
   // to override Transform() with their own case-specific logic.
-  virtual void ApplyToChildren(CursorTransformer* transformer) {
+  void ApplyToChildren(CursorTransformer* transformer) override {
     for (int i = 0; i < children_.size(); ++i) {
       children_[i].reset(transformer->Transform(children_[i].release()));
     }
@@ -168,23 +168,23 @@ class BasicCursor : public Cursor {
 // the delegate, decorated cursor.
 class BasicDecoratorCursor : public Cursor {
  public:
-  virtual ~BasicDecoratorCursor() {}
+  ~BasicDecoratorCursor() override = default;
 
-  virtual const TupleSchema& schema() const { return delegate()->schema(); }
+  const TupleSchema& schema() const override { return delegate()->schema(); }
 
-  virtual ResultView Next(rowcount_t max_row_count) {
+  ResultView Next(rowcount_t max_row_count) override {
     return delegate()->Next(max_row_count);
   }
 
-  virtual bool IsWaitingOnBarrierSupported() const {
+  bool IsWaitingOnBarrierSupported() const override {
     return delegate()->IsWaitingOnBarrierSupported();
   }
 
-  virtual void Interrupt() { delegate()->Interrupt(); }
+  void Interrupt() override { delegate()->Interrupt(); }
 
   virtual CursorId GetCursorId() const { return DECORATOR; }
 
-  virtual void AppendDebugDescription(string* target) const {
+  void AppendDebugDescription(string* target) const override {
     delegate()->AppendDebugDescription(target);
   }
 

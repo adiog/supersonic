@@ -130,7 +130,7 @@ class Exception {
 
   SerializedException serial_;
 
-  void operator=(const Exception&);  // DISALLOW_ASSIGN
+  void operator=(const Exception&) = delete;  // DISALLOW_ASSIGN
   // Internally used.
   Exception(const Exception& other)
       : serial_(other.serial_) {}

@@ -36,13 +36,13 @@ static inline File* TryCreate(const char *directory_prefix) {
   // Attempt to create a temporary file.
   string filename;
   if (!TempFile::TempFilename(directory_prefix, &filename))
-    return NULL;
+    return nullptr;
   File* fp = File::Create(filename, "w+");
   if (fp && fp->Open()) {
     DLOG(INFO) << "Created fname: " << fp->CreateFileName();
     return fp;
   }
-  return NULL;
+  return nullptr;
 }
 
 // Tries to create a tempfile in directory 'directory_prefix' or get a
@@ -52,14 +52,14 @@ File* TempFile::Create(const char *directory_prefix) {
   // If directory_prefix is not provided an already-existing temp directory
   // will be used
   if (!(directory_prefix && *directory_prefix)) {
-    return TryCreate(NULL);
+    return TryCreate(nullptr);
   }
 
   struct stat st;
   if (!(stat(directory_prefix, &st) == 0 && S_ISDIR(st.st_mode))) {
     // Directory_prefix does not point to a directory.
     LOG(ERROR) << "Not a directory: " << directory_prefix;
-    return NULL;
+    return nullptr;
   }
   return TryCreate(directory_prefix);
 }
@@ -82,7 +82,7 @@ bool TempFile::TempFilename(const char *directory_prefix, string *filename) {
   CHECK(filename != NULL);
   filename->clear();
 
-  if (directory_prefix != NULL) {
+  if (directory_prefix != nullptr) {
     TempFilenameInDir(directory_prefix, filename);
     return true;
   }

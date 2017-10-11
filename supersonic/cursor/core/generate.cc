@@ -38,9 +38,9 @@ class GenerateOperation : public BasicOperation {
  public:
   explicit GenerateOperation(rowcount_t count) : count_(count) {}
 
-  virtual ~GenerateOperation() {}
+  ~GenerateOperation() override = default;
 
-  virtual FailureOrOwned<Cursor> CreateCursor() const {
+  FailureOrOwned<Cursor> CreateCursor() const override {
     return BoundGenerate(count_);
   }
 
@@ -56,7 +56,7 @@ class GenerateCursor : public BasicCursor {
       : BasicCursor(TupleSchema()),
         count_(count) {}
 
-  virtual ResultView Next(rowcount_t max_row_count) {
+  ResultView Next(rowcount_t max_row_count) override {
     const size_t count = count_;
     if (count == 0) {
       return ResultView::EOS();
@@ -69,7 +69,7 @@ class GenerateCursor : public BasicCursor {
     return ResultView::Success(my_view());
   }
 
-  virtual bool IsWaitingOnBarrierSupported() const { return true; }
+  bool IsWaitingOnBarrierSupported() const override { return true; }
 
   virtual CursorId GetCursorId() const { return GENERATE; }
 

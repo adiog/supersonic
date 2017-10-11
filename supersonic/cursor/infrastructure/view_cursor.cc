@@ -113,7 +113,7 @@ class ViewCursorWithSelectionVector : public BasicCursor {
     return ResultView::Success(my_view());
   }
 
-  virtual bool IsWaitingOnBarrierSupported() const { return true; }
+  bool IsWaitingOnBarrierSupported() const override { return true; }
 
   virtual CursorId GetCursorId() const { return SELECTION_VECTOR_VIEW; }
 

@@ -64,12 +64,12 @@ const int kBinarySearchOverHashLimit = 16;
 // A class used only in BoundInSetExpression. This keeps an array of hold_type.
 template<DataType data_type>
 class SortedVector {
-  typedef typename TypeTraits<data_type>::cpp_type cpp_type;
+  using cpp_type = typename TypeTraits<data_type>::cpp_type;
 
  public:
   SortedVector() : is_initialized_(false), size_(0) {}
 
-  ~SortedVector() {}
+  ~SortedVector() = default;
 
   inline size_t size() const { return size_; }
 
@@ -133,8 +133,8 @@ class SortedVector {
 
 template<DataType data_type, typename set_type>
 class BoundInSetExpression : public BasicBoundExpression {
-  typedef typename TypeTraits<data_type>::cpp_type cpp_type;
-  typedef typename TypeTraits<data_type>::hold_type hold_type;
+  using cpp_type = typename TypeTraits<data_type>::cpp_type;
+  using hold_type = typename TypeTraits<data_type>::hold_type;
 
  public:
   // Needle expression, haystack arguments, and haystack constants are expected
@@ -177,8 +177,8 @@ class BoundInSetExpression : public BasicBoundExpression {
                            haystack_constants.end());
     }
   }
-  virtual EvaluationResult DoEvaluate(const View& input,
-                                      const BoolView& skip_vectors) {
+  EvaluationResult DoEvaluate(const View& input,
+                                      const BoolView& skip_vectors) override {
     CHECK_EQ(1, skip_vectors.column_count());
     // Normally we would reset arenas here, but in this case we know the block
     // is actually boolean.
@@ -329,7 +329,7 @@ class BoundInSetExpression : public BasicBoundExpression {
   // a) haystack_arguments is empty.
   // b) needle expression evaluates null.
   // c) the value of the needle expression is present in haystack_constants.
-  bool can_be_resolved() const {
+  bool can_be_resolved() const override {
     if (!needle_expression_->is_constant()) {
       return false;
     } else {
@@ -367,7 +367,7 @@ class BoundInSetExpression : public BasicBoundExpression {
   }
 
  private:
-  virtual FailureOrVoid PostInit() {
+  FailureOrVoid PostInit() override {
     PROPAGATE_ON_FAILURE_WITH_CONTEXT(
         local_skip_vector_storage_.TryReallocate(my_block()->row_capacity()),
         "", result_schema().GetHumanReadableSpecification());
@@ -461,7 +461,7 @@ FailureOrOwned<BoundExpression> EqualTypeComparison(
     BoundExpression* right_ptr,
     OperatorId operator_id,
     DataType type) {
-  BinaryExpressionFactory* factory = NULL;
+  BinaryExpressionFactory* factory = nullptr;
   switch (operator_id) {
     case OPERATOR_EQUAL:
         factory = CreateTwoEqualTypesComparisonFactory<OPERATOR_EQUAL>(type);
@@ -514,7 +514,7 @@ FailureOrOwned<BoundExpression>
   // template expansions by assuring that the left-hand argument is smaller
   // (in some arbitrary ordering) than the right-hand. We use the ordering
   // INT32 < UINT32 < INT64 < UINT64.
-  BinaryExpressionFactory* factory = NULL;
+  BinaryExpressionFactory* factory = nullptr;
   // The sequence of if's, instead of a cross-specialization, is in order to
   // assure that we do not instantiate unnecessary templates.
   if (left_type == INT32 && right_type == UINT32) {
@@ -659,8 +659,8 @@ FailureOrOwned<BoundExpression> BoundInSetDataTypeAware(
                        ")");
   // Evaluates constant expressions and store them in a vector to gain
   // performance.
-  typedef typename TypeTraits<data_type>::cpp_type cpp_type;
-  typedef typename TypeTraits<data_type>::hold_type hold_type;
+  using cpp_type = typename TypeTraits<data_type>::cpp_type;
+  using hold_type = typename TypeTraits<data_type>::hold_type;
   vector<hold_type> haystack_constants;
   unique_ptr<BoundExpressionList> haystack_non_constant_expressions(
       new BoundExpressionList());
@@ -687,7 +687,7 @@ FailureOrOwned<BoundExpression> BoundInSetDataTypeAware(
   // This part is responsible for choosing between using binary search or
   // hashing for matching needle with constant-valued haystack expressions.
   BasicBoundExpression* bound;
-  typedef typename TypeTraits<data_type>::cpp_type cpp_type;
+  using cpp_type = typename TypeTraits<data_type>::cpp_type;
   // Note: SortedVector and hash_set stores cpp_type instead of hold_type. If
   // the data type is of variable length, the copying is done in
   // BoundInSetExpression.

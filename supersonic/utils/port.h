@@ -708,9 +708,9 @@ inline void *aligned_malloc(size_t size, int minimum_alignment) {
 #elif defined(ANDROID) || defined(OS_ANDROID) || defined(OS_CYGWIN)
   return memalign(minimum_alignment, size);
 #else  // !ANDROID && !OS_ANDROID && !__APPLE__ && !OS_CYGWIN
-  void *ptr = NULL;
+  void *ptr = nullptr;
   if (posix_memalign(&ptr, minimum_alignment, size) != 0)
-    return NULL;
+    return nullptr;
   else
     return ptr;
 #endif
@@ -1289,8 +1289,8 @@ inline void UnalignedCopy64(const void *src, void *dst) {
   if (sizeof(void *) == 8) {
     UNALIGNED_STORE64(dst, UNALIGNED_LOAD64(src));
   } else {
-    const char *src_char = reinterpret_cast<const char *>(src);
-    char *dst_char = reinterpret_cast<char *>(dst);
+    const auto *src_char = reinterpret_cast<const char *>(src);
+    auto *dst_char = reinterpret_cast<char *>(dst);
 
     UNALIGNED_STORE32(dst_char, UNALIGNED_LOAD32(src_char));
     UNALIGNED_STORE32(dst_char + 4, UNALIGNED_LOAD32(src_char + 4));

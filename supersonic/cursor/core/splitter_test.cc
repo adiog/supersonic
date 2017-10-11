@@ -47,7 +47,7 @@ class SingleSourceBufferedSplitter : public BasicOperation {
  public:
   explicit SingleSourceBufferedSplitter(Operation* child) :
       BasicOperation(child) {}
-  virtual FailureOrOwned<Cursor> CreateCursor() const {
+  FailureOrOwned<Cursor> CreateCursor() const override {
     return Success(
         (new BufferedSplitter(
             SucceedOrDie(child()->CreateCursor()),
@@ -71,7 +71,7 @@ class CursorToOperation : public BasicOperation {
       cursors_.emplace_back(splitter->AddReader());
     }
   }
-  virtual FailureOrOwned<Cursor> CreateCursor() const {
+  FailureOrOwned<Cursor> CreateCursor() const override {
     DVLOG(7) << "Asking to create a cursor...";
     CHECK(!cursors_.empty());
     Cursor* cursor = cursors_.back().release();
@@ -86,7 +86,7 @@ class SingleSourceBarrierSplitter : public BasicOperation {
  public:
   explicit SingleSourceBarrierSplitter(Operation* child) :
       BasicOperation(child) {}
-  virtual FailureOrOwned<Cursor> CreateCursor() const {
+  FailureOrOwned<Cursor> CreateCursor() const override {
     return Success(
         (new BarrierSplitter(
             SucceedOrDie(child()->CreateCursor())))->AddReader());
@@ -189,7 +189,7 @@ TEST_P(BarrierSplitterSpyTest, LateJoin) {
       PrintingSpyTransformer());
 
   Cursor* reader_cursor1 = splitter->AddReader();
-  Cursor* reader_cursor_spy1 = NULL;
+  Cursor* reader_cursor_spy1 = nullptr;
   if (GetParam()) {
     reader_cursor1->ApplyToChildren(spy_transformer.get());
     reader_cursor_spy1 = spy_transformer->Transform(reader_cursor1);
@@ -200,7 +200,7 @@ TEST_P(BarrierSplitterSpyTest, LateJoin) {
   EXPECT_EQ(2, reader_1.view().row_count());
 
   Cursor* reader_cursor2 = splitter->AddReader();
-  Cursor* reader_cursor_spy2 = NULL;
+  Cursor* reader_cursor_spy2 = nullptr;
   if (GetParam()) {
     reader_cursor2->ApplyToChildren(spy_transformer.get());
     reader_cursor_spy2 = spy_transformer->Transform(reader_cursor2);

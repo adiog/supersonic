@@ -30,7 +30,7 @@ const struct __Null {} __ = {};
 template<int type>
 class ValueRef {
  public:
-  typedef typename TypeTraits<static_cast<DataType>(type)>::cpp_type cpp_type;
+  using cpp_type = typename TypeTraits<static_cast<DataType>(type)>::cpp_type;
 
   ValueRef(const cpp_type& value) : value_(&value) {}                  // NOLINT
   ValueRef(const __Null null) : value_(NULL) {}                        // NOLINT

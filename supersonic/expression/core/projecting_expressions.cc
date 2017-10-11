@@ -39,14 +39,14 @@ class InputAttributeProjectionExpression : public Expression {
   explicit InputAttributeProjectionExpression(
       const SingleSourceProjector* projector)
       : projector_(projector) {}
-  virtual FailureOrOwned<BoundExpression> DoBind(
+  FailureOrOwned<BoundExpression> DoBind(
       const TupleSchema& input_schema,
       BufferAllocator* allocator,
-      rowcount_t max_row_count) const {
+      rowcount_t max_row_count) const override {
     return BoundInputAttributeProjection(input_schema, *projector_);
   }
 
-  virtual string ToString(bool verbose) const {
+  string ToString(bool verbose) const override {
     return projector_->ToString(verbose);
   }
 
@@ -85,17 +85,17 @@ class ProjectionExpression : public Expression {
                                 const MultiSourceProjector* projector)
       : arguments_(arguments),
         projector_(projector) {}
-  virtual FailureOrOwned<BoundExpression> DoBind(
+  FailureOrOwned<BoundExpression> DoBind(
       const TupleSchema& input_schema,
       BufferAllocator* allocator,
-      rowcount_t max_row_count) const {
+      rowcount_t max_row_count) const override {
     return CreateBoundProjection(input_schema, allocator, max_row_count,
                                  arguments_.get(), projector_.get());
   }
 
   // Formatted string contains arguments_, verbose version appends also
   // projector.
-  virtual string ToString(bool verbose) const {
+  string ToString(bool verbose) const override {
     if (verbose) {
       return StrCat(
           projector_->ToString(verbose), ": ", arguments_->ToString(verbose));

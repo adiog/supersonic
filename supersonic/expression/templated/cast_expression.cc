@@ -45,9 +45,9 @@ class CastExpression : public UnaryExpression {
         to_type_(to_type),
         is_implicit_(is_implicit) {}
 
-  virtual ~CastExpression() {}
+  ~CastExpression() override = default;
 
-  virtual string ToString(bool verbose) const {
+  string ToString(bool verbose) const override {
     if (is_implicit_) {
       // TODO(onufry): Settle on some distinction here.
       return StringPrintf("%s(%s)",
@@ -61,11 +61,11 @@ class CastExpression : public UnaryExpression {
   }
 
  private:
-  virtual FailureOrOwned<BoundExpression> CreateBoundUnaryExpression(
+  FailureOrOwned<BoundExpression> CreateBoundUnaryExpression(
       const TupleSchema& input_schema,
       BufferAllocator* const allocator,
       rowcount_t row_capacity,
-      BoundExpression* bound_child) const {
+      BoundExpression* bound_child) const override {
     return BoundInternalCast(allocator, row_capacity, bound_child,
                              to_type_, is_implicit_);
   }

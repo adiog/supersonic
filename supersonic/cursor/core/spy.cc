@@ -20,6 +20,7 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <utility>
 namespace supersonic {using std::string; }
 
 #include "supersonic/utils/macros.h"
@@ -45,14 +46,14 @@ const int64 kNumNanosPerMilli = kNumMicrosPerMilli * 1000;
 
 class SpyCursor : public BasicCursor {
  public:
-  SpyCursor(const string& id, SpyListener* listener, Cursor* child)
+  SpyCursor(string  id, SpyListener* listener, Cursor* child)
       : BasicCursor(child->schema(), child),
-        id_(id),
+        id_(std::move(id)),
         listener_(listener) {}
 
-  virtual ~SpyCursor() {}
+  ~SpyCursor() override = default;
 
-  virtual ResultView Next(rowcount_t max_row_count) {
+  ResultView Next(rowcount_t max_row_count) override {
     listener_->BeforeNext(id_, max_row_count);
     timer_.Restart();
     ResultView result_view = child()->Next(max_row_count);
@@ -61,7 +62,7 @@ class SpyCursor : public BasicCursor {
     return result_view;
   }
 
-  virtual bool IsWaitingOnBarrierSupported() const { return true; }
+  bool IsWaitingOnBarrierSupported() const override { return true; }
 
  private:
   const string id_;
@@ -77,7 +78,7 @@ class SpyOperation : public BasicOperation {
         id_(id),
         listener_(listener) {}
 
-  virtual FailureOrOwned<Cursor> CreateCursor() const {
+  FailureOrOwned<Cursor> CreateCursor() const override {
     FailureOrOwned<Cursor> bound_child(child()->CreateCursor());
     PROPAGATE_ON_FAILURE(bound_child);
     return Success(BoundSpy(id_, listener_, bound_child.release()));
@@ -97,9 +98,9 @@ class SpySink : public Sink {
         id_(id),
         listener_(listener) {}
 
-  virtual ~SpySink() {}
+  ~SpySink() override = default;
 
-  virtual FailureOr<rowcount_t> Write(const View& data) {
+  FailureOr<rowcount_t> Write(const View& data) override {
     listener_->BeforeNext(id_, 0);
     timer_.Restart();
     FailureOr<rowcount_t> result = sink_->Write(data);
@@ -109,7 +110,7 @@ class SpySink : public Sink {
     return result;
   }
 
-  virtual FailureOrVoid Finalize() { return sink_->Finalize(); }
+  FailureOrVoid Finalize() override { return sink_->Finalize(); }
 
  private:
   std::unique_ptr<Sink> sink_;
@@ -171,7 +172,7 @@ class PrintSpyListener : public SpyListener {
  public:
   PrintSpyListener() : view_printer_(true, true, 10) {}
 
-  virtual ~PrintSpyListener() {}
+  ~PrintSpyListener() override = default;
 
   // Returns a singleton instance of the PrintSpyListener.
   static PrintSpyListener* Get() {
@@ -179,14 +180,14 @@ class PrintSpyListener : public SpyListener {
     return &listener;
   }
 
-  virtual void BeforeNext(const string& id, rowcount_t max_row_count) {
+  void BeforeNext(const string& id, rowcount_t max_row_count) override {
     std::cout << "Calling Next(" << max_row_count << ") on " << id << ":\n";
   }
 
-  virtual void AfterNext(const string& id,
+  void AfterNext(const string& id,
                          rowcount_t max_row_count,
                          const ResultView& result_view,
-                         int64 time_nanos) {
+                         int64 time_nanos) override {
     double time_ms = time_nanos / static_cast<double>(kNumNanosPerMilli);
     std::cout << "Next(" << max_row_count << ") on " << id
               << " result in " << time_ms << " ms:";

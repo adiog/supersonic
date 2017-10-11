@@ -55,7 +55,7 @@ class Table : public BasicOperation {
   // ownership of the block.
   explicit Table(Block* block);
 
-  virtual ~Table();
+  ~Table() override;
 
   // Removes all data from this table. Does not decrease the capacity.
   void Clear();
@@ -90,7 +90,7 @@ class Table : public BasicOperation {
   }
 
   // Creates a cursor over this table's data.
-  virtual FailureOrOwned<Cursor> CreateCursor() const;
+  FailureOrOwned<Cursor> CreateCursor() const override;
 
   // Appends the content of the specified view, performing a deep copy of
   // variable-length columns. The view must have a compatible schema (or
@@ -300,10 +300,10 @@ class TableSink : public Sink {
  public:
   // Does NOT take ownership of the table.
   explicit TableSink(Table* table) : table_(table) {}
-  virtual FailureOr<rowcount_t> Write(const View& data) {
+  FailureOr<rowcount_t> Write(const View& data) override {
     return Success(table_->AppendView(data));
   }
-  virtual FailureOrVoid Finalize() { return Success(); }
+  FailureOrVoid Finalize() override { return Success(); }
  private:
   Table* table_;
 };
@@ -331,7 +331,7 @@ bool Table::Set(int col_index,
   }
   bool_ptr is_null = block_->mutable_column(col_index)->
       mutable_is_null_plus_offset(row_index);
-  if (is_null != NULL) { *is_null = false; }
+  if (is_null != nullptr) { *is_null = false; }
   return true;
 }
 

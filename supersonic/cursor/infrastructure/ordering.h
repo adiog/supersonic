@@ -101,7 +101,7 @@ class BoundSortOrder {
 // TODO(user): rename to SortSpecification for consistency.
 class SortOrder {
  public:
-  SortOrder() {}
+  SortOrder() = default;
   // Adds a new (group of) columns to the sort order. The column(s) will be
   // sorted in a direction specified by the column_order parameter.
   SortOrder* add(const SingleSourceProjector* projector,

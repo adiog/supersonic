@@ -228,7 +228,7 @@ StringPiece DateFormat::operator()(int64 datetime, const StringPiece& format,
                                    Arena* arena) {
   char buffer[33];
   struct tm time_result;
-  time_t offset_time = static_cast<time_t>(datetime / kMillion);
+  auto offset_time = static_cast<time_t>(datetime / kMillion);
   gmtime_r(&offset_time, &time_result);
   // StringPiece stores non-NULL-terminated bytes. We have to allocate
   // a place only to copy the whole format string, and terminate with a NULL.
@@ -236,14 +236,14 @@ StringPiece DateFormat::operator()(int64 datetime, const StringPiece& format,
   string format_string = format.ToString();
   size_t length =
       strftime(buffer, 33, format_string.c_str(), &time_result);
-  char* new_str = static_cast<char *>(arena->AllocateBytes(length + 1));
+  auto* new_str = static_cast<char *>(arena->AllocateBytes(length + 1));
   // TODO(onufry): Replace this with a gentler mechanism. Maybe the allocating
   // operators could take a bool*, on which they would set the error code?
   CHECK_NOTNULL(new_str);
   // TODO(onufry): modify this when the Arena is modified to allow cutting,
   // see the comment in Format.
   strncpy(new_str, buffer, length + 1);
-  return StringPiece(new_str, length);
+  return {new_str, length};
 }
 
 // See comments for DateFormat above..
@@ -252,15 +252,15 @@ StringPiece DateFormatLocal::operator()(int64 datetime,
                                         Arena* arena) {
   char buffer[33];
   struct tm time_result;
-  time_t offset_time = static_cast<time_t>(datetime / kMillion);
+  auto offset_time = static_cast<time_t>(datetime / kMillion);
   localtime_r(&offset_time, &time_result);
   string format_string = format.ToString();
   size_t length =
       strftime(buffer, 33, format_string.c_str(), &time_result);
-  char* new_str = static_cast<char *>(arena->AllocateBytes(length + 1));
+  auto* new_str = static_cast<char *>(arena->AllocateBytes(length + 1));
   CHECK_NOTNULL(new_str);
   strncpy(new_str, buffer, length + 1);
-  return StringPiece(new_str, length);
+  return {new_str, length};
 }
 
 }  // namespace operators
@@ -277,9 +277,9 @@ int MakeDateFailer::operator()(const int64* left_data,
                                size_t row_count) {
   int failures = 0;
   for (int i = 0; i < row_count; ++i) {
-    failures += ((!((left_is_null != NULL && left_is_null[i]) ||
-                    (middle_is_null != NULL && middle_is_null[i]) ||
-                    (right_is_null != NULL && right_is_null[i]))) &&
+    failures += ((!((left_is_null != nullptr && left_is_null[i]) ||
+                    (middle_is_null != nullptr && middle_is_null[i]) ||
+                    (right_is_null != nullptr && right_is_null[i]))) &&
                  (mkgmtime_int64(left_data[i] - 1970, middle_data[i] - 1,
                                  right_data[i]) == -1LL));
   }

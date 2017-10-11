@@ -35,7 +35,7 @@ class View;
 // or data written to it.
 class Sink {
  public:
-  virtual ~Sink() {}
+  virtual ~Sink() = default;
 
   // Writes a new chunk of data to the sink. Returns the number of rows
   // successfully written. Exception may be returned in case of an
@@ -48,7 +48,7 @@ class Sink {
   virtual FailureOrVoid Finalize() = 0;
 
  protected:
-  Sink() {}
+  Sink() = default;
 
  private:
   DISALLOW_COPY_AND_ASSIGN(Sink);

@@ -41,7 +41,7 @@ BaseViewCopier::BaseViewCopier(const TupleSchema& input_schema,
 }
 
 ViewCopier::ViewCopier(const TupleSchema& schema, bool deep_copy)
-    : BaseViewCopier(schema, schema, NULL, NO_SELECTOR, deep_copy) {}
+    : BaseViewCopier(schema, schema, nullptr, NO_SELECTOR, deep_copy) {}
 
 ViewCopier::ViewCopier(const BoundSingleSourceProjector* projector,
                        bool deep_copy)
@@ -51,13 +51,13 @@ ViewCopier::ViewCopier(const BoundSingleSourceProjector* projector,
 SelectiveViewCopier::SelectiveViewCopier(
     const TupleSchema& schema,
     bool deep_copy)
-    : BaseViewCopier(schema, schema, NULL, INPUT_SELECTOR, deep_copy) {}
+    : BaseViewCopier(schema, schema, nullptr, INPUT_SELECTOR, deep_copy) {}
 
 SelectiveViewCopier::SelectiveViewCopier(
     const TupleSchema& source_schema,
     const TupleSchema& result_schema,
     bool deep_copy)
-    : BaseViewCopier(source_schema, result_schema, NULL, INPUT_SELECTOR,
+    : BaseViewCopier(source_schema, result_schema, nullptr, INPUT_SELECTOR,
                      deep_copy) {}
 
 SelectiveViewCopier::SelectiveViewCopier(

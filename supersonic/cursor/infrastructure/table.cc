@@ -49,7 +49,7 @@ Table::Table(Block* block)
 }
 
 // Needs to be here as long as ViewCopier is only forward-declared in *.h.
-Table::~Table() {}
+Table::~Table() = default;
 
 rowid_t Table::AddRow() {
   if (row_count() == block_->row_capacity()) {

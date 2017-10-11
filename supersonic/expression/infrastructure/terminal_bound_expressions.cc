@@ -52,14 +52,14 @@ class BoundNullExpression : public BasicBoundNoArgumentExpression {
                                BufferAllocator* const allocator)
       : BasicBoundNoArgumentExpression(result_schema, allocator) {}
 
-  virtual bool is_constant() const { return true; }
-  virtual bool can_be_resolved() const { return false; }
-  virtual rowcount_t row_capacity() const {
+  bool is_constant() const override { return true; }
+  bool can_be_resolved() const override { return false; }
+  rowcount_t row_capacity() const override {
     return MathLimits<rowcount_t>::kMax;
   }
 
-  virtual EvaluationResult DoEvaluate(const View& input,
-                                      const BoolView& skip_pointers) {
+  EvaluationResult DoEvaluate(const View& input,
+                                      const BoolView& skip_pointers) override {
     CHECK_EQ(1, skip_pointers.column_count());
     bit_pointer::FillWithTrue(skip_pointers.column(0), input.row_count());
     my_view()->set_row_count(input.row_count());
@@ -81,8 +81,8 @@ class BoundSequenceExpression : public BasicBoundNoArgumentExpression {
       : BasicBoundNoArgumentExpression(result_schema, allocator),
         current_(0) {}
 
-  virtual EvaluationResult DoEvaluate(const View& input,
-                                      const BoolView& skip_vectors) {
+  EvaluationResult DoEvaluate(const View& input,
+                                      const BoolView& skip_vectors) override {
     CHECK_EQ(1, skip_vectors.column_count());
     int64* data = my_block()->mutable_column(0)->mutable_typed_data<INT64>();
     size_t count = input.row_count();
@@ -92,8 +92,8 @@ class BoundSequenceExpression : public BasicBoundNoArgumentExpression {
     return Success(*my_view());
   }
 
-  bool is_constant() const { return false; }
-  bool can_be_resolved() const { return false; }
+  bool is_constant() const override { return false; }
+  bool can_be_resolved() const override { return false; }
 
  private:
   int64 current_;
@@ -110,8 +110,8 @@ class BoundRandInt32Expression : public BasicBoundNoArgumentExpression {
             allocator),
         random_generator_(random_generator) {}
 
-  virtual EvaluationResult DoEvaluate(const View& input,
-                                      const BoolView& skip_pointers) {
+  EvaluationResult DoEvaluate(const View& input,
+                                      const BoolView& skip_pointers) override {
     CHECK_EQ(1, skip_pointers.column_count());
     int32* data = my_block()->mutable_column(0)->mutable_typed_data<INT32>();
     size_t count = input.row_count();
@@ -122,8 +122,8 @@ class BoundRandInt32Expression : public BasicBoundNoArgumentExpression {
     return Success(*my_view());
   }
 
-  bool is_constant() const { return false; }
-  bool can_be_resolved() const { return false; }
+  bool is_constant() const override { return false; }
+  bool can_be_resolved() const override { return false; }
 
  private:
   std::unique_ptr<RandomBase> random_generator_;

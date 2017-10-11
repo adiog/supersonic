@@ -75,8 +75,8 @@ inline bool memeq(const char* a, const char* b, size_t n) {
 }
 
 inline int fastmemcmp_inlined(const void *va, const void *vb, size_t n) {
-  const unsigned char* pa = static_cast<const unsigned char*>(va);
-  const unsigned char* pb = static_cast<const unsigned char*>(vb);
+  const auto* pa = static_cast<const unsigned char*>(va);
+  const auto* pb = static_cast<const unsigned char*>(vb);
   switch (n) {
     default:
       return memcmp(va, vb, n);

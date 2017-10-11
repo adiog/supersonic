@@ -163,10 +163,10 @@ struct LessThanComparator {
 // there's a single range that includes the entire input. As sort progresses,
 // the range gets broken into smaller pieces.
 struct Range {
-  Range() : from(0), to(0) {}
+  Range()  {}
   Range(int64 from, int64 to) : from(from), to(to) {}
-  int64 from;
-  int64 to;
+  int64 from{0};
+  int64 to{0};
 };
 
 // Predicate used in stl::partition to percolate all NULLs to the top/bottom.
@@ -261,7 +261,7 @@ void SortColumn(bool descending,
                 vector<Range>* target,
                 Permutation* permutation,
                 bool is_last_column) {
-  if (is_null == NULL) {
+  if (is_null == nullptr) {
     if (descending) {
       SortColumnResolved<type, true, true>(data, is_null, source,
                                            target, permutation,
@@ -287,7 +287,7 @@ void SortColumn(bool descending,
 struct ColumnSorter {
   template<DataType type>
   void operator()() const {
-    typedef typename TypeTraits<type>::cpp_type cpp_type;
+    using cpp_type = typename TypeTraits<type>::cpp_type;
     SortColumn<type>(descending, data.as<type>(), is_null,
                      source_ranges, target_ranges, permutation, is_last_column);
   }
@@ -328,7 +328,7 @@ class BasicMerger : public Merger {
         temporary_directory_prefix_(temporary_directory_prefix.ToString()),
         allocator_(allocator) {}
 
-  FailureOrVoid AddSorted(Cursor* cursor) {
+  FailureOrVoid AddSorted(Cursor* cursor) override {
     std::unique_ptr<Cursor> cursor_owner(cursor);
     std::unique_ptr<file::FileRemover> temp_file(new file::FileRemover(
         TempFile::Create(temporary_directory_prefix_.c_str())));
@@ -363,7 +363,7 @@ class BasicMerger : public Merger {
   // TODO(user): Consider some pre-merging phase if the number of files is big
   // enough.
   FailureOrOwned<Cursor> Merge(const BoundSortOrder* sort_order,
-                               Cursor* additional) {
+                               Cursor* additional) override {
     std::unique_ptr<Cursor> additional_owned(additional);
     vector<Cursor*> merged_cursors;
     ElementDeleter deleter(&merged_cursors);
@@ -390,7 +390,7 @@ class BasicMerger : public Merger {
     return merged;
   }
 
-  virtual bool empty() const {
+  bool empty() const override {
     return file_buffers_.empty();
   }
 
@@ -415,9 +415,9 @@ class UnbufferedSorter : public Sorter {
         allocator_(allocator),
         merger_(CreateMerger(schema, temporary_directory_prefix, allocator)) {}
 
-  virtual ~UnbufferedSorter() {}
+  ~UnbufferedSorter() override = default;
 
-  virtual FailureOr<rowcount_t> Write(const View& data) {
+  FailureOr<rowcount_t> Write(const View& data) override {
     rowcount_t row_count = data.row_count();
     FailureOrOwned<Cursor> sorted = SortView(data);
     PROPAGATE_ON_FAILURE(sorted);
@@ -425,7 +425,7 @@ class UnbufferedSorter : public Sorter {
     return Success(row_count);
   }
 
-  FailureOrOwned<Cursor> GetResultCursor() {
+  FailureOrOwned<Cursor> GetResultCursor() override {
     FailureOrOwned<Cursor> merged = merger_->Merge(sort_order_.release(), NULL);
     PROPAGATE_ON_FAILURE(merged);
     return Success(merged.release());
@@ -489,9 +489,9 @@ class BufferingSorter : public Sorter {
         unbuffered_sorter_(schema, sort_order, temporary_directory_prefix,
                            allocator) {}
 
-  virtual ~BufferingSorter() {}
+  ~BufferingSorter() override = default;
 
-  virtual FailureOr<rowcount_t> Write(const View& data) {
+  FailureOr<rowcount_t> Write(const View& data) override {
     {
       TableSink table_sink(memory_buffer_.get());
       FailureOr<rowcount_t> written = table_sink.Write(data);
@@ -526,7 +526,7 @@ class BufferingSorter : public Sorter {
                "SoftQuotaBypassingBufferAllocator)")));
   }
 
-  FailureOrOwned<Cursor> GetResultCursor() {
+  FailureOrOwned<Cursor> GetResultCursor() override {
     // No need to flush current contents of memory_buffer_.
     FailureOrOwned<Cursor> last_sorted =
         unbuffered_sorter_.SortView(memory_buffer_->view());
@@ -586,7 +586,7 @@ class SortCursor : public BasicCursor {
                                       allocator)),
         sorter_sink_(sorter_.get()) {}
 
-  virtual ResultView Next(rowcount_t max_row_count) {
+  ResultView Next(rowcount_t max_row_count) override {
     if (result_.get() == NULL) {
       PROPAGATE_ON_FAILURE(ProcessData());
       if (result_.get() == NULL) {
@@ -598,18 +598,18 @@ class SortCursor : public BasicCursor {
     return result_->Next(max_row_count);
   }
 
-  virtual bool IsWaitingOnBarrierSupported() const {
+  bool IsWaitingOnBarrierSupported() const override {
     return is_waiting_on_barrier_supported_;
   }
 
-  virtual void Interrupt() {
+  void Interrupt() override {
     writer_.Interrupt();
     // There is a race between checking result_ for NULL and result_.reset(...)
     // in ProcessData.
     if (result_ != NULL) result_->Interrupt();
   }
 
-  virtual void ApplyToChildren(CursorTransformer* transformer) {
+  void ApplyToChildren(CursorTransformer* transformer) override {
     writer_.ApplyToIterator(transformer);
   }
 
@@ -664,9 +664,9 @@ class SortOperation : public BasicOperation {
     CHECK_NOTNULL(sort_order);
   }
 
-  virtual ~SortOperation() {}
+  ~SortOperation() override = default;
 
-  virtual FailureOrOwned<Cursor> CreateCursor() const {
+  FailureOrOwned<Cursor> CreateCursor() const override {
     FailureOrOwned<Cursor> child_cursor = child()->CreateCursor();
     PROPAGATE_ON_FAILURE(child_cursor);
     const TupleSchema& schema = child_cursor->schema();
@@ -713,9 +713,9 @@ class ExtendedSortOperation : public BasicOperation {
     CHECK_NOTNULL(sort_order);
   }
 
-  virtual ~ExtendedSortOperation() {}
+  ~ExtendedSortOperation() override = default;
 
-  virtual FailureOrOwned<Cursor> CreateCursor() const {
+  FailureOrOwned<Cursor> CreateCursor() const override {
     FailureOrOwned<Cursor> raw_child_cursor = child()->CreateCursor();
     PROPAGATE_ON_FAILURE(raw_child_cursor);
     std::unique_ptr<Cursor> child_cursor(raw_child_cursor.release());
@@ -835,7 +835,7 @@ FailureOrOwned<Cursor> BoundSort(
     StringPiece temporary_directory_prefix,
     BufferAllocator* allocator,
     Cursor* child) {
-  if (result_projector == NULL) {
+  if (result_projector == nullptr) {
     std::unique_ptr<const SingleSourceProjector> all(ProjectAllAttributes());
     result_projector = SucceedOrDie(all->Bind(child->schema()));
   }

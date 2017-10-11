@@ -90,7 +90,7 @@ class linked_ptr_internal {
 template <typename T>
 class linked_ptr {
  public:
-  typedef T element_type;
+  using element_type = T;
 
   // Take over ownership of a raw pointer.  This should happen as soon as
   // possible after the object is created.
@@ -237,7 +237,7 @@ linked_ptr<T> make_linked_ptr(T* ptr) {
 }
 
 namespace std {
-template<typename T> struct remove_pointer<linked_ptr<T> > { typedef T type; };
+template<typename T> struct remove_pointer<linked_ptr<T> > { using type = T; };
 }  // namespace std
 
 #endif  // UTIL_GTL_LINKED_PTR_H_

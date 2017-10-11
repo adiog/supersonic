@@ -48,7 +48,7 @@ static inline bool EatADouble(const char** text, int* len, bool allow_question,
   const char* pos = *text;
   int rem = *len;  // remaining length, or -1 if null-terminated
 
-  if (pos == NULL || rem == 0)
+  if (pos == nullptr || rem == 0)
     return false;
 
   if (allow_question && (*pos == '?')) {
@@ -345,7 +345,7 @@ uint32 ParseLeadingUInt32Value(const char *str, uint32 deflt) {
 int32 ParseLeadingDec32Value(const char *str, int32 deflt) {
   using std::numeric_limits;
 
-  char *error = NULL;
+  char *error = nullptr;
   long value = strtol(str, &error, 10);
   // Limit long values to int32 min/max.  Needed for lp64; no-op on 32 bits.
   if (value > numeric_limits<int32>::max()) {
@@ -361,7 +361,7 @@ uint32 ParseLeadingUDec32Value(const char *str, uint32 deflt) {
 
   if (numeric_limits<unsigned long>::max() == numeric_limits<uint32>::max()) {
     // When long is 32 bits, we can use strtoul.
-    char *error = NULL;
+    char *error = nullptr;
     const uint32 value = strtoul(str, &error, 10);
     return (error == str) ? deflt : value;
   } else {
@@ -370,7 +370,7 @@ uint32 ParseLeadingUDec32Value(const char *str, uint32 deflt) {
     // it would be impossible to differentiate "-2" (that should wrap
     // around to the value UINT_MAX-1) from a string with ULONG_MAX-1
     // (that should be pegged to UINT_MAX due to overflow).
-    char *error = NULL;
+    char *error = nullptr;
     int64 value = strto64(str, &error, 10);
     if (value > numeric_limits<uint32>::max() ||
         value < -static_cast<int64>(numeric_limits<uint32>::max())) {
@@ -390,19 +390,19 @@ uint32 ParseLeadingUDec32Value(const char *str, uint32 deflt) {
 //    UInt64 and Int64 cannot handle decimal numbers with leading 0s.
 // --------------------------------------------------------------------
 uint64 ParseLeadingUInt64Value(const char *str, uint64 deflt) {
-  char *error = NULL;
+  char *error = nullptr;
   const uint64 value = strtou64(str, &error, 0);
   return (error == str) ? deflt : value;
 }
 
 int64 ParseLeadingInt64Value(const char *str, int64 deflt) {
-  char *error = NULL;
+  char *error = nullptr;
   const int64 value = strto64(str, &error, 0);
   return (error == str) ? deflt : value;
 }
 
 uint64 ParseLeadingHex64Value(const char *str, uint64 deflt) {
-  char *error = NULL;
+  char *error = nullptr;
   const uint64 value = strtou64(str, &error, 16);
   return (error == str) ? deflt : value;
 }
@@ -417,13 +417,13 @@ uint64 ParseLeadingHex64Value(const char *str, uint64 deflt) {
 // --------------------------------------------------------------------
 
 int64 ParseLeadingDec64Value(const char *str, int64 deflt) {
-  char *error = NULL;
+  char *error = nullptr;
   const int64 value = strto64(str, &error, 10);
   return (error == str) ? deflt : value;
 }
 
 uint64 ParseLeadingUDec64Value(const char *str, uint64 deflt) {
-  char *error = NULL;
+  char *error = nullptr;
   const uint64 value = strtou64(str, &error, 10);
   return (error == str) ? deflt : value;
 }
@@ -435,7 +435,7 @@ uint64 ParseLeadingUDec64Value(const char *str, uint64 deflt) {
 // --------------------------------------------------------------------
 
 double ParseLeadingDoubleValue(const char *str, double deflt) {
-  char *error = NULL;
+  char *error = nullptr;
   errno = 0;
   const double value = strtod(str, &error);
   if (errno != 0 ||  // overflow/underflow happened
@@ -664,7 +664,7 @@ inline bool safe_parse_positive_int(
   const char* end = start + text.size();
   // loop over digits
   for (; start < end; ++start) {
-    unsigned char c = static_cast<unsigned char>(start[0]);
+    auto c = static_cast<unsigned char>(start[0]);
     int digit = kAsciiToInt[c];
     if (digit >= base) {
       *value_p = value;
@@ -704,7 +704,7 @@ inline bool safe_parse_negative_int(
   const char* end = start + text.size();
   // loop over digits
   for (; start < end; ++start) {
-    unsigned char c = static_cast<unsigned char>(start[0]);
+    auto c = static_cast<unsigned char>(start[0]);
     int digit = kAsciiToInt[c];
     if (digit >= base) {
       *value_p = value;
@@ -1044,7 +1044,7 @@ char* FastInt32ToBufferLeft(int32 i, char* buffer) {
 }
 
 char* FastUInt64ToBufferLeft(uint64 u64, char* buffer) {
-  uint32 u = static_cast<uint32>(u64);
+  auto u = static_cast<uint32>(u64);
   if (u == u64) return FastUInt32ToBufferLeft(u, buffer);
 
   uint64 top_11_digits = u64 / 1000000000;
@@ -1261,7 +1261,7 @@ char* DoubleToBuffer(double value, char* buffer) {
   // larger than the precision we asked for.
   DCHECK(snprintf_result > 0 && snprintf_result < kFastToBufferSize);
 
-  if (strtod(buffer, NULL) != value) {
+  if (strtod(buffer, nullptr) != value) {
     snprintf_result =
       snprintf(buffer, kFastToBufferSize, "%.*g", DBL_DIG+2, value);
 

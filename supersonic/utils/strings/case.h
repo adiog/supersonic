@@ -32,7 +32,7 @@ namespace supersonic {using std::string; }
 // util/hash/case_insensitive_hash.h
 struct strcaseeq : public std::binary_function<const char*, const char*, bool> {
   bool operator()(const char* s1, const char* s2) const {
-    return ((s1 == 0 && s2 == 0) ||
+    return ((s1 == nullptr && s2 == nullptr) ||
             (s1 && s2 && strcasecmp(s1, s2) == 0));
   }
 };
@@ -40,7 +40,7 @@ struct strcaseeq : public std::binary_function<const char*, const char*, bool> {
 // For strcaselt, sorting would put NULL string last.
 struct strcaselt : public std::binary_function<const char*, const char*, bool> {
   bool operator()(const char* s1, const char* s2) const {
-    return (s1 != s2) && (s2 == 0 || (s1 != 0 && strcasecmp(s1, s2) < 0));
+    return (s1 != s2) && (s2 == nullptr || (s1 != nullptr && strcasecmp(s1, s2) < 0));
   }
 };
 

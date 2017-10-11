@@ -57,10 +57,10 @@ class MakeDatetimeExpression : public Expression {
       : year_(year), month_(month), day_(day), hour_(hour), minute_(minute),
         second_(second) {}
  private:
-  virtual FailureOrOwned<BoundExpression> DoBind(
+  FailureOrOwned<BoundExpression> DoBind(
       const TupleSchema& input_schema,
       BufferAllocator* allocator,
-      rowcount_t max_row_count) const {
+      rowcount_t max_row_count) const override {
     FailureOrOwned<BoundExpression> bound_year = year_->DoBind(
         input_schema, allocator, max_row_count);
     PROPAGATE_ON_FAILURE(bound_year);
@@ -91,7 +91,7 @@ class MakeDatetimeExpression : public Expression {
                              allocator, max_row_count);
   }
 
-  virtual string ToString(bool verbose) const {
+  string ToString(bool verbose) const override {
     // StrCat takes at most 12 arguments, which necessitates the double call.
     return StrCat(
         StrCat("MAKE_DATETIME(", year_->ToString(verbose), ", ",

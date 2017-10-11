@@ -448,7 +448,7 @@ class ViewRowIterator {
   bool is_null(const int column_index) const {
     DCHECK_LE(current_row_index(), total_row_count());
     bool_const_ptr is_null = view_.column(column_index).is_null();
-    return is_null != NULL && is_null[row_index_];
+    return is_null != nullptr && is_null[row_index_];
   }
 
   // Returns a pointer to the item at the specified column, in the current row.

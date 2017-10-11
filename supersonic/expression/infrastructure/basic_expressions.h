@@ -43,12 +43,12 @@ class TupleSchema;
 
 class UnaryExpression : public Expression {
  public:
-  virtual ~UnaryExpression() {}
+  ~UnaryExpression() override = default;
 
-  virtual FailureOrOwned<BoundExpression> DoBind(
+  FailureOrOwned<BoundExpression> DoBind(
       const TupleSchema& input_schema,
       BufferAllocator* allocator,
-      rowcount_t max_row_count) const;
+      rowcount_t max_row_count) const override;
 
  protected:
   explicit UnaryExpression(const Expression* const child_expression)
@@ -75,12 +75,12 @@ class UnaryExpression : public Expression {
 // expression itself.
 class BinaryExpression : public Expression {
  public:
-  virtual ~BinaryExpression() {}
+  ~BinaryExpression() override = default;
 
-  virtual FailureOrOwned<BoundExpression> DoBind(
+  FailureOrOwned<BoundExpression> DoBind(
       const TupleSchema& input_schema,
       BufferAllocator* allocator,
-      rowcount_t max_row_count) const;
+      rowcount_t max_row_count) const override;
 
  protected:
   BinaryExpression(const Expression* const left, const Expression* const right)
@@ -109,12 +109,12 @@ class BinaryExpression : public Expression {
 // expression itself.
 class TernaryExpression : public Expression {
  public:
-  virtual ~TernaryExpression() {}
+  ~TernaryExpression() override = default;
 
-  virtual FailureOrOwned<BoundExpression> DoBind(
+  FailureOrOwned<BoundExpression> DoBind(
       const TupleSchema& input_schema,
       BufferAllocator* allocator,
-      rowcount_t max_row_count) const;
+      rowcount_t max_row_count) const override;
 
  protected:
   TernaryExpression(const Expression* const left,

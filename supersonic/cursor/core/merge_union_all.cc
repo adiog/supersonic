@@ -136,12 +136,12 @@ class MergeUnionAllCursor : public Cursor {
   // of result rows. Returns success iff the allocation is successful.
   FailureOrVoid Init();
 
-  virtual const TupleSchema& schema() const;
-  virtual ResultView Next(rowcount_t max_row_count);
-  virtual void Interrupt();
-  virtual void ApplyToChildren(CursorTransformer* transformer);
-  virtual void AppendDebugDescription(string* target) const;
-  virtual bool IsWaitingOnBarrierSupported() const { return true; }
+  const TupleSchema& schema() const override;
+  ResultView Next(rowcount_t max_row_count) override;
+  void Interrupt() override;
+  void ApplyToChildren(CursorTransformer* transformer) override;
+  void AppendDebugDescription(string* target) const override;
+  bool IsWaitingOnBarrierSupported() const override { return true; }
   virtual CursorId GetCursorId() const { return MERGE_UNION_ALL; }
 
   // Calculates a common schema from all input schemas and specifically, the
@@ -318,7 +318,7 @@ class MergeUnionAllOperation : public BasicOperation {
     : BasicOperation(inputs),
       sort_order_(sort_order) {}
 
-  virtual FailureOrOwned<Cursor> CreateCursor() const {
+  FailureOrOwned<Cursor> CreateCursor() const override {
     vector<Cursor*> inputs;
     ElementDeleter deleter(&inputs);
     for (int i = 0; i < children_count(); i++) {

@@ -83,9 +83,9 @@ struct StringReplaceEvaluator {
     // in Regexp functions (passing a string in), to avoid string allocation
     // with each call.
     string s = StringReplace(haystack, needle, substitute, true);
-    char* new_str = static_cast<char*>(arena->AllocateBytes(s.length() + 1));
+    auto* new_str = static_cast<char*>(arena->AllocateBytes(s.length() + 1));
     strncpy(new_str, s.c_str(), s.length());
-    return StringPiece(new_str, s.length());
+    return {new_str, s.length()};
   }
 };
 
@@ -122,24 +122,24 @@ struct Trim {
 struct ToUpper {
   StringPiece operator()(StringPiece str, Arena* arena) {
     size_t length = str.length();
-    char* new_str = static_cast<char*>(arena->AllocateBytes(length));
+    auto* new_str = static_cast<char*>(arena->AllocateBytes(length));
     CHECK_NOTNULL(new_str);
     for (int i = 0; i < length; ++i) {
       new_str[i] = ascii_toupper(str[i]);
     }
-    return StringPiece(new_str, length);
+    return {new_str, length};
   }
 };
 
 struct ToLower {
   StringPiece operator()(StringPiece str, Arena* arena) {
     size_t length = str.length();
-    char* new_str = static_cast<char*>(arena->AllocateBytes(length));
+    auto* new_str = static_cast<char*>(arena->AllocateBytes(length));
     CHECK_NOTNULL(new_str);
     for (int i = 0; i < length; ++i) {
       new_str[i] = ascii_tolower(str[i]);
     }
-    return StringPiece(new_str, length);
+    return {new_str, length};
   }
 };
 

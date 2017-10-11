@@ -39,7 +39,7 @@ class Sink;
 // child->next.
 class SpyListener {
  public:
-  virtual ~SpyListener() {}
+  virtual ~SpyListener() = default;
   virtual void BeforeNext(const string& id, rowcount_t max_row_count) = 0;
   virtual void AfterNext(const string& id,
                          rowcount_t max_row_count,

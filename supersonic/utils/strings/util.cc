@@ -50,9 +50,9 @@ char* strnstr(const char* haystack, const char* needle,
   }
   size_t needle_len = strlen(needle);
   char* where;
-  while ((where = strnchr(haystack, *needle, haystack_len)) != NULL) {
+  while ((where = strnchr(haystack, *needle, haystack_len)) != nullptr) {
     if (where - haystack + needle_len > haystack_len) {
-      return NULL;
+      return nullptr;
     }
     if (strncmp(where, needle, needle_len) == 0) {
       return where;
@@ -60,18 +60,18 @@ char* strnstr(const char* haystack, const char* needle,
     haystack_len -= where + 1 - haystack;
     haystack = where + 1;
   }
-  return NULL;
+  return nullptr;
 }
 
 const char* strnprefix(const char* haystack, int haystack_size,
                               const char* needle, int needle_size) {
   if (needle_size > haystack_size) {
-    return NULL;
+    return nullptr;
   } else {
     if (strncmp(haystack, needle, needle_size) == 0) {
       return haystack + needle_size;
     } else {
-      return NULL;
+      return nullptr;
     }
   }
 }
@@ -79,12 +79,12 @@ const char* strnprefix(const char* haystack, int haystack_size,
 const char* strncaseprefix(const char* haystack, int haystack_size,
                                   const char* needle, int needle_size) {
   if (needle_size > haystack_size) {
-    return NULL;
+    return nullptr;
   } else {
     if (strncasecmp(haystack, needle, needle_size) == 0) {
       return haystack + needle_size;
     } else {
-      return NULL;
+      return nullptr;
     }
   }
 }
@@ -97,20 +97,20 @@ char* strcasesuffix(char* str, const char* suffix) {
   if (lenstr >= lensuffix && 0 == strcasecmp(strbeginningoftheend, suffix)) {
     return (strbeginningoftheend);
   } else {
-    return (NULL);
+    return (nullptr);
   }
 }
 
 const char* strnsuffix(const char* haystack, int haystack_size,
                               const char* needle, int needle_size) {
   if (needle_size > haystack_size) {
-    return NULL;
+    return nullptr;
   } else {
     const char* start = haystack + haystack_size - needle_size;
     if (strncmp(start, needle, needle_size) == 0) {
       return start;
     } else {
-      return NULL;
+      return nullptr;
     }
   }
 }
@@ -118,20 +118,20 @@ const char* strnsuffix(const char* haystack, int haystack_size,
 const char* strncasesuffix(const char* haystack, int haystack_size,
                            const char* needle, int needle_size) {
   if (needle_size > haystack_size) {
-    return NULL;
+    return nullptr;
   } else {
     const char* start = haystack + haystack_size - needle_size;
     if (strncasecmp(start, needle, needle_size) == 0) {
       return start;
     } else {
-      return NULL;
+      return nullptr;
     }
   }
 }
 
 char* strchrnth(const char* str, const char& c, int n) {
-  if (str == NULL)
-    return NULL;
+  if (str == nullptr)
+    return nullptr;
   if (n <= 0)
     return const_cast<char*>(str);
   const char* sp;
@@ -143,18 +143,18 @@ char* strchrnth(const char* str, const char& c, int n) {
         break;
     }
   }
-  return (k < n) ? NULL : const_cast<char*>(sp);
+  return (k < n) ? nullptr : const_cast<char*>(sp);
 }
 
 char* AdjustedLastPos(const char* str, char separator, int n) {
-  if ( str == NULL )
-    return NULL;
-  const char* pos = NULL;
+  if ( str == nullptr )
+    return nullptr;
+  const char* pos = nullptr;
   if ( n > 0 )
     pos = strchrnth(str, separator, n);
 
   // if n <= 0 or separator appears fewer than n times, get the last occurrence
-  if ( pos == NULL)
+  if ( pos == nullptr)
     pos = strrchr(str, separator);
   return const_cast<char*>(pos);
 }
@@ -301,7 +301,7 @@ char *gstrcasestr(const char* haystack, const char* needle) {
     do {
       do {
         if ((sc = *haystack++) == 0)
-          return NULL;
+          return nullptr;
       } while (ascii_tolower(sc) != c);
     } while (strncasecmp(haystack, needle, len) != 0);
     haystack--;
@@ -328,7 +328,7 @@ const char *gstrncasestr(const char* haystack, const char* needle, size_t len) {
       do {
         if (len-- <= needle_len
             || 0 == (sc = *haystack++))
-          return NULL;
+          return nullptr;
       } while (ascii_tolower(sc) != c);
     } while (strncasecmp(haystack, needle, needle_len) != 0);
     haystack--;
@@ -356,22 +356,22 @@ char *gstrncasestr_split(const char* str,
                          const char* prefix, char non_alpha,
                          const char* suffix,
                          size_t n) {
-  int prelen = prefix == NULL ? 0 : strlen(prefix);
-  int suflen = suffix == NULL ? 0 : strlen(suffix);
+  int prelen = prefix == nullptr ? 0 : strlen(prefix);
+  int suflen = suffix == nullptr ? 0 : strlen(suffix);
 
   // adjust the string and its length to avoid unnessary searching.
   // an added benefit is to avoid unnecessary range checks in the if
   // statement in the inner loop.
-  if (suflen + prelen >= n)  return NULL;
+  if (suflen + prelen >= n)  return nullptr;
   str += prelen;
   n -= prelen;
   n -= suflen;
 
-  const char* where = NULL;
+  const char* where = nullptr;
 
   // for every occurance of non_alpha in the string ...
   while ((where = static_cast<const char*>(
-            memchr(str, non_alpha, n))) != NULL) {
+            memchr(str, non_alpha, n))) != nullptr) {
     // ... test whether it is followed by suffix and preceded by prefix
     if ((!suflen || strncasecmp(where + 1, suffix, suflen) == 0) &&
         (!prelen || strncasecmp(where - prelen, prefix, prelen) == 0)) {
@@ -382,7 +382,7 @@ char *gstrncasestr_split(const char* str,
     str = where + 1;
   }
 
-  return NULL;
+  return nullptr;
 }
 
 // ----------------------------------------------------------------------
@@ -409,7 +409,7 @@ char *strcasestr_alnum(const char *haystack, const char *needle) {
   // Skip non-alnums at beginning
   while ( !ascii_isalnum(*haystack) )
     if ( *haystack++ == '\0' )
-      return NULL;
+      return nullptr;
   haystack_ptr = haystack;
 
   while ( *needle_ptr != '\0' ) {
@@ -420,7 +420,7 @@ char *strcasestr_alnum(const char *haystack, const char *needle) {
 
     while ( !ascii_isalnum(*haystack_ptr) )
       if ( *haystack_ptr++ == '\0' )
-        return NULL;
+        return nullptr;
 
     if ( ascii_tolower(*needle_ptr) == ascii_tolower(*haystack_ptr) ) {
       // Case-insensitive match - advance
@@ -431,7 +431,7 @@ char *strcasestr_alnum(const char *haystack, const char *needle) {
       haystack++;
       while ( !ascii_isalnum(*haystack) )
         if ( *haystack++ == '\0' )
-          return NULL;
+          return nullptr;
       haystack_ptr = haystack;
       needle_ptr = needle;
     }
@@ -472,7 +472,7 @@ int CountSubstring(StringPiece text, StringPiece substring) {
 const char* strstr_delimited(const char* haystack,
                              const char* needle,
                              char delim) {
-  if (!needle || !haystack) return NULL;
+  if (!needle || !haystack) return nullptr;
   if (*needle == '\0') return haystack;
 
   int needle_len = strlen(needle);
@@ -499,12 +499,12 @@ const char* strstr_delimited(const char* haystack,
 
     // No match. Consume non-delimiter characters until we run out of them.
     while (*haystack != delim) {
-      if (*haystack == '\0') return NULL;
+      if (*haystack == '\0') return nullptr;
       ++haystack;
     }
   }
   LOG(FATAL) << "Unreachable statement";
-  return NULL;
+  return nullptr;
 }
 
 
@@ -518,8 +518,8 @@ char* gstrsep(char** stringp, const char* delim) {
   int c, sc;
   char *tok;
 
-  if ((s = *stringp) == NULL)
-    return NULL;
+  if ((s = *stringp) == nullptr)
+    return nullptr;
 
   tok = s;
   while (true) {
@@ -528,7 +528,7 @@ char* gstrsep(char** stringp, const char* delim) {
     do {
       if ((sc = *spanp++) == c) {
         if (c == 0)
-          s = NULL;
+          s = nullptr;
         else
           s[-1] = 0;
         *stringp = s;
@@ -537,7 +537,7 @@ char* gstrsep(char** stringp, const char* delim) {
     } while (sc != 0);
   }
 
-  return NULL; /* should not happen */
+  return nullptr; /* should not happen */
 }
 
 void FastStringAppend(string* s, const char* data, int len) {
@@ -588,7 +588,7 @@ char* FastTimeToBuffer(time_t s, char* buffer) {
   }
 
   struct tm tm;
-  if (PortableSafeGmtime(&s, &tm) == NULL) {
+  if (PortableSafeGmtime(&s, &tm) == nullptr) {
     // Error message must fit in 30-char buffer.
     memcpy(buffer, "Invalid:", sizeof("Invalid:"));
     FastInt64ToBufferLeft(s, buffer+strlen(buffer));
@@ -679,17 +679,17 @@ char* FastTimeToBuffer(time_t s, char* buffer) {
 //    and didn't want to (or cannot) modify the string
 // ----------------------------------------------------------------------
 char* strdup_with_new(const char* the_string) {
-  if (the_string == NULL)
-    return NULL;
+  if (the_string == nullptr)
+    return nullptr;
   else
     return strndup_with_new(the_string, strlen(the_string));
 }
 
 char* strndup_with_new(const char* the_string, int max_length) {
-  if (the_string == NULL)
-    return NULL;
+  if (the_string == nullptr)
+    return nullptr;
 
-  char* result = new char[max_length + 1];
+  auto* result = new char[max_length + 1];
   result[max_length] = '\0';  // terminate the string because strncpy might not
   return strncpy(result, the_string, max_length);
 }
@@ -713,15 +713,15 @@ char* strndup_with_new(const char* the_string, int max_length) {
 const char* ScanForFirstWord(const char* the_string, const char** end_ptr) {
   CHECK(end_ptr != NULL) << ": precondition violated";
 
-  if (the_string == NULL)  // empty string
-    return NULL;
+  if (the_string == nullptr)  // empty string
+    return nullptr;
 
   const char* curr = the_string;
   while ((*curr != '\0') && ascii_isspace(*curr))  // skip initial spaces
     ++curr;
 
   if (*curr == '\0')  // no valid word found
-    return NULL;
+    return nullptr;
 
   // else has a valid word
   const char* first_word = curr;
@@ -746,7 +746,7 @@ const char *AdvanceIdentifier(const char *str) {
   // We could have used ascii_isalpha and ascii_isalnum.
   char ch = *str++;
   if (!((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || ch == '_'))
-    return NULL;
+    return nullptr;
   while (true) {
     ch = *str;
     if (!((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') ||
@@ -887,7 +887,7 @@ namespace strings {
 StringPiece FindEol(StringPiece s) {
   for (size_t i = 0; i < s.length(); ++i) {
     if (s[i] == '\n') {
-      return StringPiece(s.data() + i, 1);
+      return {s.data() + i, 1};
     }
     if (s[i] == '\r') {
       if (i+1 < s.length() && s[i+1] == '\n') {
@@ -907,8 +907,8 @@ StringPiece FindEol(StringPiece s) {
 //  return true if string s contains only whitespace characters
 //------------------------------------------------------------------------
 bool OnlyWhitespace(StringPiece s) {
-  for ( int i = 0; i < s.size(); ++i ) {
-    if ( !ascii_isspace(s[i]) ) return false;
+  for (char i : s) {
+    if ( !ascii_isspace(i) ) return false;
   }
   return true;
 }

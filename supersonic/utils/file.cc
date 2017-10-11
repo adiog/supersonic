@@ -21,6 +21,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <cstdio>
+#include <utility>
 #include <sys/stat.h>
 
 #include <glog/logging.h>
@@ -36,10 +37,10 @@ inline static bool IsUInt64ANegativeInt64(uint64 num) {
   return (static_cast<int64>(num) < 0);
 }
 
-File::File(const string& name)
-    : create_file_name_(name) { }
+File::File(string  name)
+    : create_file_name_(std::move(name)) { }
 
-File::~File() { }
+File::~File() = default;
 
 /* static */
 string File::JoinPath(const string& dirname, const string& basename) {
@@ -59,24 +60,24 @@ namespace {
 class LocalFileImpl : public File {
  public:
   LocalFileImpl(const std::string& file_name,
-           const std::string& mode,
+           std::string  mode,
            const mode_t& permissions);
 
-  virtual ~LocalFileImpl();
+  ~LocalFileImpl() override;
 
   // Return true if file exists.  Returns false if file does not exist or if an
   // error is encountered.
-  virtual bool Exists() const;
+  bool Exists() const override;
 
   // File handling methods.
-  virtual bool Open();
-  virtual bool Delete();
-  virtual bool Close();
-  virtual int64 Read(void* OUTPUT, uint64 length);
-  virtual char* ReadLine(char* buffer, uint64 max_length);
-  virtual int64 Write(const void* buffer, uint64 length);
-  virtual bool Seek(int64 position);
-  virtual bool eof();
+  bool Open() override;
+  bool Delete() override;
+  bool Close() override;
+  int64 Read(void* OUTPUT, uint64 length) override;
+  char* ReadLine(char* buffer, uint64 max_length) override;
+  int64 Write(const void* buffer, uint64 length) override;
+  bool Seek(int64 position) override;
+  bool eof() override;
 
  protected:
   FILE* internal_file_;
@@ -92,22 +93,22 @@ class LocalFileImpl : public File {
 };
 
 LocalFileImpl::LocalFileImpl(const std::string& file_name,
-                   const std::string& mode,
+                   std::string  mode,
                    const mode_t& permissions)
   : File(file_name),
-    internal_file_(NULL),
+    internal_file_(nullptr),
     file_name_(file_name),
-    file_mode_(mode),
+    file_mode_(std::move(mode)),
     permissions_(permissions) { }
 
-LocalFileImpl::~LocalFileImpl() { }
+LocalFileImpl::~LocalFileImpl() = default;
 
 bool LocalFileImpl::Exists() const {
   return access(file_name_.c_str(), F_OK) != -1;
 }
 
 bool LocalFileImpl::Open() {
-  if (internal_file_ != NULL) {
+  if (internal_file_ != nullptr) {
     LOG(ERROR) << "File already open: " << internal_file_;
     return false;
   }
@@ -162,13 +163,13 @@ bool LocalFileImpl::Open() {
     int fd = open(file_name_.c_str(), mode_flags, permissions);
     if (fd >= 0) {
       internal_file_ = fdopen(fd, file_mode_.c_str());
-      if (internal_file_ == NULL) {
+      if (internal_file_ == nullptr) {
         LOG(ERROR) << "fdopen failed: " << strerror(errno);
         close(fd);
       }
     }
   }
-  return (internal_file_ != NULL);
+  return (internal_file_ != nullptr);
 }
 
 bool LocalFileImpl::Delete() {
@@ -182,27 +183,27 @@ bool LocalFileImpl::Delete() {
 
 bool LocalFileImpl::Close() {
   bool result = false;
-  if (internal_file_ != NULL) {
+  if (internal_file_ != nullptr) {
     bool error = false;
     int rc;
     error |= (IsOpenedWritable() && ferror(internal_file_));
     rc = fclose(internal_file_);
     error |= (rc != 0);
     result = !error;
-    internal_file_ = NULL;
+    internal_file_ = nullptr;
   }
   delete this;
   return result;
 }
 
 int64 LocalFileImpl::Read(void* buffer, uint64 length) {
-  if ((buffer == NULL) || IsUInt64ANegativeInt64(length)) {
+  if ((buffer == nullptr) || IsUInt64ANegativeInt64(length)) {
     LOG(ERROR) << "Bad read arguments.  Buff: " << buffer
                << " length: " << length << " file: "
                << create_file_name_;
     return -1;
   }
-  if (internal_file_ == NULL) {
+  if (internal_file_ == nullptr) {
     return -1;
   }
   const uint64 max_bytes_to_read = INT_MAX;
@@ -224,18 +225,18 @@ int64 LocalFileImpl::Read(void* buffer, uint64 length) {
 }
 
 char* LocalFileImpl::ReadLine(char* buffer, uint64 max_length) {
-  if (internal_file_ == NULL) return NULL;
+  if (internal_file_ == nullptr) return nullptr;
   return (fgets(buffer, static_cast<int>(max_length), internal_file_));
 }
 
 int64 LocalFileImpl::Write(const void* buffer, uint64 length) {
-  if ((buffer == NULL) || IsUInt64ANegativeInt64(length)) {
+  if ((buffer == nullptr) || IsUInt64ANegativeInt64(length)) {
     LOG(ERROR) << "Bad write arguments.  Buff: " << buffer
                << " length: " << length << " file: "
                << create_file_name_;
     return -1;
   }
-  if (internal_file_ == NULL) {
+  if (internal_file_ == nullptr) {
     return -1;
   } else {
     const int64 bytes_written = fwrite(buffer, 1, length, internal_file_);
@@ -254,7 +255,7 @@ int64 LocalFileImpl::Write(const void* buffer, uint64 length) {
 // The following require a bunch of assertions to make sure
 // the 32 to 64 bit conversions are ok.
 bool LocalFileImpl::Seek(int64 position) {
-  if (internal_file_ == NULL) {
+  if (internal_file_ == nullptr) {
     LOG(ERROR) << "Can't seek on an un-open file: " << create_file_name_;
     return false;
   }
@@ -270,7 +271,7 @@ bool LocalFileImpl::Seek(int64 position) {
 }
 
 bool LocalFileImpl::eof() {
-  if (internal_file_ == NULL) return true;
+  if (internal_file_ == nullptr) return true;
   return static_cast<bool>(feof(internal_file_));
 }
 
@@ -291,14 +292,14 @@ File* File::Create(const std::string& file_name,
 
 File* File::OpenOrDie(const std::string& file_name, const std::string& mode) {
   File* fp = File::Create(file_name, mode);
-  if (fp == NULL) {
+  if (fp == nullptr) {
     LOG(ERROR) << "Cannot create file " << file_name << "in mode: " << mode;
-    return NULL;
+    return nullptr;
   }
   if (!fp->Open()) {
     LOG(ERROR)
         << "Cannot open created file " << file_name << "in mode: " << mode;
-    return NULL;
+    return nullptr;
   }
   return fp;
 }

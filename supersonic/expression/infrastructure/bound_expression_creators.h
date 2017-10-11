@@ -34,60 +34,35 @@ class BufferAllocator;
 class Expression;
 
 // Shorthands for function pointers to expression creation functions.
-typedef const Expression*(*ConstExpressionCreator)();
+using ConstExpressionCreator = const Expression *(*)();
 
-typedef const Expression*(*UnaryExpressionCreator)(const Expression*);
+using UnaryExpressionCreator = const Expression *(*)(const Expression *);
 
-typedef const Expression*(*BinaryExpressionCreator)(const Expression*,
-                                                    const Expression*);
+using BinaryExpressionCreator = const Expression *(*)(const Expression *, const Expression *);
 
-typedef const Expression*(*TernaryExpressionCreator)(const Expression*,
-                                                     const Expression*,
-                                                     const Expression*);
+using TernaryExpressionCreator = const Expression *(*)(const Expression *, const Expression *, const Expression *);
 
-typedef const Expression*(*QuaternaryExpressionCreator)(const Expression*,
-                                                        const Expression*,
-                                                        const Expression*,
-                                                        const Expression*);
+using QuaternaryExpressionCreator = const Expression *(*)(const Expression *, const Expression *, const Expression *, const Expression *);
 
-typedef const Expression*(*QuinaryExpressionCreator)(const Expression*,
-                                                     const Expression*,
-                                                     const Expression*,
-                                                     const Expression*,
-                                                     const Expression*);
+using QuinaryExpressionCreator = const Expression *(*)(const Expression *, const Expression *, const Expression *, const Expression *, const Expression *);
 
-typedef const Expression*(*SenaryExpressionCreator)(const Expression*,
-                                                    const Expression*,
-                                                    const Expression*,
-                                                    const Expression*,
-                                                    const Expression*,
-                                                    const Expression*);
+using SenaryExpressionCreator = const Expression *(*)(const Expression *, const Expression *, const Expression *, const Expression *, const Expression *, const Expression *);
 
 
 // TODO(ptab): Rename to *Creator (for example: BoundConstExpressionCreator).
-typedef FailureOrOwned<BoundExpression>(*BoundConstExpressionFactory)(
-    BufferAllocator*, rowcount_t);
+using BoundConstExpressionFactory = FailureOrOwned<BoundExpression> (*)(BufferAllocator *, rowcount_t);
 
-typedef FailureOrOwned<BoundExpression>(*BoundUnaryExpressionFactory)(
-    BoundExpression*, BufferAllocator*, rowcount_t);
+using BoundUnaryExpressionFactory = FailureOrOwned<BoundExpression> (*)(BoundExpression *, BufferAllocator *, rowcount_t);
 
-typedef FailureOrOwned<BoundExpression>(*BoundBinaryExpressionFactory)(
-    BoundExpression*, BoundExpression*, BufferAllocator*, rowcount_t);
+using BoundBinaryExpressionFactory = FailureOrOwned<BoundExpression> (*)(BoundExpression *, BoundExpression *, BufferAllocator *, rowcount_t);
 
-typedef FailureOrOwned<BoundExpression>(*BoundTernaryExpressionFactory)(
-    BoundExpression*, BoundExpression*, BoundExpression*, BufferAllocator*,
-    rowcount_t);
+using BoundTernaryExpressionFactory = FailureOrOwned<BoundExpression> (*)(BoundExpression *, BoundExpression *, BoundExpression *, BufferAllocator *, rowcount_t);
 
-typedef FailureOrOwned<BoundExpression>(*BoundQuaternaryExpressionFactory)(
-    BoundExpression*, BoundExpression*, BoundExpression*, BoundExpression*,
-    BufferAllocator*, rowcount_t);
+using BoundQuaternaryExpressionFactory = FailureOrOwned<BoundExpression> (*)(BoundExpression *, BoundExpression *, BoundExpression *, BoundExpression *, BufferAllocator *, rowcount_t);
 
-typedef FailureOrOwned<BoundExpression>(*BoundSenaryExpressionFactory)(
-    BoundExpression*, BoundExpression*, BoundExpression*, BoundExpression*,
-    BoundExpression*, BoundExpression*, BufferAllocator*, rowcount_t);
+using BoundSenaryExpressionFactory = FailureOrOwned<BoundExpression> (*)(BoundExpression *, BoundExpression *, BoundExpression *, BoundExpression *, BoundExpression *, BoundExpression *, BufferAllocator *, rowcount_t);
 
-typedef FailureOrOwned<BoundExpression>(*BoundExpressionListExpressionFactory)(
-    BoundExpressionList*,  BufferAllocator*, rowcount_t);
+using BoundExpressionListExpressionFactory = FailureOrOwned<BoundExpression> (*)(BoundExpressionList *, BufferAllocator *, rowcount_t);
 
 }  // namespace supersonic
 #endif  // SUPERSONIC_EXPRESSION_INFRASTRUCTURE_BOUND_EXPRESSION_CREATORS_H_

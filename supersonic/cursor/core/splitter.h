@@ -51,8 +51,8 @@ class SplitterInterface {
  public:
   // Creates a new splitter for the specified cursor. The new splitter has no
   // readers - you need to add them via AddReader.
-  SplitterInterface() {}
-  virtual ~SplitterInterface() {}
+  SplitterInterface() = default;
+  virtual ~SplitterInterface() = default;
 
   // Adds a new reader of that splitter. Passes the ownership of this splitter
   // to the reader (to be shared with all other readers added, if any).
@@ -107,12 +107,12 @@ class BufferedSplitter : public SplitterInterface {
         copier(input->schema(), /* deep copy = */ true),
         rows_fetched_(0), has_next_called_(false),
         buffer_allocator_(buffer_allocator), max_row_count_(max_row_count) {}
-  virtual ~BufferedSplitter() {}
-  virtual Cursor* AddReader();
-  virtual const TupleSchema& schema() const { return input_.schema(); }
-  virtual void Interrupt() { input_.Interrupt(); }
+  ~BufferedSplitter() override = default;
+  Cursor* AddReader() override;
+  const TupleSchema& schema() const override { return input_.schema(); }
+  void Interrupt() override { input_.Interrupt(); }
 
-  virtual void ApplyToChildren(CursorTransformer* transformer) {
+  void ApplyToChildren(CursorTransformer* transformer) override {
     input_.ApplyToCursor(transformer);
   }
 
@@ -233,15 +233,15 @@ class BarrierSplitter : public SplitterInterface {
   // readers - you need to add them via AddReader.
   explicit BarrierSplitter(Cursor* input)
       : input_(input), readers_(), barrier_(0) {}
-  virtual ~BarrierSplitter() {}
+  ~BarrierSplitter() override = default;
 
-  virtual Cursor* AddReader();
+  Cursor* AddReader() override;
 
-  virtual const TupleSchema& schema() const { return input_.schema(); }
+  const TupleSchema& schema() const override { return input_.schema(); }
 
-  virtual void Interrupt() { input_.Interrupt(); }
+  void Interrupt() override { input_.Interrupt(); }
 
-  virtual void ApplyToChildren(CursorTransformer* transformer) {
+  void ApplyToChildren(CursorTransformer* transformer) override {
     input_.ApplyToCursor(transformer);
   }
 
@@ -276,24 +276,24 @@ class BufferedSplitReaderCursor : public Cursor {
         position_(position),
         input_(splitter->schema()) {}
 
-  ~BufferedSplitReaderCursor() {
+  ~BufferedSplitReaderCursor() override {
     splitter_->unregister(position_);
   }
 
-  virtual const TupleSchema& schema() const { return input_.schema(); }
-  virtual ResultView Next(rowcount_t max_row_count);
+  const TupleSchema& schema() const override { return input_.schema(); }
+  ResultView Next(rowcount_t max_row_count) override;
   // TODO(user): One day, we might want to not push interrupt past the
   // splitter until all consumers are interrupted. Not needed for now though,
   // and more complex to implement.
-  void Interrupt() { splitter_->Interrupt(); }
+  void Interrupt() override { splitter_->Interrupt(); }
   // Call transform on the underlying splitter only if we own it.
-  virtual void ApplyToChildren(CursorTransformer* transformer) {
+  void ApplyToChildren(CursorTransformer* transformer) override {
     if (position_ == 0) {
       splitter_->ApplyToChildren(transformer);
     }
   }
-  virtual void AppendDebugDescription(string* target) const;
-  virtual bool IsWaitingOnBarrierSupported() const { return true; }
+  void AppendDebugDescription(string* target) const override;
+  bool IsWaitingOnBarrierSupported() const override { return true; }
 
   inline void reset(const View& view) {
     input_.reset(view);
@@ -320,25 +320,25 @@ class BarrierSplitReaderCursor : public Cursor {
         at_barrier_(true),
         input_(splitter->schema()) {}
 
-  ~BarrierSplitReaderCursor() {
+  ~BarrierSplitReaderCursor() override {
     if (!at_barrier_) enter_barrier();
     splitter_->unregister(position_);
   }
 
-  virtual const TupleSchema& schema() const { return input_.schema(); }
-  virtual ResultView Next(rowcount_t max_row_count);
+  const TupleSchema& schema() const override { return input_.schema(); }
+  ResultView Next(rowcount_t max_row_count) override;
   // TODO(user): One day, we might want to not push interrupt past the
   // splitter until all consumers are interrupted. Not needed for now though,
   // and more complex to implement.
-  void Interrupt() { splitter_->Interrupt(); }
+  void Interrupt() override { splitter_->Interrupt(); }
   // Call transform on the underlying splitter only if we own it.
-  virtual void ApplyToChildren(CursorTransformer* transformer) {
+  void ApplyToChildren(CursorTransformer* transformer) override {
     if (position_ == 0) {
       splitter_->ApplyToChildren(transformer);
     }
   }
-  virtual void AppendDebugDescription(string* target) const;
-  virtual bool IsWaitingOnBarrierSupported() const { return true; }
+  void AppendDebugDescription(string* target) const override;
+  bool IsWaitingOnBarrierSupported() const override { return true; }
 
   inline void enter_barrier() {
     at_barrier_ = true;

@@ -44,7 +44,7 @@ StringPiece GenericFind(
   if (delimiter.empty() && text.length() > 0) {
     // Special case for empty string delimiters: always return a zero-length
     // StringPiece referring to the item at position 1 past pos.
-    return StringPiece(text.begin() + pos + 1, 0);
+    return {text.begin() + pos + 1, 0};
   }
   size_t found_pos = StringPiece::npos;
   StringPiece found(text.end(), 0);  // By default, not found
@@ -113,7 +113,7 @@ StringPiece FixedLength::Find(StringPiece text, size_t pos) const {
   // If the string is shorter than the chunk size we say we
   // "can't find the delimiter" so this will be the last chunk.
   if (substr.length() <= length_)
-    return StringPiece(text.end(), 0);
+    return {text.end(), 0};
 
   return StringPiece(substr.begin() + length_, 0);
 }
@@ -339,12 +339,12 @@ void SplitStringPieceToVector(StringPiece full,
 void SplitToVector(char* full, const char* delim, vector<char*>* vec,
                    bool omit_empty_strings) {
   char* next  = full;
-  while ((next = gstrsep(&full, delim)) != NULL) {
+  while ((next = gstrsep(&full, delim)) != nullptr) {
     if (omit_empty_strings && next[0] == '\0') continue;
     vec->push_back(next);
   }
   // Add last element (or full string if no delimeter found):
-  if (full != NULL) {
+  if (full != nullptr) {
     vec->push_back(full);
   }
 }
@@ -352,12 +352,12 @@ void SplitToVector(char* full, const char* delim, vector<char*>* vec,
 void SplitToVector(char* full, const char* delim, vector<const char*>* vec,
                    bool omit_empty_strings) {
   char* next  = full;
-  while ((next = gstrsep(&full, delim)) != NULL) {
+  while ((next = gstrsep(&full, delim)) != nullptr) {
     if (omit_empty_strings && next[0] == '\0') continue;
     vec->push_back(next);
   }
   // Add last element (or full string if no delimeter found):
-  if (full != NULL) {
+  if (full != nullptr) {
     vec->push_back(full);
   }
 }
@@ -568,8 +568,8 @@ DEFINE_SPLIT_ONE_NUMBER_TOKEN(HexUint64, uint64, strtou64_16)
 #define EOS(ch)  ( (ch) == '\0' || ascii_isspace(ch) )
 bool SplitRange(const char* rangestr, int* from, int* to) {
   // We need to do the const-cast because strol takes a char**, not const char**
-  char* val = const_cast<char*>(rangestr);
-  if (val == NULL || EOS(*val))  return true;  // we'll say nothingness is ok
+  auto* val = const_cast<char*>(rangestr);
+  if (val == nullptr || EOS(*val))  return true;  // we'll say nothingness is ok
 
   if ( val[0] == '-' && EOS(val[1]) )    // CASE 1: -
     return true;                         // nothing changes
@@ -749,7 +749,7 @@ char* SplitStructuredLineInternal(char* line,
   if (!expected_to_close.empty()) {
     return current;  // Missing closing symbol(s)
   }
-  return NULL;  // Success
+  return nullptr;  // Success
 }
 
 bool SplitStructuredLineInternal(StringPiece line,
@@ -916,7 +916,7 @@ bool SplitStringIntoKeyValuePairs(
 // --------------------------------------------------------------------
 const char* SplitLeadingDec32Values(const char *str, vector<int32> *result) {
   for (;;) {
-    char *end = NULL;
+    char *end = nullptr;
     long value = strtol(str, &end, 10);
     if (end == str)
       break;
@@ -936,7 +936,7 @@ const char* SplitLeadingDec32Values(const char *str, vector<int32> *result) {
 
 const char* SplitLeadingDec64Values(const char *str, vector<int64> *result) {
   for (;;) {
-    char *end = NULL;
+    char *end = nullptr;
     const int64 value = strtoll(str, &end, 10);
     if (end == str)
       break;

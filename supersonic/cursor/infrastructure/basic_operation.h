@@ -46,9 +46,9 @@ class LookupIndex;
 // * stores BufferAllocator to be used by created cursors.
 class BasicOperation : public Operation {
  public:
-  virtual ~BasicOperation() {}
+  ~BasicOperation() override = default;
 
-  virtual FailureOrOwned<Cursor> CreateCursor() const {
+  FailureOrOwned<Cursor> CreateCursor() const override {
     THROW(new Exception(
         ERROR_NOT_IMPLEMENTED,
         "Operation <" + LazilyGetDebugDescription() +
@@ -62,10 +62,10 @@ class BasicOperation : public Operation {
         "> doesn't support LookupIndex interface"));
   }
 
-  virtual void AppendDebugDescription(string* const target) const;
+  void AppendDebugDescription(string* const target) const override;
 
-  virtual void SetBufferAllocator(BufferAllocator* buffer_allocator,
-                                  bool cascade_to_children) {
+  void SetBufferAllocator(BufferAllocator* buffer_allocator,
+                                  bool cascade_to_children) override {
     DoSetBufferAllocator(buffer_allocator, true);
     if (cascade_to_children) {
       for (int i = 0; i < children_count(); ++i) {
@@ -74,8 +74,8 @@ class BasicOperation : public Operation {
     }
   }
 
-  virtual void SetBufferAllocatorWhereUnset(BufferAllocator* buffer_allocator,
-                                            bool cascade_to_children) {
+  void SetBufferAllocatorWhereUnset(BufferAllocator* buffer_allocator,
+                                            bool cascade_to_children) override {
     DoSetBufferAllocator(buffer_allocator, false);
     if (cascade_to_children) {
       for (int i = 0; i < children_count(); ++i) {
@@ -88,13 +88,13 @@ class BasicOperation : public Operation {
   // Base constructor for operations with no children.
   // Buffer allocator's ownership stays with the caller.
   BasicOperation()
-      : buffer_allocator_(NULL),
+      : buffer_allocator_(nullptr),
         default_row_count_(Cursor::kDefaultRowCount) {}
 
   // Base constructor for operations with one child.
   // Takes ownership of the child.
   explicit BasicOperation(Operation* child)
-      : buffer_allocator_(NULL),
+      : buffer_allocator_(nullptr),
         default_row_count_(Cursor::kDefaultRowCount) {
     children_.push_back(make_linked_ptr(child));
   }
@@ -104,7 +104,7 @@ class BasicOperation : public Operation {
   // Buffer allocator's ownership stays with the caller.
   BasicOperation(Operation* child1,
                  Operation* child2)
-      : buffer_allocator_(NULL),
+      : buffer_allocator_(nullptr),
         default_row_count_(Cursor::kDefaultRowCount) {
     children_.push_back(make_linked_ptr(child1));
     children_.push_back(make_linked_ptr(child2));
@@ -113,7 +113,7 @@ class BasicOperation : public Operation {
   // Takes ownership of the children.
   // Buffer allocator's ownership stays with the caller.
   explicit BasicOperation(const vector<Operation*>& children)
-      : buffer_allocator_(NULL),
+      : buffer_allocator_(nullptr),
         default_row_count_(Cursor::kDefaultRowCount) {
     for (int i = 0; i < children.size(); ++i) {
       children_.push_back(make_linked_ptr(children[i]));
@@ -139,7 +139,7 @@ class BasicOperation : public Operation {
   // Retrieves the allocator. Returns HeapBufferAllocator::Get() if the
   // allocator wasn't set.
   BufferAllocator* buffer_allocator() const {
-    return (buffer_allocator_ != NULL)
+    return (buffer_allocator_ != nullptr)
         ? buffer_allocator_
         : HeapBufferAllocator::Get();
   }
@@ -148,7 +148,7 @@ class BasicOperation : public Operation {
   // if it was already set before.
   virtual void DoSetBufferAllocator(BufferAllocator* buffer_allocator,
                                     bool override) {
-    if (buffer_allocator_ == NULL || override) {
+    if (buffer_allocator_ == nullptr || override) {
       buffer_allocator_ = buffer_allocator;
     }
   }

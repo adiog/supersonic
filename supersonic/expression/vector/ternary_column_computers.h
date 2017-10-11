@@ -151,9 +151,9 @@ FailureOrVoid CheckAndNull(const Column& left_column,
                            const Column& right_column,
                            bool_ptr skip_vector,
                            size_t row_count) {
-  typedef typename TypeTraits<left_type>::cpp_type left_cpp_type;
-  typedef typename TypeTraits<middle_type>::cpp_type middle_cpp_type;
-  typedef typename TypeTraits<right_type>::cpp_type right_cpp_type;
+  using left_cpp_type = typename TypeTraits<left_type>::cpp_type;
+  using middle_cpp_type = typename TypeTraits<middle_type>::cpp_type;
+  using right_cpp_type = typename TypeTraits<right_type>::cpp_type;
   const left_cpp_type* left_input = left_column.typed_data<left_type>();
   const middle_cpp_type* middle_input = middle_column.typed_data<middle_type>();
   const right_cpp_type* right_input = right_column.typed_data<right_type>();
@@ -192,10 +192,10 @@ template<OperatorId op, DataType left_type, DataType middle_type,
          DataType right_type, DataType result_type>
 struct ColumnTernaryComputer<op, left_type, middle_type, right_type,
                              result_type, false> {
-  typedef typename TypeTraits<result_type>::cpp_type ResultCppType;
-  typedef typename TypeTraits<left_type>::cpp_type LeftCppType;
-  typedef typename TypeTraits<middle_type>::cpp_type MiddleCppType;
-  typedef typename TypeTraits<right_type>::cpp_type RightCppType;
+  using ResultCppType = typename TypeTraits<result_type>::cpp_type;
+  using LeftCppType = typename TypeTraits<left_type>::cpp_type;
+  using MiddleCppType = typename TypeTraits<middle_type>::cpp_type;
+  using RightCppType = typename TypeTraits<right_type>::cpp_type;
 
   FailureOrVoid operator()(const Column& left,
                            const Column& middle,
@@ -248,10 +248,10 @@ template<OperatorId op, DataType left_type, DataType middle_type,
          DataType right_type, DataType result_type>
 struct ColumnTernaryComputer<op, left_type, middle_type, right_type,
                              result_type, true> {
-  typedef typename TypeTraits<result_type>::cpp_type ResultCppType;
-  typedef typename TypeTraits<left_type>::cpp_type LeftCppType;
-  typedef typename TypeTraits<middle_type>::cpp_type MiddleCppType;
-  typedef typename TypeTraits<right_type>::cpp_type RightCppType;
+  using ResultCppType = typename TypeTraits<result_type>::cpp_type;
+  using LeftCppType = typename TypeTraits<left_type>::cpp_type;
+  using MiddleCppType = typename TypeTraits<middle_type>::cpp_type;
+  using RightCppType = typename TypeTraits<right_type>::cpp_type;
 
   FailureOrVoid operator()(const Column& left,
                            const Column& middle,

@@ -115,14 +115,14 @@ class Arena {
 // (The code is shamelessly stolen from base/arena-inl.h).
 template<class T> class ArenaAllocator {
  public:
-  typedef T value_type;
-  typedef size_t size_type;
-  typedef ptrdiff_t difference_type;
+  using value_type = T;
+  using size_type = size_t;
+  using difference_type = ptrdiff_t;
 
-  typedef T* pointer;
-  typedef const T* const_pointer;
-  typedef T& reference;
-  typedef const T& const_reference;
+  using pointer = T *;
+  using const_pointer = const T *;
+  using reference = T &;
+  using const_reference = const T &;
   size_type max_size() const  { return size_t(-1) / sizeof(T); }
 
   explicit ArenaAllocator(Arena* arena) : arena_(arena) {
@@ -131,7 +131,7 @@ template<class T> class ArenaAllocator {
 
   ~ArenaAllocator() = default;
 
-  pointer allocate(size_type n, allocator<void>::const_pointer /*hint*/ = 0) {
+  pointer allocate(size_type n, allocator<void>::const_pointer /*hint*/ = nullptr) {
     return reinterpret_cast<T*>(arena_->AllocateBytes(n * sizeof(T)));
   }
 
@@ -144,7 +144,7 @@ template<class T> class ArenaAllocator {
   void destroy(pointer p) { p->~T(); }
 
   template<class U> struct rebind {
-    typedef ArenaAllocator<U> other;
+    using other = ArenaAllocator<U>;
   };
 
   template<class U> explicit ArenaAllocator(const ArenaAllocator<U>& other)

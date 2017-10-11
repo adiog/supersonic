@@ -89,22 +89,22 @@ class DereferenceFormatterImpl {
 // AlphaNumFormatterImpl is the default in the base template, followed by
 // specializations for other types.
 template <typename ValueType> struct DefaultFormatter {
-  typedef AlphaNumFormatterImpl Type;
+  using Type = AlphaNumFormatterImpl;
 };
 template <> struct DefaultFormatter<const char*> {
-  typedef AlphaNumFormatterImpl Type;
+  using Type = AlphaNumFormatterImpl;
 };
 template <> struct DefaultFormatter<char*> {
-  typedef AlphaNumFormatterImpl Type;
+  using Type = AlphaNumFormatterImpl;
 };
 template <> struct DefaultFormatter<string> {
-  typedef NoFormatter Type;
+  using Type = NoFormatter;
 };
 template <> struct DefaultFormatter<StringPiece> {
-  typedef NoFormatter Type;
+  using Type = NoFormatter;
 };
 template <typename ValueType> struct DefaultFormatter<ValueType*> {
-  typedef DereferenceFormatterImpl<AlphaNumFormatterImpl> Type;
+  using Type = DereferenceFormatterImpl<AlphaNumFormatterImpl>;
 };
 
 //
@@ -191,7 +191,7 @@ struct JoinTupleLoop<Tup, N, N, Formatter> {
 template <typename... T, typename Formatter>
 string JoinAlgorithm(const std::tuple<T...>& tup, StringPiece sep,
                      Formatter fmt) {
-  typedef typename std::tuple<T...> Tup;
+  using Tup = typename std::tuple<T...>;
   const size_t kTupSize = std::tuple_size<Tup>::value;
   string result;
   JoinTupleLoop<Tup, 0, kTupSize, Formatter>()(&result, tup, sep, fmt);

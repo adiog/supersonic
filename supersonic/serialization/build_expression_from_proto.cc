@@ -67,7 +67,7 @@ using common::OperationType;
 using common::Variable;
 using common::Tuple;
 
-typedef FailureOrOwned<const Expression> ExpressionResult;
+using ExpressionResult = FailureOrOwned<const Expression>;
 
 FailureOr<DataType> ResolveType(const common::DataType& type) {
   if (type >= 0 && type <= 11) {

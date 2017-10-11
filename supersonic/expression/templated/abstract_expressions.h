@@ -39,7 +39,7 @@ class AbstractUnaryExpression : public UnaryExpression {
   explicit AbstractUnaryExpression(const Expression* const argument)
       : UnaryExpression(argument) {}
 
-  virtual string ToString(bool verbose) const {
+  string ToString(bool verbose) const override {
     return UnaryExpressionTraits<op>::FormatDescription(
         child_expression_->ToString(verbose));
   }
@@ -225,7 +225,7 @@ class AbstractBinaryExpression : public BinaryExpression {
                            const Expression* const right)
       : BinaryExpression(left, right) {}
 
-  virtual string ToString(bool verbose) const {
+  string ToString(bool verbose) const override {
     return BinaryExpressionTraits<op>::FormatDescription(
         left_->ToString(verbose), right_->ToString(verbose));
   }
@@ -341,7 +341,7 @@ class TypedTernaryExpression : public TernaryExpression {
                          const Expression* const right)
     : TernaryExpression(left, middle, right) {}
 
-  virtual string ToString(bool verbose) const {
+  string ToString(bool verbose) const override {
     return TernaryExpressionTraits<op>::FormatDescription(
         left_->ToString(verbose),
         middle_->ToString(verbose),
@@ -349,13 +349,13 @@ class TypedTernaryExpression : public TernaryExpression {
   }
 
  private:
-  virtual FailureOrOwned<BoundExpression> CreateBoundTernaryExpression(
+  FailureOrOwned<BoundExpression> CreateBoundTernaryExpression(
       const TupleSchema& input_schema,
       BufferAllocator* const allocator,
       rowcount_t row_capacity,
       BoundExpression* left,
       BoundExpression* middle,
-      BoundExpression* right) const;
+      BoundExpression* right) const override;
 
   DISALLOW_COPY_AND_ASSIGN(TypedTernaryExpression);
 };

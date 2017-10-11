@@ -140,8 +140,8 @@ struct CheckAndNull {
                         bool_ptr skip_vector,
                         size_t row_count) const {
     // Local definitions.
-    typedef typename TypeTraits<left_type>::cpp_type left_cpp_type;
-    typedef typename TypeTraits<right_type>::cpp_type right_cpp_type;
+    using left_cpp_type = typename TypeTraits<left_type>::cpp_type;
+    using right_cpp_type = typename TypeTraits<right_type>::cpp_type;
     const left_cpp_type* left_input = left_column.typed_data<left_type>();
     const right_cpp_type* right_input = right_column.typed_data<right_type>();
 
@@ -173,9 +173,9 @@ struct CheckAndNull {
 template<OperatorId op, DataType left_type, DataType right_type,
          DataType result_type>
 struct ColumnBinaryComputer {
-  typedef typename TypeTraits<result_type>::cpp_type ResultCppType;
-  typedef typename TypeTraits<left_type>::cpp_type LeftCppType;
-  typedef typename TypeTraits<right_type>::cpp_type RightCppType;
+  using ResultCppType = typename TypeTraits<result_type>::cpp_type;
+  using LeftCppType = typename TypeTraits<left_type>::cpp_type;
+  using RightCppType = typename TypeTraits<right_type>::cpp_type;
 
   FailureOrVoid operator()(const Column& left,
                            const Column& right,

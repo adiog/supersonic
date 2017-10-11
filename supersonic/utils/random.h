@@ -29,8 +29,8 @@
 class RandomBase {
  public:
   // constructors.  Don't do too much.
-  RandomBase() { }
-  virtual ~RandomBase() { }
+  RandomBase() = default;
+  virtual ~RandomBase() = default;
 
   // Clone: generate a direct copy of this pseudorandom number generator.
   // NB: Returns NULL if Clone is not implemented/available.
@@ -70,15 +70,15 @@ class MTRandom : public RandomBase {
   // Some weak random data.  (time of day, hostname, etc.).  Uses InitArray().
   MTRandom();
 
-  virtual ~MTRandom();
+  ~MTRandom() override;
 
-  virtual MTRandom *Clone() const;
+  MTRandom *Clone() const override;
 
-  virtual uint8  Rand8();
-  virtual uint16 Rand16();
-  virtual uint32 Rand32();
-  virtual uint64 Rand64();
-  virtual int32 Next();
+  uint8  Rand8() override;
+  uint16 Rand16() override;
+  uint32 Rand32() override;
+  uint64 Rand64() override;
+  int32 Next() override;
 
   static int SeedSize() { return kMTSizeBytes; }
 

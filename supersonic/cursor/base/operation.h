@@ -75,7 +75,7 @@ class Operation {
 
  protected:
   // To allow instantiation in subclasses.
-  Operation() {}
+  Operation() = default;
 
  private:
   DISALLOW_COPY_AND_ASSIGN(Operation);

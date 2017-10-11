@@ -19,6 +19,7 @@
 #include <set>
 #include "supersonic/utils/std_namespace.h"
 #include <string>
+#include <utility>
 using std::unique_ptr;
 using std::make_unique;
 namespace supersonic {using std::string; }
@@ -63,7 +64,7 @@ BoundMultiSourceProjector::ProjectedAttributePositions(
              ReverseProjectionMap::const_iterator> it =
       reverse_projection_map_.equal_range(
           SourceAttribute(source_index, attribute_position));
-  return make_pair(it.first, it.second);
+  return {it.first, it.second};
 }
 
 bool BoundMultiSourceProjector::IsAttributeProjected(
@@ -126,8 +127,8 @@ class RenamingProjector : public SingleSourceProjector {
                                                                 aliases, ", ");
   }
 
-  virtual FailureOrOwned<const BoundSingleSourceProjector> Bind(
-      const TupleSchema& input_schema) const {
+  FailureOrOwned<const BoundSingleSourceProjector> Bind(
+      const TupleSchema& input_schema) const override {
     FailureOrOwned<const BoundSingleSourceProjector> bound =
         source_->Bind(input_schema);
     PROPAGATE_ON_FAILURE(bound);
@@ -151,12 +152,12 @@ class RenamingProjector : public SingleSourceProjector {
     return Success(result_projector.release());
   }
 
-  virtual RenamingProjector* Clone() const {
+  RenamingProjector* Clone() const override {
     return new RenamingProjector(aliases_, source_->Clone());
   }
 
   // (result_projection) RENAME AS (name1, name2, name3)
-  virtual string ToString(bool verbose) const;
+  string ToString(bool verbose) const override;
 
  private:
   const vector<string> aliases_;
@@ -180,8 +181,8 @@ class PositionedAttributeProjector : public SingleSourceProjector {
   explicit PositionedAttributeProjector(const int source_position)
       : source_position_(source_position) {}
 
-  virtual FailureOrOwned<const BoundSingleSourceProjector> Bind(
-      const TupleSchema& source_schema) const {
+  FailureOrOwned<const BoundSingleSourceProjector> Bind(
+      const TupleSchema& source_schema) const override {
     if (source_position_ >= source_schema.attribute_count()) {
       THROW(new Exception(
           ERROR_ATTRIBUTE_COUNT_MISMATCH,
@@ -195,11 +196,11 @@ class PositionedAttributeProjector : public SingleSourceProjector {
     return Success(projector.release());
   }
 
-  virtual PositionedAttributeProjector* Clone() const {
+  PositionedAttributeProjector* Clone() const override {
     return new PositionedAttributeProjector(source_position_);
   }
 
-  virtual string ToString(bool verbose) const {
+  string ToString(bool verbose) const override {
     return StringPrintf("AttributeAt(%d)", source_position_);
   }
 
@@ -210,13 +211,13 @@ class PositionedAttributeProjector : public SingleSourceProjector {
 
 class AllAttributesProjector : public SingleSourceProjector {
  public:
-  AllAttributesProjector() {}
+  AllAttributesProjector() = default;
   explicit AllAttributesProjector(const StringPiece& prefix) :
       prefix_(prefix.ToString()) {}
 
-  virtual FailureOrOwned<const BoundSingleSourceProjector> Bind(
-      const TupleSchema& source_schema) const {
-    BoundSingleSourceProjector* result =
+  FailureOrOwned<const BoundSingleSourceProjector> Bind(
+      const TupleSchema& source_schema) const override {
+    auto* result =
         new BoundSingleSourceProjector(source_schema);
     for (int i = 0; i < source_schema.attribute_count(); ++i) {
       if (prefix_.empty()) {
@@ -230,11 +231,11 @@ class AllAttributesProjector : public SingleSourceProjector {
     return Success(result);
   }
 
-  virtual AllAttributesProjector* Clone() const {
+  AllAttributesProjector* Clone() const override {
     return new AllAttributesProjector(prefix_);
   }
 
-  virtual string ToString(bool verbose) const {
+  string ToString(bool verbose) const override {
     return StrCat(prefix_, "*");
   }
 
@@ -272,7 +273,7 @@ CompoundSingleSourceProjector::Bind(
 }
 
 CompoundSingleSourceProjector* CompoundSingleSourceProjector::Clone() const {
-  CompoundSingleSourceProjector* clone = new CompoundSingleSourceProjector();
+  auto* clone = new CompoundSingleSourceProjector();
   for (vector<linked_ptr<const SingleSourceProjector> >::const_iterator i =
        projectors_.begin(); i != projectors_.end(); ++i) {
     clone->add((*i)->Clone());
@@ -316,7 +317,7 @@ const SingleSourceProjector* ProjectAttributesAt(const vector<int>& positions) {
 
 const SingleSourceProjector* ProjectNamedAttributes(
     const vector<string>& names) {
-  CompoundSingleSourceProjector* projector = new CompoundSingleSourceProjector;
+  auto* projector = new CompoundSingleSourceProjector;
   for (int i = 0; i < names.size(); ++i) {
     projector->add(ProjectNamedAttribute(names[i]));
   }

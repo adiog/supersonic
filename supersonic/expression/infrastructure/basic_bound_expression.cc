@@ -266,7 +266,7 @@ const Expression* CreateConstantExpression(DataType type,
 FailureOrOwned<const Expression> ResolveColumnToConstant(
     const Column& column) {
   // If we got a null, we return a null of the appropriate type.
-  if (column.is_null() != NULL && column.is_null()[0]) {
+  if (column.is_null() != nullptr && column.is_null()[0]) {
     return Success(Null(column.attribute().type()));
   } else {
     // The call to CreateConstantExpression hides types_infrastructure

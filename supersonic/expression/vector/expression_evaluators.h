@@ -47,8 +47,8 @@ namespace operators {
 
 template<DataType input_type>
 struct TypedToString {
-  typedef typename TypeTraits<input_type>::cpp_type InputCppType;
-  TypedToString() {}
+  using InputCppType = typename TypeTraits<input_type>::cpp_type;
+  TypedToString() = default;
   StringPiece operator()(InputCppType input, Arena* arena) {
     // TODO(onufry): modify this code not to do unnecessary copying when
     // the default printers are modified to support writing directly to the
@@ -56,9 +56,9 @@ struct TypedToString {
     result_.clear();
     PrintTyped<input_type>(input, &result_);
     size_t length = result_.length();
-    char* new_str = static_cast<char*>(arena->AllocateBytes(length));
+    auto* new_str = static_cast<char*>(arena->AllocateBytes(length));
     strncpy(new_str, result_.data(), length);
-    return StringPiece(new_str, length);
+    return {new_str, length};
   }
 
  private:
@@ -67,7 +67,7 @@ struct TypedToString {
 
 template<DataType output_type>
 struct TypedParseString {
-  typedef typename TypeTraits<output_type>::cpp_type OutputCppType;
+  using OutputCppType = typename TypeTraits<output_type>::cpp_type;
   explicit TypedParseString(const Attribute& attribute) {}
 
   void operator()(StringPiece input, OutputCppType* output, bool_ptr failure) {

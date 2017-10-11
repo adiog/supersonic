@@ -370,12 +370,12 @@ namespace internal {
 // be treated as if a Literal delimiter was given.
 template <typename Delimiter>
 struct SelectDelimiter {
-  typedef Delimiter Type;
+  using Type = Delimiter;
 };
-template <> struct SelectDelimiter<char*>       { typedef Literal Type; };
-template <> struct SelectDelimiter<const char*> { typedef Literal Type; };
-template <> struct SelectDelimiter<StringPiece> { typedef Literal Type; };
-template <> struct SelectDelimiter<std::string> { typedef Literal Type; };
+template <> struct SelectDelimiter<char*>       { using Type = Literal; };
+template <> struct SelectDelimiter<const char*> { using Type = Literal; };
+template <> struct SelectDelimiter<StringPiece> { using Type = Literal; };
+template <> struct SelectDelimiter<std::string> { using Type = Literal; };
 #if defined(HAS_GLOBAL_STRING)
 template <> struct SelectDelimiter<string> { typedef Literal Type; };
 #endif
@@ -457,7 +457,7 @@ class LimitImpl {
       : delimiter_(delimiter), limit_(limit), count_(0) {}
   StringPiece Find(StringPiece text, size_t pos) {
     if (count_++ == limit_) {
-      return StringPiece(text.end(), 0);  // No more matches.
+      return {text.end(), 0};  // No more matches.
     }
     return delimiter_.Find(text, pos);
   }
@@ -472,7 +472,7 @@ class LimitImpl {
 template <typename Delimiter>
 inline LimitImpl<typename internal::SelectDelimiter<Delimiter>::Type>
   Limit(Delimiter delim, int limit) {
-  typedef typename internal::SelectDelimiter<Delimiter>::Type DelimiterType;
+  using DelimiterType = typename internal::SelectDelimiter<Delimiter>::Type;
   return LimitImpl<DelimiterType>(DelimiterType(delim), limit);
 }
 
@@ -535,8 +535,7 @@ template <typename Delimiter>
 inline internal::Splitter<
     typename delimiter::internal::SelectDelimiter<Delimiter>::Type>
 Split(internal::ConvertibleToStringPiece text, Delimiter d) {
-  typedef typename delimiter::internal::SelectDelimiter<Delimiter>::Type
-      DelimiterType;
+  using DelimiterType = typename delimiter::internal::SelectDelimiter<Delimiter>::Type;
   return internal::Splitter<DelimiterType>(&text, DelimiterType(d));
 }
 
@@ -544,8 +543,7 @@ template <typename Delimiter, typename Predicate>
 inline internal::Splitter<
     typename delimiter::internal::SelectDelimiter<Delimiter>::Type, Predicate>
 Split(internal::ConvertibleToStringPiece text, Delimiter d, Predicate p) {
-  typedef typename delimiter::internal::SelectDelimiter<Delimiter>::Type
-      DelimiterType;
+  using DelimiterType = typename delimiter::internal::SelectDelimiter<Delimiter>::Type;
   return internal::Splitter<DelimiterType, Predicate>(&text, DelimiterType(d),
                                                       p);
 }

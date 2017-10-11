@@ -572,7 +572,7 @@ string Utf8SafeCHexEscape(StringPiece src) {
 void BackslashEscape(StringPiece src,
                      const strings::CharSet& to_escape,
                      string* dest) {
-  typedef StringPiece::const_iterator Iter;
+  using Iter = StringPiece::const_iterator;
   Iter first = src.begin();
   Iter last = src.end();
   while (first != last) {
@@ -595,7 +595,7 @@ void BackslashEscape(StringPiece src,
 void BackslashUnescape(StringPiece src,
                        const strings::CharSet& to_unescape,
                        string* dest) {
-  typedef StringPiece::const_iterator Iter;
+  using Iter = StringPiece::const_iterator;
   Iter first = src.begin();
   Iter last = src.end();
   bool escaped = false;
@@ -1666,8 +1666,7 @@ void EscapeFileName(StringPiece src, string* dst) {
   // Reserve at least src.size() chars
   dst->reserve(dst->size() + src.size());
 
-  for (int i = 0; i < src.size(); ++i) {
-    const char c = src[i];
+  for (char c : src) {
     // We do not use "isalpha" because we want the behavior to be
     // independent of the current locale settings.
     if (escape_file_name_exceptions.contains(c)) {
@@ -1767,10 +1766,10 @@ static void b2a_hex_t(const unsigned char* b, T a, int num) {
 
 string b2a_bin(const string& b, bool byte_order_msb) {
   string result;
-  for (int byte_offset = 0; byte_offset < b.size(); ++byte_offset) {
+  for (char byte_offset : b) {
     for (int bit_offset = 0; bit_offset < 8; ++bit_offset) {
       int x = (byte_order_msb) ? 7-bit_offset : bit_offset;
-      result.append(1, (b[byte_offset] & (1 << x)) ? '1' : '0');
+      result.append(1, (byte_offset & (1 << x)) ? '1' : '0');
     }
   }
   return result;
@@ -1830,8 +1829,8 @@ string ShellEscape(StringPiece src) {
   } else {
     // needs double quote escaping
     string result = "\"";
-    for (size_t i = 0; i < src.size(); ++i) {
-      switch (src[i]) {
+    for (char i : src) {
+      switch (i) {
         case '\\':
         case '$':
         case '"':

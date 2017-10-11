@@ -16,6 +16,7 @@
 #include "supersonic/expression/infrastructure/basic_expressions.h"
 
 #include <string>
+#include <utility>
 namespace supersonic {using std::string; }
 
 #include "supersonic/base/exception/exception.h"
@@ -36,24 +37,24 @@ class DelegatingUnaryExpression : public UnaryExpression {
   DelegatingUnaryExpression(
       const Expression* const child,
       const BoundUnaryExpressionFactory bound_expression_factory,
-      const string& description_pattern)
+      string description_pattern)
       : UnaryExpression(child),
         bound_expression_factory_(bound_expression_factory),
-        description_pattern_(description_pattern) {}
+        description_pattern_(std::move(description_pattern)) {}
 
-  virtual ~DelegatingUnaryExpression() {}
+  ~DelegatingUnaryExpression() override = default;
 
-  virtual string ToString(bool verbose) const {
+  string ToString(bool verbose) const override {
     return strings::Substitute(description_pattern_,
                                child_expression_->ToString(verbose));
   }
 
  private:
-  virtual FailureOrOwned<BoundExpression> CreateBoundUnaryExpression(
+  FailureOrOwned<BoundExpression> CreateBoundUnaryExpression(
       const TupleSchema& input_schema,
       BufferAllocator* const allocator,
       rowcount_t row_capacity,
-      BoundExpression* child) const {
+      BoundExpression* child) const override {
     return bound_expression_factory_(child, allocator, row_capacity);
   }
 
@@ -69,26 +70,26 @@ class DelegatingBinaryExpression : public BinaryExpression {
       const Expression* const left,
       const Expression* const right,
       const BoundBinaryExpressionFactory bound_expression_factory,
-      const string& description_pattern)
+      string  description_pattern)
       : BinaryExpression(left, right),
         bound_expression_factory_(bound_expression_factory),
-        description_pattern_(description_pattern) {}
+        description_pattern_(std::move(description_pattern)) {}
 
-  virtual ~DelegatingBinaryExpression() {}
+  ~DelegatingBinaryExpression() override = default;
 
-  virtual string ToString(bool verbose) const {
+  string ToString(bool verbose) const override {
     return strings::Substitute(description_pattern_,
                                left_->ToString(verbose),
                                right_->ToString(verbose));
   }
 
  private:
-  virtual FailureOrOwned<BoundExpression> CreateBoundBinaryExpression(
+  FailureOrOwned<BoundExpression> CreateBoundBinaryExpression(
       const TupleSchema& input_schema,
       BufferAllocator* const allocator,
       rowcount_t row_capacity,
       BoundExpression* left,
-      BoundExpression* right) const {
+      BoundExpression* right) const override {
     return bound_expression_factory_(left, right, allocator, row_capacity);
   }
 
@@ -104,14 +105,14 @@ class DelegatingTernaryExpression : public TernaryExpression {
       const Expression* const middle,
       const Expression* const right,
       const BoundTernaryExpressionFactory bound_expression_factory,
-      const string& description_pattern)
+      string  description_pattern)
       : TernaryExpression(left, middle, right),
         bound_expression_factory_(bound_expression_factory),
-        description_pattern_(description_pattern) {}
+        description_pattern_(std::move(description_pattern)) {}
 
-  virtual ~DelegatingTernaryExpression() {}
+  ~DelegatingTernaryExpression() override = default;
 
-  virtual string ToString(bool verbose) const {
+  string ToString(bool verbose) const override {
     return strings::Substitute(description_pattern_,
                                left_->ToString(verbose),
                                middle_->ToString(verbose),
@@ -119,13 +120,13 @@ class DelegatingTernaryExpression : public TernaryExpression {
   }
 
  private:
-  virtual FailureOrOwned<BoundExpression> CreateBoundTernaryExpression(
+  FailureOrOwned<BoundExpression> CreateBoundTernaryExpression(
       const TupleSchema& input_schema,
       BufferAllocator* const allocator,
       rowcount_t row_capacity,
       BoundExpression* left,
       BoundExpression* middle,
-      BoundExpression* right) const {
+      BoundExpression* right) const override {
     return bound_expression_factory_(left, middle, right, allocator,
                                      row_capacity);
   }

@@ -291,7 +291,7 @@ TEST(BufferAllocatorTest, GuaranteeMemoryTest) {
 
 TEST(BufferAllocatorTest,
      MemoryStatisticsCollectingBufferAllocatorCallsCollector) {
-  MemoryStatisticsCollectorMock* stats_collector_mock(
+  auto* stats_collector_mock(
       new MemoryStatisticsCollectorMock);
   MemoryLimit hard_limit(300);
   MemoryLimit soft_quota(100, false, &hard_limit);

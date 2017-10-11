@@ -156,7 +156,7 @@ namespace strings {
 // Default formatter used if none is specified. Uses AlphaNum to convert numeric
 // arguments to strings.
 inline internal::AlphaNumFormatterImpl AlphaNumFormatter() {
-  return internal::AlphaNumFormatterImpl();
+  return {};
 }
 
 // PairFormatter()
@@ -225,8 +225,8 @@ string Join(const std::tuple<T...>& value, StringPiece separator,
 template <typename Iterator>
 string Join(Iterator start, Iterator end, StringPiece separator) {
   // No formatter was explicitly given, so a default must be chosen.
-  typedef typename std::iterator_traits<Iterator>::value_type ValueType;
-  typedef typename internal::DefaultFormatter<ValueType>::Type Formatter;
+  using ValueType = typename std::iterator_traits<Iterator>::value_type;
+  using Formatter = typename internal::DefaultFormatter<ValueType>::Type;
   return internal::JoinAlgorithm(start, end, separator, Formatter());
 }
 

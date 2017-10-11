@@ -37,21 +37,21 @@ namespace supersonic {
 template<typename Owned>
 class OwnershipTaker : public Cursor {
  public:
-  virtual ~OwnershipTaker() {}
+  ~OwnershipTaker() override = default;
 
   static OwnershipTaker* Create(Cursor* child, Owned* owned) {
     return new OwnershipTaker(child, owned);
   }
 
-  virtual const TupleSchema& schema() const { return child_->schema(); }
+  const TupleSchema& schema() const override { return child_->schema(); }
 
-  virtual ResultView Next(rowcount_t max_row_count) {
+  ResultView Next(rowcount_t max_row_count) override {
     return child_->Next(max_row_count);
   }
 
-  virtual void Interrupt() { child_->Interrupt(); }
+  void Interrupt() override { child_->Interrupt(); }
 
-  virtual void AppendDebugDescription(string* target) const {
+  void AppendDebugDescription(string* target) const override {
     child_->AppendDebugDescription(target);
   }
 

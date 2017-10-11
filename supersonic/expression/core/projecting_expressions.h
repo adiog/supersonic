@@ -75,7 +75,7 @@ const Expression* Projection(const ExpressionList* sources,
 // Concatenates all sources into a single expression. The sources must have
 // non-conflicting schemas.
 inline const Expression* Flat(const ExpressionList* inputs) {
-  CompoundMultiSourceProjector* projector = new CompoundMultiSourceProjector();
+  auto* projector = new CompoundMultiSourceProjector();
   for (int i = 0; i < inputs->size(); ++i) {
     projector->add(i, ProjectAllAttributes());
   }
@@ -92,8 +92,8 @@ class CompoundExpression : public Expression {
   // Creates an empty compound expression.
   CompoundExpression()
       : arguments_(new ExpressionList),
-        projector_(new CompoundMultiSourceProjector) {}
-  virtual ~CompoundExpression() {}
+        projector_(new CompoundMultiSourceProjector) {};
+  ~CompoundExpression() override = default;
 
   // Adds a single expression to this compound expression. Copies attribute
   // names from the argument. Returns 'this' for easy chaining.
@@ -114,12 +114,12 @@ class CompoundExpression : public Expression {
   CompoundExpression* AddAsMulti(const vector<string>& aliases,
                                  const Expression* argument);
 
-  virtual FailureOrOwned<BoundExpression> DoBind(
+  FailureOrOwned<BoundExpression> DoBind(
       const TupleSchema& input_schema,
       BufferAllocator* allocator,
-      rowcount_t max_row_count) const;
+      rowcount_t max_row_count) const override;
 
-  virtual string ToString(bool verbose) const {
+  string ToString(bool verbose) const override {
     if (verbose) {
       return StrCat(
           projector_->ToString(verbose), ": ", arguments_->ToString(verbose));

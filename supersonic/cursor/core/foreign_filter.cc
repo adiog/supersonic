@@ -87,7 +87,7 @@ class ForeignFilterCursor : public BasicCursor {
     CHECK(!input_.schema().attribute(input_foreign_key_column).is_nullable());
   }
 
-  virtual ResultView Next(rowcount_t max_row_count) {
+  ResultView Next(rowcount_t max_row_count) override {
     max_row_count = std::min(max_row_count, input_indirector_.row_capacity());
     rowcount_t row_count = 0;
     const rowid_t* filter_key;
@@ -157,14 +157,14 @@ class ForeignFilterCursor : public BasicCursor {
     return ResultView::Success(my_view());
   }
 
-  virtual bool IsWaitingOnBarrierSupported() const { return true; }
+  bool IsWaitingOnBarrierSupported() const override { return true; }
 
-  virtual void Interrupt() {
+  void Interrupt() override {
     input_.Interrupt();
     filter_.Interrupt();
   }
 
-  virtual void ApplyToChildren(CursorTransformer* transformer) {
+  void ApplyToChildren(CursorTransformer* transformer) override {
     filter_.ApplyToCursor(transformer);
     input_.ApplyToCursor(transformer);
   }
@@ -221,7 +221,7 @@ class ForeignFilterOperation : public BasicOperation {
         filter_key_(filter_key),
         foreign_key_(foreign_key) {}
 
-  virtual FailureOrOwned<Cursor> CreateCursor() const {
+  FailureOrOwned<Cursor> CreateCursor() const override {
     FailureOrOwned<Cursor> filter = child_at(0)->CreateCursor();
     PROPAGATE_ON_FAILURE(filter);
     FailureOrOwned<Cursor> input = child_at(1)->CreateCursor();

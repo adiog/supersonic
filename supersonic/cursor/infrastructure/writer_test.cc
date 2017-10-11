@@ -45,7 +45,7 @@ class WriterSpyTest : public testing::TestWithParam<bool> {};
 // data from it into the specified table. For testing various Write variants.
 // Takes ownership of the child cursor. Does NOT take ownership of the
 // table.
-typedef void (*WriterFn)(Cursor* child, Table* table);
+using WriterFn = void (*)(Cursor *, Table *);
 
 TEST_F(WriterTest, WriteAll) {
   TestDataBuilder<INT32, STRING> builder;

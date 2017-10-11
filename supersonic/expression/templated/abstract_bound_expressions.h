@@ -59,8 +59,8 @@ class AbstractBoundUnaryExpression : public BoundUnaryExpression {
           allocator, arg, input_type) {
   }
 
-  virtual EvaluationResult DoEvaluate(const View& input,
-                                      const BoolView& skip_vectors) {
+  EvaluationResult DoEvaluate(const View& input,
+                                      const BoolView& skip_vectors) override {
     CHECK_EQ(1, skip_vectors.column_count());
     if (TypeTraits<output_type>::is_variable_length) my_block()->ResetArenas();
     // Evaluate the argument.
@@ -77,8 +77,8 @@ class AbstractBoundUnaryExpression : public BoundUnaryExpression {
   }
 
  private:
-  typedef typename TypeTraits<input_type>::cpp_type CppFrom;
-  typedef typename TypeTraits<output_type>::cpp_type CppTo;
+  using CppFrom = typename TypeTraits<input_type>::cpp_type;
+  using CppTo = typename TypeTraits<output_type>::cpp_type;
 
   // TODO(user): Make this a local variable.
   ColumnUnaryComputer<op, input_type, output_type,
@@ -125,8 +125,8 @@ class AbstractBoundBinaryExpression : public BoundBinaryExpression {
       : BoundBinaryExpression(result_schema, allocator, left, left_type,
                               right, right_type) {}
 
-  virtual EvaluationResult DoEvaluate(const View& input,
-                                      const BoolView& skip_vectors) {
+  EvaluationResult DoEvaluate(const View& input,
+                                      const BoolView& skip_vectors) override {
     CHECK_EQ(1, skip_vectors.column_count());
     my_block()->ResetArenas();
     if (TypeTraits<output_type>::is_variable_length) my_block()->ResetArenas();
@@ -205,8 +205,8 @@ class AbstractBoundTernaryExpression : public BoundTernaryExpression {
            allocator, left, left_type, middle, middle_type, right, right_type) {
   }
 
-  virtual EvaluationResult DoEvaluate(const View& input,
-                                      const BoolView& skip_vectors) {
+  EvaluationResult DoEvaluate(const View& input,
+                                      const BoolView& skip_vectors) override {
     CHECK_EQ(1, skip_vectors.column_count());
     if (TypeTraits<output_type>::is_variable_length) my_block()->ResetArenas();
     // Evaluate the arguments.

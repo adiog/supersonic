@@ -141,7 +141,7 @@ TEST_F(BlockTest, OffsetsShouldCalculateCorrectly) {
 
 class ViewTest : public testing::Test {
  public:
-  void SetUp() {
+  void SetUp() override {
     test_block_.reset(BlockBuilder<STRING, INT32>()
         .AddRow("foo", 5)
         .AddRow("bar", 8)

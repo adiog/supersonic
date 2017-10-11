@@ -79,11 +79,11 @@ void SubstituteAndAppendArray(
 Arg::Arg(const void* value) {
   COMPILE_ASSERT(sizeof(scratch_) >= sizeof(value) * 2 + 2,
                  fix_sizeof_scratch_);
-  if (value == NULL) {
+  if (value == nullptr) {
     piece_ = "NULL";
   } else {
     char* ptr = scratch_ + sizeof(scratch_);
-    uintptr_t num = reinterpret_cast<uintptr_t>(value);
+    auto num = reinterpret_cast<uintptr_t>(value);
     static const char kHexDigits[] = "0123456789abcdef";
     do {
       *--ptr = kHexDigits[num & 0xf];

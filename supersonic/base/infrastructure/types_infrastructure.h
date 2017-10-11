@@ -379,7 +379,7 @@ struct DatumCopy<type, true, true> {
                   Arena* const arena) {
     // For variable-length types cpp_type is StringPiece.
     const char* copy = arena->AddStringPieceContent(input);
-    if (copy == NULL) {
+    if (copy == nullptr) {
       LOG(WARNING) << "Deep copy failed, size of input is " << input.size();
       return false;
     } else {
@@ -421,14 +421,14 @@ struct ColumnHashComputer {
       size_t item_hash;
       // We're relying on the compiler to take advantage of the constness of
       // is_null, and pre-compute (is_null != NULL).
-      if (!is_not_null && is_null != NULL && *is_null) {
+      if (!is_not_null && is_null != nullptr && *is_null) {
         item_hash = 0xdeadbabe;
       } else {
         item_hash = hasher(data[i]);
       }
       // We rely on the compiler to precompute the condition, so there will
       // be no branching here.
-      if (!is_not_null && is_null != NULL) ++is_null;
+      if (!is_not_null && is_null != nullptr) ++is_null;
       hashes[i] = update ? hashes[i] * 29 + item_hash : item_hash;
     }
   }
@@ -442,29 +442,24 @@ struct ColumnHashComputer {
 // different types), and some on columns.
 
 // Prototype of a function that appends a formatted typed value to a string.
-typedef void (*AttributePrinter)(VariantConstPointer value, string* target);
+using AttributePrinter = void (*)(VariantConstPointer, string *);
 
 // Prototype of a function that parses a typed POD value from a string.
-typedef bool (*AttributeParser)(const char* value, VariantPointer target);
+using AttributeParser = bool (*)(const char *, VariantPointer);
 
 // Prototype of a function that compares two typed values for in/equality,
 // and gives a boolean result.
-typedef bool (*EqualityComparator)(VariantConstPointer left,
-                                   VariantConstPointer right);
+using EqualityComparator = bool (*)(VariantConstPointer, VariantConstPointer);
 
 // Prototype of a function that compares two typed values for inequality.
-typedef ComparisonResult (*InequalityComparator)(VariantConstPointer left,
-                                                 VariantConstPointer right);
+using InequalityComparator = ComparisonResult (*)(VariantConstPointer, VariantConstPointer);
 
 // Prototype of a function that computes a hash code for a single item.
-typedef size_t (*Hasher)(VariantConstPointer datum);
+using Hasher = size_t (*)(VariantConstPointer);
 
 // Prototype of a function that computes or updates hash codes for a column
 // of data.
-typedef void (*ColumnHasher)(VariantConstPointer data,
-                             bool_const_ptr is_null,
-                             size_t row_count,
-                             size_t* hashes);
+using ColumnHasher = void (*)(VariantConstPointer, bool_const_ptr, size_t, size_t *);
 
 // Returns a function that knows how to write the attribute to string.
 // NULLs are written as "NULL". Appends the result at the end of the supplied

@@ -45,7 +45,7 @@ struct IsNonPositiveFailer {
                  bool_const_ptr input_is_null,
                  size_t row_count) {
     int failures = 0;
-    if (input_is_null == NULL) {
+    if (input_is_null == nullptr) {
       for (int i = 0; i < row_count; ++i) failures += (input_data[i] <= 0);
     } else {
       for (int i = 0; i < row_count; ++i) {
@@ -63,7 +63,7 @@ struct IsNegativeFailer {
                  bool_const_ptr input_is_null,
                  size_t row_count) {
     int failures = 0;
-    if (input_is_null == NULL) {
+    if (input_is_null == nullptr) {
       for (int i = 0; i < row_count; ++i) failures += (input_data[i] < 0);
     } else {
       for (int i = 0; i < row_count; ++i) {
@@ -83,7 +83,7 @@ struct SecondColumnZeroFailer {
                  bool_const_ptr right_is_null,
                  size_t row_count) {
     int failures = 0;
-    if (right_is_null == NULL) {
+    if (right_is_null == nullptr) {
       for (int i = 0; i < row_count; ++i) failures += (right_data[i] == 0);
     } else {
       for (int i = 0; i < row_count; ++i) {
@@ -103,7 +103,7 @@ struct SecondColumnNegativeFailer {
                  bool_const_ptr right_is_null,
                  size_t row_count) {
     int failures = 0;
-    if (right_is_null == NULL) {
+    if (right_is_null == nullptr) {
       for (int i = 0; i < row_count; ++i) failures += (right_data[i] < 0);
     } else {
       for (int i = 0; i < row_count; ++i) {
@@ -124,7 +124,7 @@ struct FirstColumnNegativeAndSecondNonIntegerFailer {
                  bool_const_ptr right_is_null,
                  size_t row_count) {
     int failures = 0;
-    if (right_is_null == NULL) {
+    if (right_is_null == nullptr) {
       for (int i = 0; i < row_count; ++i)
         failures += ((right_data[i] != trunc(right_data[i]))
                       && (left_data[i] < 0));
@@ -152,9 +152,9 @@ struct SecondOrThirdColumnNegativeFailer {
                  size_t row_count) {
     int failures = 0;
     for (int i = 0; i < row_count; ++i) {
-      failures += (((middle_is_null == NULL || !middle_is_null[i]) &&
+      failures += (((middle_is_null == nullptr || !middle_is_null[i]) &&
                     middle_data[i] < 0LL) ||
-                   ((right_is_null == NULL || !right_is_null[i]) &&
+                   ((right_is_null == nullptr || !right_is_null[i]) &&
                     right_data[i] < 0LL));
     }
     return failures;

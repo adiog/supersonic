@@ -45,11 +45,11 @@ class BenchmarkedCursor : public Cursor {
     CHECK_NOTNULL(benchmark_listener);
   }
 
-  virtual ~BenchmarkedCursor() {
+  ~BenchmarkedCursor() override {
     StopBenchmark();
   }
 
-  virtual const TupleSchema& schema() const {
+  const TupleSchema& schema() const override {
     return cursor_->schema();
   }
 
@@ -70,7 +70,7 @@ class BenchmarkedCursor : public Cursor {
     return Success();
   }
 
-  virtual ResultView Next(rowcount_t max_row_count) {
+  ResultView Next(rowcount_t max_row_count) override {
     DCHECK(cursor_.get() != NULL);
     time_measurer_.Resume();
     ResultView result = cursor_->Next(max_row_count);
@@ -83,15 +83,15 @@ class BenchmarkedCursor : public Cursor {
     return result;
   }
 
-  virtual void Interrupt() { cursor_->Interrupt(); }
+  void Interrupt() override { cursor_->Interrupt(); }
 
-  virtual void ApplyToChildren(CursorTransformer* transformer) {
+  void ApplyToChildren(CursorTransformer* transformer) override {
     cursor_->ApplyToChildren(transformer);
   }
 
   virtual CursorId GetCursorId() const { return BENCHMARK; }
 
-  virtual void AppendDebugDescription(string* target) const {
+  void AppendDebugDescription(string* target) const override {
     target->append("Benchmarked(");
     cursor_->AppendDebugDescription(target);
     target->append(")");

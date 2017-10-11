@@ -73,7 +73,7 @@ class TupleSchema;
 // parameter must conform to the RowSource contract.
 template<typename Value>
 struct DirectRowSourceReader {
-  typedef Value ValueType;
+  using ValueType = Value;
 
   // Returns the singleton instance that can be used as a default reader.
   static const DirectRowSourceReader<Value>& Default() {
@@ -106,7 +106,7 @@ struct DirectRowSourceReader {
         input.template typed_notnull_data<type>(column_index);
     if (deep_copy) {
       void* buffer = allocator.Allocate(data.size());
-      if (buffer == NULL) return false;
+      if (buffer == nullptr) return false;
       memcpy(buffer, data.data(), data.size());
       output->set(buffer, data.size());
     } else {
@@ -133,7 +133,7 @@ struct RowSourceAdapter {
 
   bool is_null(const size_t column_index) const {
     bool_const_ptr is_null = view.column(column_index).is_null();
-    return (is_null != NULL) && is_null[offset];
+    return (is_null != nullptr) && is_null[offset];
   }
 
   VariantConstPointer data(const size_t column_index) const {
@@ -161,8 +161,8 @@ struct RowSourceAdapter {
 // Used, in particular, to write rows to Blocks, and append rows to Tables.
 template<typename Value>
 struct DirectRowSourceWriter {
-  typedef Value ValueType;
-  typedef typename ValueType::Allocator Allocator;
+  using ValueType = Value;
+  using Allocator = typename ValueType::Allocator;
 
   static const DirectRowSourceWriter<Value>& Default() {
     static DirectRowSourceWriter<Value> singleton;

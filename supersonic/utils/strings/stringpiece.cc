@@ -82,9 +82,9 @@ stringpiece_ssize_type StringPiece::find(char c, size_type pos) const {
   if (length_ <= 0 || pos >= static_cast<size_type>(length_)) {
     return npos;
   }
-  const char* result = static_cast<const char*>(
+  const auto* result = static_cast<const char*>(
       memchr(ptr_ + pos, c, length_ - pos));
-  return result != NULL ? result - ptr_ : npos;
+  return result != nullptr ? result - ptr_ : npos;
 }
 
 stringpiece_ssize_type StringPiece::rfind(StringPiece s, size_type pos) const {
@@ -228,7 +228,7 @@ stringpiece_ssize_type StringPiece::find_last_not_of(char c,
 StringPiece StringPiece::substr(size_type pos, size_type n) const {
   if (pos > length_) pos = length_;
   if (n > length_ - pos) n = length_ - pos;
-  return StringPiece(ptr_ + pos, n);
+  return {ptr_ + pos, n};
 }
 
 const StringPiece::size_type StringPiece::npos = size_type(-1);

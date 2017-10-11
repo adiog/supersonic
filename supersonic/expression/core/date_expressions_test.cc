@@ -14,6 +14,8 @@
 //
 // Author: onufry@google.com (Onufry Wojtaszczyk)
 
+#include <utility>
+
 #include "supersonic/expression/core/date_expressions.h"
 
 #include "supersonic/proto/supersonic.pb.h"
@@ -31,10 +33,10 @@ namespace {
 // errors during calls to setenv() and/or unsetenv() .
 class TimeZoneFlagSaver {
  public:
-  TimeZoneFlagSaver(const string& time_zone_flag, const string& time_zone)
-      : original_time_zone_(NULL),
-        time_zone_flag_(time_zone_flag),
-        time_zone_(time_zone) {
+  TimeZoneFlagSaver(string  time_zone_flag, string  time_zone)
+      : original_time_zone_(nullptr),
+        time_zone_flag_(std::move(time_zone_flag)),
+        time_zone_(std::move(time_zone)) {
     InitFlag();
   }
 
@@ -50,7 +52,7 @@ class TimeZoneFlagSaver {
   }
 
   void RestoreFlag() {
-    if (original_time_zone_ == NULL) {
+    if (original_time_zone_ == nullptr) {
       ASSERT_EQ(0, unsetenv(time_zone_flag_.c_str()));
     } else {
       ASSERT_EQ(0, setenv(time_zone_flag_.c_str(), original_time_zone_, 1));

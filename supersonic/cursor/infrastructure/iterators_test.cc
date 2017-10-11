@@ -35,7 +35,7 @@ class DestructorCatcher : public BasicDecoratorCursor {
         destroyed_(destroyed) {
     CHECK(!*destroyed);
   }
-  virtual ~DestructorCatcher() { *destroyed_ = true; }
+  ~DestructorCatcher() override { *destroyed_ = true; }
  private:
   bool* destroyed_;
 };

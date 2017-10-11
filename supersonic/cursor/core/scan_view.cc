@@ -55,10 +55,10 @@ class ScanViewOperation : public BasicOperation {
         selection_vector_(selection_vector),
         buffer_row_capacity_(buffer_row_capacity) {}
 
-  virtual ~ScanViewOperation() {}
+  ~ScanViewOperation() override = default;
 
-  virtual FailureOrOwned<Cursor> CreateCursor() const {
-    if (selection_vector_ != NULL) {
+  FailureOrOwned<Cursor> CreateCursor() const override {
+    if (selection_vector_ != nullptr) {
       return BoundScanViewWithSelection(view_,
                                         row_count_,
                                         selection_vector_,
@@ -69,7 +69,7 @@ class ScanViewOperation : public BasicOperation {
     }
   }
 
-  virtual string DebugDescription() const {
+  string DebugDescription() const override {
     string name = (selection_vector_ != NULL) ? "ScanViewWithSelection"
                                               : "ScanView";
     return StrCat(name, "(", view_.schema().GetHumanReadableSpecification(),

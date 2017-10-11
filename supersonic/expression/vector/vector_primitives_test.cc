@@ -139,10 +139,10 @@ class AbstractPrimitiveTest {
 template <OperatorId operation_type,
           DataType result_type, DataType left_type, DataType right_type>
 class VectorBinaryPrimitiveTest : public testing::Test, AbstractPrimitiveTest {
-  typedef typename TypeTraits<result_type>::cpp_type ResultCppType;
-  typedef typename TypeTraits<left_type>::cpp_type LeftCppType;
-  typedef typename TypeTraits<right_type>::cpp_type RightCppType;
-  typedef typename BinaryExpressionTraits<operation_type>::basic_operator Op;
+  using ResultCppType = typename TypeTraits<result_type>::cpp_type;
+  using LeftCppType = typename TypeTraits<left_type>::cpp_type;
+  using RightCppType = typename TypeTraits<right_type>::cpp_type;
+  using Op = typename BinaryExpressionTraits<operation_type>::basic_operator;
 
  public:
   void RunDirectSimdTest(int size) {
@@ -292,7 +292,7 @@ class VectorBinaryPrimitiveTest : public testing::Test, AbstractPrimitiveTest {
   void VerifyDirect(const LeftCppType *left, const RightCppType *right,
                     int size,
                     const ResultCppType *result) {
-    VerifyDirect(left, right, size, bool_ptr(NULL), result);
+    VerifyDirect(left, right, size, bool_ptr(nullptr), result);
   }
 
   void VerifyDirect(const LeftCppType *left, const RightCppType *right,
@@ -301,7 +301,7 @@ class VectorBinaryPrimitiveTest : public testing::Test, AbstractPrimitiveTest {
       Op op;
       Normalize<ResultCppType> norm;
       for (int i = 0; i < size; ++i) {
-        if (!(skip_list != NULL && skip_list[i])) {
+        if (!(skip_list != nullptr && skip_list[i])) {
           ASSERT_EQ(norm(op(left[i], right[i])), norm(result[i]))
             << "i=" << i << "; left[i]=" << left[i] << "; right[i]=" << right[i]
             << "; size=" << size;
@@ -313,7 +313,7 @@ class VectorBinaryPrimitiveTest : public testing::Test, AbstractPrimitiveTest {
                       const index_t* left_ind, const index_t* right_ind,
                       int size,
                       const ResultCppType* result) {
-    VerifyIndirect(left, right, left_ind, right_ind, size, bool_ptr(NULL),
+    VerifyIndirect(left, right, left_ind, right_ind, size, bool_ptr(nullptr),
                    result);
   }
 
@@ -324,7 +324,7 @@ class VectorBinaryPrimitiveTest : public testing::Test, AbstractPrimitiveTest {
       Op op;
       Normalize<ResultCppType> norm;
       for (int i = 0; i < size; ++i) {
-        if (!(skip_list != NULL && skip_list[i])) {
+        if (!(skip_list != nullptr && skip_list[i])) {
           ASSERT_EQ(norm(op(left[left_ind[i]], right[right_ind[i]])),
                     norm(result[i]))
               << "i=" << i
@@ -383,9 +383,9 @@ class VectorBinaryPrimitiveTest : public testing::Test, AbstractPrimitiveTest {
 
 template <OperatorId operation_type, DataType result_type, DataType arg_type>
 class VectorUnaryPrimitiveTest : public testing::Test, AbstractPrimitiveTest {
-  typedef typename TypeTraits<result_type>::cpp_type ResultCppType;
-  typedef typename TypeTraits<arg_type>::cpp_type ArgCppType;
-  typedef typename UnaryExpressionTraits<operation_type>::basic_operator Op;
+  using ResultCppType = typename TypeTraits<result_type>::cpp_type;
+  using ArgCppType = typename TypeTraits<arg_type>::cpp_type;
+  using Op = typename UnaryExpressionTraits<operation_type>::basic_operator;
 
  public:
   void RunDirectTest(int size) {

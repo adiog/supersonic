@@ -202,7 +202,7 @@ std::pair<ForwardIter, ForwardIter> minmax_element(ForwardIter first,
 template <typename ForwardIter>
 inline std::pair<ForwardIter, ForwardIter> minmax_element(ForwardIter first,
                                                           ForwardIter last) {
-  typedef typename std::iterator_traits<ForwardIter>::value_type value_type;
+  using value_type = typename std::iterator_traits<ForwardIter>::value_type;
   return util::gtl::minmax_element(first, last, std::less<value_type>());
 }
 
@@ -229,7 +229,7 @@ bool is_sorted(ForwardIterator first, ForwardIterator last, Compare comp) {
 // applications of operator<.
 template <typename ForwardIterator>
 inline bool is_sorted(ForwardIterator first, ForwardIterator last) {
-  typedef typename std::iterator_traits<ForwardIterator>::value_type value_type;
+  using value_type = typename std::iterator_traits<ForwardIterator>::value_type;
   return util::gtl::is_sorted(first, last, std::less<value_type>());
 }
 
@@ -255,7 +255,7 @@ inline bool is_partitioned(ForwardIterator first, ForwardIterator last,
 template <typename ForwardIterator, typename Predicate>
 ForwardIterator partition_point(ForwardIterator first, ForwardIterator last,
                                 Predicate pred) {
-  typedef typename std::iterator_traits<ForwardIterator>::difference_type diff;
+  using diff = typename std::iterator_traits<ForwardIterator>::difference_type;
   diff n = distance(first, last);
 
   // Loop invariant: n == distance(first, last)
@@ -339,7 +339,7 @@ ForwardIterator unique_partition(ForwardIterator first, ForwardIterator last,
 template <typename ForwardIterator>
 inline ForwardIterator unique_partition(ForwardIterator first,
                                         ForwardIterator last) {
-  typedef typename std::iterator_traits<ForwardIterator>::value_type T;
+  using T = typename std::iterator_traits<ForwardIterator>::value_type;
   return unique_partition(first, last, std::equal_to<T>());
 }
 
@@ -397,7 +397,7 @@ RandomAccessIterator gtl_is_binary_heap_until(RandomAccessIterator first,
 template <typename RandomAccessIterator>
 RandomAccessIterator gtl_is_binary_heap_until(RandomAccessIterator first,
                                               RandomAccessIterator last) {
-  typedef typename std::iterator_traits<RandomAccessIterator>::value_type T;
+  using T = typename std::iterator_traits<RandomAccessIterator>::value_type;
   return gtl_is_binary_heap_until(first, last, std::less<T>());
 }
 

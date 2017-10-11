@@ -470,7 +470,7 @@ class MemoryLimit : public BufferAllocator {
   // (Can be set using SetQuota).
   explicit MemoryLimit()
       : quota_(std::numeric_limits<size_t>::max()),
-        allocator_(HeapBufferAllocator::Get(), &quota_) {}
+        allocator_(HeapBufferAllocator::Get(), &quota_) {};
 
   // Creates a limiter based on the default, heap allocator.
   explicit MemoryLimit(size_t quota)
@@ -532,7 +532,7 @@ class SoftQuotaBypassingBufferAllocator : public BufferAllocator {
       : allocator_(std::numeric_limits<size_t>::max(), allocator),
         bypassed_amount_(bypassed_amount) {}
 
-  virtual size_t Available() const {
+  size_t Available() const override {
     const size_t usage = allocator_.GetUsage();
     size_t available = allocator_.Available();
     if (bypassed_amount_ > usage) {
@@ -550,16 +550,16 @@ class SoftQuotaBypassingBufferAllocator : public BufferAllocator {
   size_t AdjustMinimal(size_t requested, size_t minimal) const {
     return min(requested, std::max(minimal, Available()));
   }
-  virtual Buffer* AllocateInternal(size_t requested,
+  Buffer* AllocateInternal(size_t requested,
                                    size_t minimal,
-                                   BufferAllocator* originator) {
+                                   BufferAllocator* originator) override {
     // Try increasing the "minimal" parameter to allocate more aggresively
     // within the bypassed amount of soft quota.
     Buffer* result = DelegateAllocate(&allocator_,
                                       requested,
                                       AdjustMinimal(requested, minimal),
                                       originator);
-    if (result != NULL) {
+    if (result != nullptr) {
       return result;
     } else {
       return DelegateAllocate(&allocator_,
@@ -568,10 +568,10 @@ class SoftQuotaBypassingBufferAllocator : public BufferAllocator {
                               originator);
     }
   }
-  virtual bool ReallocateInternal(size_t requested,
+  bool ReallocateInternal(size_t requested,
                                   size_t minimal,
                                   Buffer* buffer,
-                                  BufferAllocator* originator) {
+                                  BufferAllocator* originator) override {
     if (DelegateReallocate(&allocator_,
                            requested,
                            AdjustMinimal(requested, minimal),
@@ -586,7 +586,7 @@ class SoftQuotaBypassingBufferAllocator : public BufferAllocator {
                                 originator);
     }
   }
-  virtual void FreeInternal(Buffer* buffer) {
+  void FreeInternal(Buffer* buffer) override {
     DelegateFree(&allocator_, buffer);
   }
 

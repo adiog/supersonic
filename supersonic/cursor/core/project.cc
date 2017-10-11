@@ -45,7 +45,7 @@ class ProjectCursor : public BasicCursor {
         projector_(projector),
         result_view_(projector->result_schema()) {}
 
-  virtual ResultView Next(rowcount_t max_row_count) {
+  ResultView Next(rowcount_t max_row_count) override {
     ResultView next_result = child()->Next(max_row_count);
     PROPAGATE_ON_FAILURE(next_result);
     if (!next_result.has_data()) {
@@ -57,7 +57,7 @@ class ProjectCursor : public BasicCursor {
     return ResultView::Success(&result_view_);
   }
 
-  virtual bool IsWaitingOnBarrierSupported() const { return true; }
+  bool IsWaitingOnBarrierSupported() const override { return true; }
 
   virtual CursorId GetCursorId() const { return PROJECT; }
 
@@ -76,9 +76,9 @@ class ProjectOperation : public BasicOperation {
       : BasicOperation(child_operation),
         projector_(projector) {}
 
-  virtual ~ProjectOperation() {}
+  ~ProjectOperation() override = default;
 
-  virtual FailureOrOwned<Cursor> CreateCursor() const {
+  FailureOrOwned<Cursor> CreateCursor() const override {
     FailureOrOwned<Cursor> child_cursor = child()->CreateCursor();
     PROPAGATE_ON_FAILURE(child_cursor);
     FailureOrOwned<const BoundSingleSourceProjector> bound_projector =

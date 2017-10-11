@@ -64,7 +64,7 @@ TEST(StringBoundExpressionsTest, BoundContainsCI) {
 FailureOrOwned<BoundExpression> BoundOneArgConcat(BoundExpression* arg,
                                                   BufferAllocator* allocator,
                                                   rowcount_t max_row_count) {
-  BoundExpressionList* list = new BoundExpressionList();
+  auto* list = new BoundExpressionList();
   list->add(arg);
   return BoundConcat(list, allocator, max_row_count);
 }
@@ -73,7 +73,7 @@ FailureOrOwned<BoundExpression> BoundTwoArgConcat(BoundExpression* arg1,
                                                   BoundExpression* arg2,
                                                   BufferAllocator* allocator,
                                                   rowcount_t max_row_count) {
-  BoundExpressionList* list = new BoundExpressionList();
+  auto* list = new BoundExpressionList();
   list->add(arg1);
   list->add(arg2);
   return BoundConcat(list, allocator, max_row_count);

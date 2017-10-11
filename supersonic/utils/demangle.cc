@@ -21,11 +21,11 @@ namespace util {
 // http://gcc.gnu.org/onlinedocs/libstdc++/latest-doxygen/namespaceabi.html
 void DemangleToString(const char* mangled, string *out) {
   int status = 0;
-  char *demangled = NULL;
+  char *demangled = nullptr;
 #if HAS_CXA_DEMANGLE
-  demangled = abi::__cxa_demangle(mangled, NULL, NULL, &status);
+  demangled = abi::__cxa_demangle(mangled, nullptr, nullptr, &status);
 #endif
-  if (status == 0 && demangled != NULL) {  // Demangling succeeeded.
+  if (status == 0 && demangled != nullptr) {  // Demangling succeeeded.
     out->append(demangled);
     free(demangled);
   } else {

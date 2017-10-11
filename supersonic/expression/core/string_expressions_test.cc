@@ -334,7 +334,7 @@ TEST(StringExpressionTest, ConcatSchema) {
   unique_ptr<Block> block(BlockBuilder<STRING, STRING>()
                           .AddRow("SuperSonic", __)
                           .Build());
-  ExpressionList* expr_list = new ExpressionList();
+  auto* expr_list = new ExpressionList();
   expr_list->add(AttributeAt(0))->add(AttributeAt(1));
   unique_ptr<BoundExpressionTree>
       concat(DefaultBind(block->view().schema(), 100, Concat(expr_list)));
@@ -347,7 +347,7 @@ TEST(StringExpressionTest, ConcatSchemaWithNull) {
   unique_ptr<Block> block(BlockBuilder<STRING>()
                           .AddRow("SuperSonic")
                           .Build());
-  ExpressionList* expr_list = new ExpressionList();
+  auto* expr_list = new ExpressionList();
   expr_list->add(AttributeAt(0));
   unique_ptr<BoundExpressionTree>
       concat(DefaultBind(block->view().schema(), 100, Concat(expr_list)));
@@ -363,7 +363,7 @@ TEST(StringExpressionTest, ConcatWithNullFields) {
                           .AddRow(__, "Everest", "Carpathian")
                           .AddRow("K", "R", "K")
                           .Build());
-  ExpressionList* expr_list = new ExpressionList();
+  auto* expr_list = new ExpressionList();
   expr_list->add(AttributeAt(0))->add(AttributeAt(1))->add(AttributeAt(2));
   unique_ptr<BoundExpressionTree> concat(
       DefaultBind(block->view().schema(), 100, Concat(expr_list)));
@@ -384,7 +384,7 @@ TEST(StringExpressionTest, ConcatTenInputs) {
                           .AddRow("S", "u", "p", "e", "r",
                                   "S", "o", "n", "i", "c")
                           .Build());
-  ExpressionList* expr_list = new ExpressionList();
+  auto* expr_list = new ExpressionList();
   for (int i = 0; i < 10; ++i) expr_list->add(AttributeAt(i));
   unique_ptr<BoundExpressionTree> concat(
       DefaultBind(block->view().schema(), 100, Concat(expr_list)));
@@ -401,7 +401,7 @@ TEST(StringExpressionTest, ConcatNumbers) {
                           .AddRow("Sonic", 124)
                           .AddRow("", -12)
                           .Build());
-  ExpressionList* expr_list = new ExpressionList();
+  auto* expr_list = new ExpressionList();
   expr_list->add(AttributeAt(0))->add(AttributeAt(1));
   unique_ptr<BoundExpressionTree> concat(
       DefaultBind(block->view().schema(), 100, Concat(expr_list)));

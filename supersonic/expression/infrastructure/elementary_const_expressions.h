@@ -32,21 +32,21 @@ template <DataType type,
           bool is_variable_length = TypeTraits<type>::is_variable_length>
 class ConstExpression: public Expression {
  public:
-  typedef typename TypeTraits<type>::cpp_type cpp_type;
+  using cpp_type = typename TypeTraits<type>::cpp_type;
   explicit ConstExpression(const cpp_type& value)
       : value_(value) {}
 
-  virtual FailureOrOwned<BoundExpression> DoBind(
+  FailureOrOwned<BoundExpression> DoBind(
       const TupleSchema& input_schema,
       BufferAllocator* allocator,
-      rowcount_t max_row_count) const {
+      rowcount_t max_row_count) const override {
     return InitBasicExpression(
         max_row_count,
         new BoundConstExpression<type>(allocator, value_),
         allocator);
   }
 
-  virtual string ToString(bool verbose) const {
+  string ToString(bool verbose) const override {
     string result_description;
     if (verbose)
       result_description = StringPrintf("<%s>", TypeTraits<type>::name());
@@ -65,21 +65,21 @@ class ConstExpression: public Expression {
 template <DataType type>
 class ConstExpression<type, true>: public Expression {
  public:
-  typedef typename TypeTraits<type>::cpp_type cpp_type;  // StringPiece
+  using cpp_type = typename TypeTraits<type>::cpp_type;  // StringPiece
   explicit ConstExpression(const cpp_type& value)
       : value_(value.data(), value.size()) {}
 
-  virtual FailureOrOwned<BoundExpression> DoBind(
+  FailureOrOwned<BoundExpression> DoBind(
       const TupleSchema& input_schema,
       BufferAllocator* allocator,
-      rowcount_t max_row_count) const {
+      rowcount_t max_row_count) const override {
     return InitBasicExpression(
         max_row_count,
         new BoundConstExpression<type>(allocator, StringPiece(value_)),
         allocator);
   }
 
-  virtual string ToString(bool verbose) const {
+  string ToString(bool verbose) const override {
     string prefix = "";
     if (verbose)
       prefix = type == STRING ? "<STRING>" : "<BINARY>";

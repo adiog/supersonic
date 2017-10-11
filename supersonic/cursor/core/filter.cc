@@ -92,7 +92,7 @@ class FilterCursor : public BasicCursor {
     return Success(cursor.release());
   }
 
-  virtual ResultView Next(rowcount_t max_row_count) {
+  ResultView Next(rowcount_t max_row_count) override {
     rowcount_t effective_max_row_count =
         min(result_block_.row_capacity(), max_row_count);
     result_block_.ResetArenas();
@@ -126,7 +126,7 @@ class FilterCursor : public BasicCursor {
     return ResultView::Success(my_view());
   }
 
-  virtual bool IsWaitingOnBarrierSupported() const { return true; }
+  bool IsWaitingOnBarrierSupported() const override { return true; }
 
   virtual CursorId GetCursorId() const { return FILTER; }
 
@@ -146,7 +146,7 @@ class FilterCursor : public BasicCursor {
         input_row_ids_count_(0),
         eos_(false),
         result_block_(projector->result_schema(), allocator),
-        current_view_(NULL),
+        current_view_(nullptr),
         read_pointer_(0),
         write_pointer_(0),
         projector_(projector) {}
@@ -176,7 +176,7 @@ class FilterCursor : public BasicCursor {
     const rowcount_t row_count = current_view_->row_count();
     rowid_t* ids_pointer =
         input_row_ids_.mutable_column(0)->mutable_typed_data<kRowidDatatype>();
-    if (result_column.is_null() != NULL) {
+    if (result_column.is_null() != nullptr) {
       bool_const_ptr predicate_column_is_null = result_column.is_null();
       for (rowid_t i = 0;
            i < row_count;
@@ -281,9 +281,9 @@ class FilterOperation : public BasicOperation {
         predicate_(CHECK_NOTNULL(predicate)),
         projector_(CHECK_NOTNULL(projector)) {}
 
-  virtual ~FilterOperation() {}
+  ~FilterOperation() override = default;
 
-  virtual FailureOrOwned<Cursor> CreateCursor() const {
+  FailureOrOwned<Cursor> CreateCursor() const override {
     FailureOrOwned<Cursor> child_cursor = child()->CreateCursor();
     PROPAGATE_ON_FAILURE(child_cursor);
     FailureOrOwned<BoundExpressionTree> predicate =

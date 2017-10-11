@@ -38,7 +38,7 @@ class BufferAllocator;
 
 // Result of expression evaluation. A thin wrapper over a view, exposed
 // as a const reference.
-typedef FailureOrReference<const View> EvaluationResult;
+using EvaluationResult = FailureOrReference<const View>;
 
 // 'Executable' expression. Types and properties (const, nullability etc.) are
 // fully resolved. To evaluate it you need to pass a skip_vector to it.

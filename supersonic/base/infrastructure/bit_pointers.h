@@ -131,13 +131,13 @@ class bit_ptr {
   // Constructors. None of them take ownership of data.
   explicit bit_ptr(uint32* data) : data_(data), shift_(0) {}
   bit_ptr(uint32* data, int shift) : data_(data), shift_(shift) {}
-  bit_ptr() : data_(NULL), shift_(0) {}
+  bit_ptr() : data_(nullptr), shift_(0) {}
 
   // Accessors.
   uint32* data() const { return data_; }
   int shift() const { return shift_; }
   bool is_aligned() const { return shift_ == 0; }
-  bool is_null() const { return data_ == NULL; }
+  bool is_null() const { return data_ == nullptr; }
 
   // Pointer arithmetics.
   // Incrementation (by a single bit). We increase the shift, and if it wrapped
@@ -176,7 +176,7 @@ class bit_ptr {
 
   // Dereferencing operator.
   inline bit_reference operator*() const {
-    return bit_reference(data_, shift_);
+    return {data_, shift_};
   }
 
   // Array-like dereference. Included for convenience reasons.
@@ -261,13 +261,13 @@ class bit_const_ptr {
       : data_(source.data()), shift_(source.shift()) {}
   explicit bit_const_ptr(const uint32* data) : data_(data), shift_(0) {}
   bit_const_ptr(const uint32* data, int shift) : data_(data), shift_(shift) {}
-  bit_const_ptr() : data_(NULL), shift_(0) {}
+  bit_const_ptr() : data_(nullptr) {}
 
   // Accessors.
   inline const uint32* data() const { return data_; }
   inline int shift() const { return shift_; }
   inline bool is_aligned() const { return shift_ == 0; }
-  inline bool is_null() const { return data_ == NULL; }
+  inline bool is_null() const { return data_ == nullptr; }
 
   // Pointer arithmetics.
   inline bit_const_ptr& operator++() {
@@ -336,7 +336,7 @@ class bit_const_ptr {
 // (that is arrays of boolean values stored bit-by-bit).
 class bit_array {
  public:
-  bit_array() {}
+  bit_array() = default;
 
   // Reallocates to a given size. Allocates a number of _bits_ no smaller than
   // row_capacity, and guarantees that the number of _bits_ allocated is
@@ -366,7 +366,7 @@ class bit_array {
 // Same as above, only the data is represented by booleans, and not by bits.
 class boolean_array {
  public:
-  boolean_array() {}
+  boolean_array() = default;
 
   // Again, same as above.
   bool Reallocate(size_t bytes_capacity, BufferAllocator* allocator);
@@ -414,7 +414,7 @@ class static_bit_array {
 
   // Returns an incrementation of buffer_ to the next 16-byte aligned value.
   uint32* aligned_buffer() {
-    int64 buf_address = reinterpret_cast<int64>(buffer_);
+    auto buf_address = reinterpret_cast<int64>(buffer_);
     // The number of bytes we have to shift to get 16-byte aligned data.
     int64 shift = (~buf_address + 1LL) & 15LL;
     // The purpose of converting to char and back again is to be able to move
@@ -525,11 +525,11 @@ typedef bit_pointer::static_bit_array<10> small_bool_array;
 typedef bit_pointer::static_bit_array<1024> large_bool_array;
 #endif
 #if USE_BITS_FOR_IS_NULL_REPRESENTATION == false
-typedef bool* bool_ptr;
-typedef const bool* bool_const_ptr;
-typedef bit_pointer::boolean_array bool_array;
-typedef bit_pointer::static_boolean_array<10> small_bool_array;
-typedef bit_pointer::static_boolean_array<1024> large_bool_array;
+using bool_ptr = bool *;
+using bool_const_ptr = const bool *;
+using bool_array = bit_pointer::boolean_array;
+using small_bool_array = bit_pointer::static_boolean_array<10>;
+using large_bool_array = bit_pointer::static_boolean_array<1024>;
 #endif
 #undef USE_BITS_FOR_IS_NULL_REPRESENTATION
 

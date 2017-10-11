@@ -72,18 +72,18 @@ class BoundFakePredicate : public BoundExpression {
     }
     my_view()->ResetFrom(result_block_.view());
   }
-  virtual ~BoundFakePredicate() {}
+  ~BoundFakePredicate() override = default;
 
-  rowcount_t row_capacity() const {
+  rowcount_t row_capacity() const override {
     return result_block_.row_capacity() - index_;
   }
 
-  bool is_constant() const {
+  bool is_constant() const override {
     return false;
   }
 
-  virtual EvaluationResult DoEvaluate(const View& input,
-                                      const BoolView& skip_vectors) {
+  EvaluationResult DoEvaluate(const View& input,
+                                      const BoolView& skip_vectors) override {
     CHECK_EQ(1, skip_vectors.column_count());
     CHECK_LE(index_ + input.row_count(),
              result_block_.row_capacity());
@@ -116,16 +116,16 @@ class FakePredicate : public Expression {
   FakePredicate(const vector<bool>& results, const vector<bool>& null_results)
       : results_(results),
         null_results_(null_results) {}
-  virtual ~FakePredicate() {}
+  ~FakePredicate() override = default;
 
-  virtual string ToString(bool verbose) const {
+  string ToString(bool verbose) const override {
     return "FAKE_PREDICATE";
   }
 
-  virtual FailureOrOwned<BoundExpression> DoBind(
+  FailureOrOwned<BoundExpression> DoBind(
       const TupleSchema& schema,
       BufferAllocator* allocator,
-      rowcount_t max_row_count) const {
+      rowcount_t max_row_count) const override {
     return Success(new BoundFakePredicate(results_, null_results_));
   }
 

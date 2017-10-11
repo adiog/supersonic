@@ -51,8 +51,8 @@ struct BasicFloatingPointTypeTraits : public BasicNumericTypeTraits {
 };
 
 struct BasicVariableLengthTypeTraits {
-  typedef StringPiece cpp_type;
-  typedef string hold_type;
+  using cpp_type = StringPiece;
+  using hold_type = string;
   static const bool is_variable_length = true;
   static const bool is_numeric = false;
   static const bool is_integer = false;
@@ -228,8 +228,8 @@ template<DataType datatype> struct TypeTraits
   // hold_type is the same as cpp_type for non-variable length types. If the
   // type is variable length, the cpp_type does not own the contents, while
   // hold_type does.
-  typedef typename BasicTypeTraits<datatype>::cpp_type cpp_type;
-  typedef typename BasicTypeTraits<datatype>::hold_type hold_type;
+  using cpp_type = typename BasicTypeTraits<datatype>::cpp_type;
+  using hold_type = typename BasicTypeTraits<datatype>::hold_type;
   static const DataType type = datatype;
   static const size_t size = sizeof(cpp_type);
   static const google::protobuf::EnumValueDescriptor* descriptor() {
@@ -249,11 +249,11 @@ template<DataType datatype> struct TypeTraits
 };
 
 // Represents 'RowID'. Should be used everywhere when we refer to row IDs.
-typedef int64 rowid_t;
+using rowid_t = int64;
 
 // Represents 'row count'. Unsigned. Should be used everywhere we refer to
 // row counts or positive row offsets.
-typedef uint64 rowcount_t;
+using rowcount_t = uint64;
 
 // Lets to obtain the DataType enumeration that corresponds to the specified
 // C++ type.

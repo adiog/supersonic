@@ -58,11 +58,11 @@ struct SourceAttribute {
 
 // Mapping of attributes in source(s) onto their position in projection's result
 // schema. Should probably be called ProjectionMap.
-typedef multimap<SourceAttribute, int> ReverseProjectionMap;
+using ReverseProjectionMap = multimap<SourceAttribute, int>;
 
 // Iterator over positions in projection's result schema (over
 // ReverseProjectionMap values).
-typedef iterator_second<ReverseProjectionMap::const_iterator> PositionIterator;
+using PositionIterator = iterator_second<ReverseProjectionMap::const_iterator>;
 
 // Project multiple views / schemas into one. It is simply a crossbar that
 // expects certain number of input views with specific schemas, and picks
@@ -275,7 +275,7 @@ pair<BoundMultiSourceProjector*, BoundSingleSourceProjector*> DecomposeNth(
 //
 class SingleSourceProjector {
  public:
-  virtual ~SingleSourceProjector() {}
+  virtual ~SingleSourceProjector() = default;
   // Returns new BoundSingleSourceProjector, binding the logic of this
   // projector to the specified source schema, or an Exception if binding fails.
   virtual FailureOrOwned<const BoundSingleSourceProjector> Bind(
@@ -287,7 +287,7 @@ class SingleSourceProjector {
 
   virtual string ToString(bool verbose) const = 0;
  protected:
-  SingleSourceProjector() {}
+  SingleSourceProjector() = default;
  private:
   DISALLOW_COPY_AND_ASSIGN(SingleSourceProjector);
 };
@@ -300,18 +300,18 @@ class SingleSourceProjector {
 //     ->add(ProjectAttributeAt(12));
 class CompoundSingleSourceProjector : public SingleSourceProjector {
  public:
-  CompoundSingleSourceProjector() {}
-  virtual ~CompoundSingleSourceProjector() {}
+  CompoundSingleSourceProjector() = default;
+  ~CompoundSingleSourceProjector() override = default;
   CompoundSingleSourceProjector* add(const SingleSourceProjector* projector) {
     projectors_.push_back(make_linked_ptr(projector));
     return this;
   }
-  virtual FailureOrOwned<const BoundSingleSourceProjector> Bind(
-      const TupleSchema& source_schema) const;
+  FailureOrOwned<const BoundSingleSourceProjector> Bind(
+      const TupleSchema& source_schema) const override;
 
-  virtual CompoundSingleSourceProjector* Clone() const;
+  CompoundSingleSourceProjector* Clone() const override;
 
-  virtual string ToString(bool verbose) const;
+  string ToString(bool verbose) const override;
 
  private:
   vector<linked_ptr<const SingleSourceProjector> > projectors_;
@@ -324,14 +324,14 @@ class NamedAttributeProjector : public SingleSourceProjector {
  public:
   explicit NamedAttributeProjector(const StringPiece& name);
 
-  virtual FailureOrOwned<const BoundSingleSourceProjector> Bind(
-      const TupleSchema& source_schema) const;
+  FailureOrOwned<const BoundSingleSourceProjector> Bind(
+      const TupleSchema& source_schema) const override;
 
-  virtual NamedAttributeProjector* Clone() const {
+  NamedAttributeProjector* Clone() const override {
     return new NamedAttributeProjector(name_);
   }
 
-  virtual string ToString(bool verbose) const { return name_; }
+  string ToString(bool verbose) const override { return name_; }
 
  private:
   string name_;
@@ -404,7 +404,7 @@ const SingleSourceProjector* ProjectAllAttributes(const StringPiece& prefix);
 // A mirror copy of SingleSourceProjector.
 class MultiSourceProjector {
  public:
-  virtual ~MultiSourceProjector() {}
+  virtual ~MultiSourceProjector() = default;
   // Returns new BoundMultiSourceProjector, binding the logic of this
   // projector to the specified source schemas, or an Exception if binding
   // fails.
@@ -413,7 +413,7 @@ class MultiSourceProjector {
 
   virtual string ToString(bool verbose) const = 0;
  protected:
-  MultiSourceProjector() {}
+  MultiSourceProjector() = default;
  private:
   DISALLOW_COPY_AND_ASSIGN(MultiSourceProjector);
 };
@@ -421,8 +421,8 @@ class MultiSourceProjector {
 // Modeled after CompoundSingleSourceProjector.
 class CompoundMultiSourceProjector : public MultiSourceProjector {
  public:
-  CompoundMultiSourceProjector() {}
-  virtual ~CompoundMultiSourceProjector() {}
+  CompoundMultiSourceProjector() = default;
+  ~CompoundMultiSourceProjector() override = default;
   CompoundMultiSourceProjector* add(int source_index,
                                     const SingleSourceProjector* projector) {
     projectors_.push_back(make_pair(source_index, make_linked_ptr(projector)));
@@ -431,7 +431,7 @@ class CompoundMultiSourceProjector : public MultiSourceProjector {
   virtual FailureOrOwned<const BoundMultiSourceProjector> Bind(
       const vector<const TupleSchema*>& source_schemas) const;
 
-  virtual string ToString(bool verbose) const;
+  string ToString(bool verbose) const override;
 
  private:
   // Pair maps a number of input to the projector for this input.

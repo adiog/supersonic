@@ -231,7 +231,7 @@ class LittleEndian {
   // The caller needs to guarantee that 1 <= len <= 8.
   static uint64 Load64VariableLength(const void * const p, int len) {
     assert(len >= 1 && len <= 8);
-    const char * const buf = static_cast<const char * const>(p);
+    const auto * const buf = static_cast<const char * const>(p);
     uint64 val = 0;
     --len;
     do {
@@ -394,7 +394,7 @@ class BigEndian {
     //    uint64 val = LittleEndian::Load64VariableLength(p, len);
     //    return Load64(&val) >> (8*(8-len));
     assert(len >= 1 && len <= 8);
-    const char* buf = static_cast<const char * const>(p);
+    const auto* buf = static_cast<const char * const>(p);
     uint64 val = 0;
     do {
       val = (val << 8) | *buf;
@@ -476,7 +476,7 @@ class BigEndian {
 };  // BigEndian
 
 // Network byte order is big-endian
-typedef BigEndian NetworkByteOrder;
+using NetworkByteOrder = BigEndian;
 
 //////////////////////////////////////////////////////////////////////
 // Implementation details: Clients can stop reading here.

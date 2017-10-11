@@ -79,8 +79,8 @@ class BoundIsNullExpression : public BoundUnaryExpression {
   // is NULL (so the skip vector is set to true), we return true, otherwise we
   // return false. Note that it doesn't matter what we return for the rows for
   // which the incoming skip vector was set to true (we happen to return true).
-  virtual EvaluationResult DoEvaluate(const View& input,
-                                      const BoolView& skip_vectors) {
+  EvaluationResult DoEvaluate(const View& input,
+                                      const BoolView& skip_vectors) override {
     CHECK_EQ(1, skip_vectors.column_count());
     // Normally, we would run ResetArenas here, but in this case we know the
     // output block is boolean (and so has no Arena to reset).
@@ -109,7 +109,7 @@ class BoundIsNullExpression : public BoundUnaryExpression {
   }
 
  private:
-  virtual FailureOrVoid PostInit() {
+  FailureOrVoid PostInit() override {
     PROPAGATE_ON_FAILURE_WITH_CONTEXT(
         local_skip_vector_storage_.TryReallocate(my_block()->row_capacity()),
         "", result_schema().GetHumanReadableSpecification());
@@ -164,8 +164,8 @@ class BoundIfNullExpression : public BoundBinaryExpression {
   // false) and the resulting skip vector is true.
   // 6) Copy the data from the appropriate column (expression or substitute)
   // into our result block.
-  virtual EvaluationResult DoEvaluate(const View& input,
-                                      const BoolView& skip_vectors) {
+  EvaluationResult DoEvaluate(const View& input,
+                                      const BoolView& skip_vectors) override {
     CHECK_EQ(1, skip_vectors.column_count());
     // Normally we would run ResetArenas here, but IfNull is guaranteed not to
     // create any new strings.
@@ -234,9 +234,9 @@ class BoundIfNullExpression : public BoundBinaryExpression {
   }
 
  private:
-  typedef typename TypeTraits<type>::cpp_type CppType;
+  using CppType = typename TypeTraits<type>::cpp_type;
 
-  virtual FailureOrVoid PostInit() {
+  FailureOrVoid PostInit() override {
     PROPAGATE_ON_FAILURE_WITH_CONTEXT(
         local_skip_vector_storage_.TryReallocate(my_block()->row_capacity()),
         "", result_schema().GetHumanReadableSpecification());
@@ -446,8 +446,8 @@ class BoundBooleanBinaryExpression : public BoundBinaryExpression {
   // evaluates to TRUE, because both TRUE OR TRUE and TRUE OR FALSE evaluate to
   // TRUE, so we have a guarantee that a correct value is output).
 
-  virtual EvaluationResult DoEvaluate(const View& input,
-                                      const BoolView& skip_vectors) {
+  EvaluationResult DoEvaluate(const View& input,
+                                      const BoolView& skip_vectors) override {
     CHECK_EQ(1, skip_vectors.column_count());
     // Typically, we would run ResetArenas here, but we know the block is
     // actually boolean.
@@ -505,7 +505,7 @@ class BoundBooleanBinaryExpression : public BoundBinaryExpression {
     return Success(*my_view());
   }
 
-  virtual FailureOrVoid PostInit() {
+  FailureOrVoid PostInit() override {
     PROPAGATE_ON_FAILURE_WITH_CONTEXT(
         local_skip_vector_storage_.TryReallocate(my_block()->row_capacity()),
         "", result_schema().GetHumanReadableSpecification());
@@ -593,8 +593,8 @@ class BoundCaseExpression : public BasicBoundExpression {
   // 9) Copy the data (from all the results) to our result block, according to
   // the data source column we created (note that, again, it is irrelevant what
   // we copy in the case of the fields where the skip vector is set).
-  virtual EvaluationResult DoEvaluate(const View& input,
-                                      const BoolView& skip_vectors) {
+  EvaluationResult DoEvaluate(const View& input,
+                                      const BoolView& skip_vectors) override {
     CHECK_EQ(1, skip_vectors.column_count());
     // Typically we would run ResetArenas here, but Case is guaranteed not to
     // create any new strings (just point to strings in child arenas).
@@ -719,7 +719,7 @@ class BoundCaseExpression : public BasicBoundExpression {
     return Success(*my_view());
   }
 
-  rowcount_t row_capacity() const {
+  rowcount_t row_capacity() const override {
     rowcount_t capacity = my_const_block()->row_capacity();
     for (int i = 0; i < arguments_->size(); ++i) {
       capacity = std::min(capacity, arguments_->get(i)->row_capacity());
@@ -727,7 +727,7 @@ class BoundCaseExpression : public BasicBoundExpression {
     return capacity;
   }
 
-  bool can_be_resolved() const {
+  bool can_be_resolved() const override {
     for (int i = 0; i < arguments_->size(); ++i) {
       if (!arguments_->get(i)->is_constant()) return false;
     }
@@ -740,10 +740,10 @@ class BoundCaseExpression : public BasicBoundExpression {
   }
 
  private:
-  typedef typename TypeTraits<test_type>::cpp_type CppTestType;
-  typedef typename TypeTraits<output_type>::cpp_type CppOutputType;
+  using CppTestType = typename TypeTraits<test_type>::cpp_type;
+  using CppOutputType = typename TypeTraits<output_type>::cpp_type;
 
-  virtual FailureOrVoid PostInit() {
+  FailureOrVoid PostInit() override {
     PROPAGATE_ON_FAILURE_WITH_CONTEXT(
         local_skip_vector_storage_.TryReallocate(my_block()->row_capacity()),
         "", result_schema().GetHumanReadableSpecification());
@@ -856,7 +856,7 @@ class BoundIfExpression : public BoundTernaryExpression {
         local_skip_vector_storage_(is_nulling ? 3 : 4, allocator),
         local_skip_vectors_(1) {}
 
-  virtual ~BoundIfExpression() {}
+  ~BoundIfExpression() override = default;
 
   // DoEvaluate does the following:
   // 1) If the IF is not nulling, copy the skip vector for the CONDITION
@@ -878,8 +878,8 @@ class BoundIfExpression : public BoundTernaryExpression {
   // 8) Propagate NULLs from the children to the parents. If choice was set,
   // propagate NULLs from THEN, if not - the NULLs from OTHERWISE.
   // 9) Copy the data from the children, with the same rules.
-  virtual EvaluationResult DoEvaluate(const View& input,
-                                      const BoolView& skip_vectors) {
+  EvaluationResult DoEvaluate(const View& input,
+                                      const BoolView& skip_vectors) override {
     // TODO(onufry): At the moment every single vector-logic expression we run
     // costs around 4% of the total evaluation cost. I'm pretty sure one or two
     // of these could be shaved off with some careful tweaking.
@@ -990,9 +990,9 @@ class BoundIfExpression : public BoundTernaryExpression {
   }
 
  private:
-  typedef typename TypeTraits<output_type>::cpp_type CppType;
+  using CppType = typename TypeTraits<output_type>::cpp_type;
 
-  virtual FailureOrVoid PostInit() {
+  FailureOrVoid PostInit() override {
     PROPAGATE_ON_FAILURE_WITH_CONTEXT(
         local_skip_vector_storage_.TryReallocate(my_block()->row_capacity()),
         "", result_schema().GetHumanReadableSpecification());
@@ -1141,7 +1141,7 @@ FailureOrOwned<BoundExpression> BoundBooleanBinary(
   TupleSchema result_schema =
       CreateSchema(description, BOOL, output_is_nullable);
 
-  BoundBooleanBinaryExpression<op>* result =
+  auto* result =
       new BoundBooleanBinaryExpression<op>(result_schema, allocator,
                                            left, right);
   return InitBasicExpression(row_capacity, result, allocator);

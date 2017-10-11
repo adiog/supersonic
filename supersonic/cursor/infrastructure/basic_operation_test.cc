@@ -23,7 +23,7 @@ namespace supersonic {
 
 class BasicOperationForTest : public BasicOperation {
  public:
-  BasicOperationForTest() {}
+  BasicOperationForTest() = default;
   BasicOperationForTest(Operation* child1, Operation* child2)
      : BasicOperation(child1, child2) {}
 
@@ -36,9 +36,9 @@ TEST(BasicOperationTest, SetBufferAllocatorTest) {
       HeapBufferAllocator::Get());
   MemoryLimit allocator1;
   MemoryLimit allocator2;
-  BasicOperationForTest* operation_left(new BasicOperationForTest);
-  BasicOperationForTest* operation_right_left(new BasicOperationForTest);
-  BasicOperationForTest* operation_right_right(new BasicOperationForTest);
+  auto* operation_left(new BasicOperationForTest);
+  auto* operation_right_left(new BasicOperationForTest);
+  auto* operation_right_right(new BasicOperationForTest);
   BasicOperationForTest* operation_right(new BasicOperationForTest(
       operation_right_left, operation_right_right));
   std::unique_ptr<BasicOperationForTest> operation(

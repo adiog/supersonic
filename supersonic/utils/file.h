@@ -96,7 +96,7 @@ class File {
   virtual const string& CreateFileName() { return create_file_name_; }
 
  protected:
-  explicit File(const string& create_file_name);
+  explicit File(string  create_file_name);
 
   // Name of the created file.
   const string create_file_name_;
