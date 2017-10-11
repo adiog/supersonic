@@ -452,7 +452,7 @@ void AddAttribute(const string& name, DataType type, Nullability nullability,
 class SchemaHolder {
  public:
   SchemaHolder() {
-    TupleSchema* schema = new TupleSchema();
+    auto* schema = new TupleSchema();
     DataType types[kNumberOfTypes] = {INT32, UINT32, INT64, UINT64, FLOAT,
       DOUBLE, BOOL, DATE, DATETIME, STRING, BINARY, DATA_TYPE, ENUM};
     for (int i = 0; i < kNumberOfTypes; ++i) {

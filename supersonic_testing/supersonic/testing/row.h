@@ -58,7 +58,7 @@ class Row : public Streamable {
     return !static_cast<bool>(*this == other);
   }
 
-  virtual void AppendToStream(std::ostream* s) const;
+  void AppendToStream(std::ostream* s) const override;
 
  private:
   // A view over a single row at row_id from view/block.

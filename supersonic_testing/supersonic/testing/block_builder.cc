@@ -86,7 +86,7 @@ Block* CloneViewAndOptimizeNullability(
     if (result_schema.attribute(i).is_nullable()) {
       column->ResetFrom(view.column(i));
     } else {
-      column->Reset(view.column(i).data(), bool_ptr(NULL));
+      column->Reset(view.column(i).data(), bool_ptr(nullptr));
     }
   }
   shadow.set_row_count(view.row_count());

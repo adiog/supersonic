@@ -38,7 +38,7 @@ class RepeatingBlockOperation : public BasicOperation {
  public:
   RepeatingBlockOperation(Block* block, rowcount_t total_num_rows);
 
-  FailureOrOwned<Cursor> CreateCursor() const;
+  FailureOrOwned<Cursor> CreateCursor() const override;
 
  private:
   // Creates new block consisting of repeated rows from the original block.

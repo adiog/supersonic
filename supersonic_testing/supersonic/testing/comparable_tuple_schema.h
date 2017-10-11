@@ -36,7 +36,7 @@ class ComparableTupleSchema : public Streamable {
       : schema_(schema),
         view_printer_(true, true) {}
 
-  virtual void AppendToStream(std::ostream* s) const;
+  void AppendToStream(std::ostream* s) const override;
 
   // Evaluates as bool. Includes detailed explanation if not equal.
   // Uses CompareStrict method.

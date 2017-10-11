@@ -47,7 +47,7 @@ namespace supersonic {
 
 class Streamable {
  public:
-  virtual ~Streamable() {}
+  virtual ~Streamable() = default;
   virtual void AppendToStream(std::ostream* s) const = 0;
 };
 

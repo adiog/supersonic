@@ -137,7 +137,7 @@ class OperationTest {
   // SetBufferAllocator(..., true). The ownership of the allocator
   // remains with the caller.
   void SetBufferAllocator(BufferAllocator* buffer_allocator) {
-    buffer_allocator_ = (buffer_allocator == NULL)
+    buffer_allocator_ = (buffer_allocator == nullptr)
         ? HeapBufferAllocator::Get()
         : buffer_allocator;
   }
@@ -217,9 +217,9 @@ class TestData : public BasicOperation {
       : table_(block),
         exception_(exception) {}
 
-  virtual ~TestData() {}
+  ~TestData() override = default;
 
-  virtual FailureOrOwned<Cursor> CreateCursor() const;
+  FailureOrOwned<Cursor> CreateCursor() const override;
 
   const View& view() const { return table_.view(); }
   const TupleSchema& schema() const { return table_.schema(); }
@@ -233,7 +233,7 @@ class TestData : public BasicOperation {
 // Not templated content of TestDataBuilder. Refer there for more information.
 class AbstractTestDataBuilder {
  public:
-  virtual ~AbstractTestDataBuilder() {}
+  virtual ~AbstractTestDataBuilder() = default;
 
   // Builds an operation that will create cursors over the stream.
   // Ownership of the result is passed to the caller.
@@ -312,7 +312,7 @@ class TestDataBuilder : public AbstractTestDataBuilder {
     return *this;
   }
 
-  virtual TestData* Build() const {
+  TestData* Build() const override {
     return exception_.get() == NULL
         ? new TestData(block_builder_.Build())
         : new TestData(block_builder_.Build(), exception_->Clone());

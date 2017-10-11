@@ -52,13 +52,13 @@ class BoundSkipperExpression : public BoundExpression {
         left_child_(CHECK_NOTNULL(left)),
         right_child_(CHECK_NOTNULL(right)) {}
 
-  virtual ~BoundSkipperExpression() {}
+  ~BoundSkipperExpression() override = default;
 
-  virtual rowcount_t row_capacity() const { return kCapacity; }
-  virtual bool is_constant() const { return false; }
+  rowcount_t row_capacity() const override { return kCapacity; }
+  bool is_constant() const override { return false; }
 
-  virtual EvaluationResult DoEvaluate(const View& input,
-                                      const BoolView& skip_vectors) {
+  EvaluationResult DoEvaluate(const View& input,
+                                      const BoolView& skip_vectors) override {
     CHECK_EQ(1, skip_vectors.column_count());
     bool_ptr skip_vector = skip_vectors.column(0);
     rowcount_t rows = input.row_count();
@@ -113,13 +113,13 @@ class BoundSkipVectorExpectationExpression : public BoundExpression {
         local_skip_vector_storage_(1, allocator),
         initialized_(false) {}
 
-  virtual ~BoundSkipVectorExpectationExpression() {}
+  ~BoundSkipVectorExpectationExpression() override = default;
 
-  virtual rowcount_t row_capacity() const { return kCapacity; }
-  virtual bool is_constant() const { return false; }
+  rowcount_t row_capacity() const override { return kCapacity; }
+  bool is_constant() const override { return false; }
 
-  virtual EvaluationResult DoEvaluate(const View& input,
-                                      const BoolView& skip_vectors) {
+  EvaluationResult DoEvaluate(const View& input,
+                                      const BoolView& skip_vectors) override {
     // This is an inefficient way to do this - the more efficient would be to
     // override Bind. But this is simpler, and for a test expression we do not
     // really care about efficiency.

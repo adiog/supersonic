@@ -38,7 +38,7 @@ namespace supersonic {
 Block* ReplicateBlock(const Block& source, rowcount_t requested_row_count,
                       BufferAllocator* allocator) {
   std::unique_ptr<Block> new_block(new Block(source.schema(), allocator));
-  if (!new_block->Reallocate(requested_row_count)) return NULL;
+  if (!new_block->Reallocate(requested_row_count)) return nullptr;
   ViewCopier copier(source.schema(), true);
   rowcount_t rows_copied = 0;
   while (requested_row_count - rows_copied > 0) {
@@ -64,9 +64,9 @@ class RepeatingBlockCursor : public BasicCursor {
         iterator_(input_block.schema()) {
   }
 
-  virtual ~RepeatingBlockCursor() {}
+  ~RepeatingBlockCursor() override = default;
 
-  ResultView Next(rowcount_t max_row_count) {
+  ResultView Next(rowcount_t max_row_count) override {
     if (num_rows_remaining_ == 0) return ResultView::EOS();
     max_row_count = std::min(max_row_count, num_rows_remaining_);
     if (!iterator_.next(max_row_count)) {
@@ -79,7 +79,7 @@ class RepeatingBlockCursor : public BasicCursor {
 
   virtual CursorId GetCursorId() const { return REPEATING_BLOCK; }
 
-  void AppendDebugDescription(string* target) const {
+  void AppendDebugDescription(string* target) const override {
     StrAppend(target,
               "RepeatingBlockCursor with ",
               num_rows_remaining_, " rows left");

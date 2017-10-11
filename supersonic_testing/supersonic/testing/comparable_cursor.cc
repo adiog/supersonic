@@ -45,12 +45,12 @@ class StatsListener : public SpyListener {
   size_t rows_read() const { return row_count_; }
   const string& last_result() const { return last_result_; }
 
-  virtual void BeforeNext(const string& id, rowcount_t max_row_count) {}
+  void BeforeNext(const string& id, rowcount_t max_row_count) override {}
 
-  virtual void AfterNext(const string& id,
+  void AfterNext(const string& id,
                          rowcount_t max_row_count,
                          const ResultView& result,
-                         int64 time_cycles) {
+                         int64 time_cycles) override {
     ++next_call_count_;
     if (result.has_data()) {
       if (include_rows_in_representation_) {
@@ -99,7 +99,7 @@ const ResultView ComparableCursor::NextRow() {
   return ResultView::Success(&iterator_.view());
 }
 
-ComparableCursor::~ComparableCursor() {}
+ComparableCursor::~ComparableCursor() = default;
 
 void ComparableCursor::AppendToStream(std::ostream *s) const {
   *s << "Cursor"

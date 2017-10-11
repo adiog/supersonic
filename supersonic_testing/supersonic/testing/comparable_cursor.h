@@ -39,7 +39,7 @@ class ComparableCursor : public Streamable {
   // include_rows_in_representation = true
   // Takes ownership of cursor.
   explicit ComparableCursor(Cursor* cursor);
-  virtual ~ComparableCursor();
+  ~ComparableCursor() override;
 
   // Takes ownership of cursor.
   ComparableCursor(Cursor* cursor, bool include_rows_in_representation);
@@ -57,7 +57,7 @@ class ComparableCursor : public Streamable {
     return !static_cast<bool>(*this == other);
   }
 
-  virtual void AppendToStream(std::ostream* s) const;
+  void AppendToStream(std::ostream* s) const override;
 
  private:
   std::unique_ptr<StatsListener> spy_;

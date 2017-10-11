@@ -44,7 +44,7 @@ class ComparableView : public Streamable {
                  bool include_header_in_representation,
                  bool include_rows_in_representation);
 
-  virtual void AppendToStream(std::ostream* s) const;
+  void AppendToStream(std::ostream* s) const override;
 
   void AppendRowToStream(size_t row_id, std::ostream* s) const;
 

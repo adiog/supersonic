@@ -73,7 +73,7 @@ class ViewLimiter : public BasicDecoratorCursor {
     CHECK_GT(capped_max_row_count, 0);
   }
 
-  virtual ResultView Next(rowcount_t max_row_count) {
+  ResultView Next(rowcount_t max_row_count) override {
     DCHECK_GT(max_row_count, 0);
     if (max_row_count > capped_max_row_count_) {
       max_row_count = capped_max_row_count_;
@@ -81,7 +81,7 @@ class ViewLimiter : public BasicDecoratorCursor {
     return delegate()->Next(max_row_count);
   }
 
-  virtual void Interrupt() { delegate()->Interrupt(); }
+  void Interrupt() override { delegate()->Interrupt(); }
 
   virtual CursorId GetCursorId() const { return VIEW_LIMITER; }
 
@@ -102,7 +102,7 @@ class BarrierInjector : public BasicDecoratorCursor {
     CHECK_NOTNULL(random);
   }
 
-  virtual ResultView Next(rowcount_t max_row_count) {
+  ResultView Next(rowcount_t max_row_count) override {
     if (random_->RandDouble() <= barrier_probability_) {
       return ResultView::WaitingOnBarrier();
     } else {
@@ -128,7 +128,7 @@ class BarrierSwallower : public BasicDecoratorCursor {
       : BasicDecoratorCursor(input),
         retry_limit_(retry_limit) {}
 
-  virtual ResultView Next(rowcount_t max_row_count) {
+  ResultView Next(rowcount_t max_row_count) override {
     for (int retries = 0; retries < retry_limit_; ++retries) {
       ResultView result = delegate()->Next(max_row_count);
       if (!result.is_waiting_on_barrier()) return result;
@@ -169,13 +169,13 @@ class InterruptionCounter : public BasicDecoratorCursor {
         marked_(false),
         counter_(counter) {}
 
-  virtual ResultView Next(rowcount_t max_row_count) {
+  ResultView Next(rowcount_t max_row_count) override {
     ResultView result = delegate()->Next(max_row_count);
     if (result.is_done()) mark();
     return result;
   }
 
-  virtual void Interrupt() {
+  void Interrupt() override {
     mark();
     delegate()->Interrupt();
   }
@@ -204,7 +204,7 @@ class TestCursor : public BasicDecoratorCursor {
         exception_(exception),
         done_(false) {}
 
-  virtual ResultView Next(rowcount_t max_row_count) {
+  ResultView Next(rowcount_t max_row_count) override {
     CHECK_GT(max_row_count, 0);
     CHECK(!done_) << "Another Next() called after EOS or exception";
     ResultView result = delegate()->Next(max_row_count);
@@ -247,7 +247,7 @@ class DeepCopyingCursor : public BasicDecoratorCursor {
         view_(block_.schema()),
         deep_copier_(block_.schema(), true) {}
 
-  virtual ResultView Next(rowcount_t max_row_count) {
+  ResultView Next(rowcount_t max_row_count) override {
     block_.ResetArenas();
 
     ResultView result = delegate()->Next(max_row_count);
@@ -304,9 +304,9 @@ class InputWrapperOperation : public BasicOperation {
         capped_max_row_count_(std::numeric_limits<size_t>::max()),
         random_(random),
         barrier_probability_(0),
-        interruption_counter_(NULL) {}
-  virtual ~InputWrapperOperation() {}
-  virtual FailureOrOwned<Cursor> CreateCursor() const {
+        interruption_counter_(nullptr) {}
+  ~InputWrapperOperation() override = default;
+  FailureOrOwned<Cursor> CreateCursor() const override {
     FailureOrOwned<Cursor> child = child_->CreateCursor();
     PROPAGATE_ON_FAILURE(child);
     std::unique_ptr<Cursor> cursor(child.release());
@@ -314,7 +314,7 @@ class InputWrapperOperation : public BasicOperation {
       cursor = make_unique<BarrierInjector>(random_, barrier_probability_,
                                        cursor.release());
     }
-    if (interruption_counter_ != NULL) {
+    if (interruption_counter_ != nullptr) {
       cursor = make_unique<InterruptionCounter>(interruption_counter_,
           cursor.release());
     }
