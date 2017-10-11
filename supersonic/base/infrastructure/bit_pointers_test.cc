@@ -104,12 +104,12 @@ TEST(BitPointersTest, Equality) {
 
 TEST(BitPointersTest, NullPointer) {
   bit_ptr ptr;
-  EXPECT_EQ(ptr, bit_ptr(NULL));
-  EXPECT_EQ(NULL, ptr.data());
+  EXPECT_EQ(ptr, bit_ptr(nullptr));
+  EXPECT_EQ(nullptr, ptr.data());
 
   bit_const_ptr cptr;
-  EXPECT_EQ(cptr, bit_const_ptr(NULL));
-  EXPECT_EQ(NULL, cptr.data());
+  EXPECT_EQ(cptr, bit_const_ptr(nullptr));
+  EXPECT_EQ(nullptr, cptr.data());
 }
 
 TEST(BitPointersTest, Copy) {

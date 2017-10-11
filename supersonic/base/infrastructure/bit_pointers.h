@@ -261,7 +261,7 @@ class bit_const_ptr {
       : data_(source.data()), shift_(source.shift()) {}
   explicit bit_const_ptr(const uint32* data) : data_(data), shift_(0) {}
   bit_const_ptr(const uint32* data, int shift) : data_(data), shift_(shift) {}
-  bit_const_ptr() : data_(nullptr) {}
+  bit_const_ptr() : data_(nullptr), shift_(0) {}
 
   // Accessors.
   inline const uint32* data() const { return data_; }
@@ -271,7 +271,7 @@ class bit_const_ptr {
 
   // Pointer arithmetics.
   inline bit_const_ptr& operator++() {
-    DCHECK(data_ != NULL);
+    DCHECK(data_ != nullptr);
     shift_++;
     data_ += shift_ >> 5;
     shift_ &= 31;
@@ -279,7 +279,7 @@ class bit_const_ptr {
   }
 
   inline bit_const_ptr& operator--() {
-    DCHECK(data_ != NULL);
+    DCHECK(data_ != nullptr);
     shift_ |= 32;
     shift_--;
     --data_ += (shift_ >> 5);
@@ -288,7 +288,7 @@ class bit_const_ptr {
   }
 
   inline bit_const_ptr& operator+=(int offset) {
-    DCHECK(data_ != NULL);
+    DCHECK(data_ != nullptr);
     shift_ += offset;
     data_ += (shift_ >> 5);
     shift_ &= 31;
@@ -348,12 +348,12 @@ class bit_array {
   FailureOrVoid TryReallocate(size_t bit_capacity, BufferAllocator* allocator);
 
   bit_ptr mutable_data() const {
-    return (data_buffer_ == NULL) ? bit_ptr() :
+    return (data_buffer_ == nullptr) ? bit_ptr() :
         bit_ptr(reinterpret_cast<uint32*>(data_buffer_->data()));
   }
 
   bit_const_ptr const_data() const {
-    return (data_buffer_ == NULL) ? bit_const_ptr() :
+    return (data_buffer_ == nullptr) ? bit_const_ptr() :
         bit_const_ptr(reinterpret_cast<uint32*>(data_buffer_->data()));
   }
 
@@ -373,12 +373,12 @@ class boolean_array {
   FailureOrVoid TryReallocate(size_t bit_capacity, BufferAllocator* allocator);
 
   bool* mutable_data() const {
-    return (data_buffer_ == NULL) ? NULL :
+    return (data_buffer_ == nullptr) ? nullptr :
         reinterpret_cast<bool*>(data_buffer_->data());
   }
 
   const bool* const_data() const {
-    return (data_buffer_ == NULL) ? NULL :
+    return (data_buffer_ == nullptr) ? nullptr :
         reinterpret_cast<const bool*>(data_buffer_->data());
   }
 
