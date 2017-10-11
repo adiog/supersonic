@@ -19,6 +19,7 @@
 #include "dot_drawer.h"
 
 #include <memory>
+#include <utility>
 using std::make_unique;
 
 #include "supersonic/benchmark/proto/benchmark.pb.h"
@@ -158,7 +159,7 @@ void PopulateNodeData(const BenchmarkData& data,
                                   relative_time));
   }
 
-  if (valid_processing_time != NULL) {
+  if (valid_processing_time != nullptr) {
     *valid_processing_time =
         data.has_processing_time() && data.processing_time() > 0;
   }
@@ -255,7 +256,7 @@ void DOTDrawer::DrawDOT(const BenchmarkTreeNode& node) {
   already_used_ = true;
 }
 
-typedef PointerVector<BenchmarkTreeNode>::const_iterator
+using const_iterator = int
     const_node_iterator;
 
 void DOTDrawer::DrawBenchmarkSubtree(
@@ -333,7 +334,7 @@ class StringOutputWriter : public DOTOutputWriter {
       : DOTOutputWriter(),
         dot_output_(dot_output) {}
 
-  virtual void WriteDOT(const string& dot);
+  void WriteDOT(const string& dot) override;
 
  private:
   string* dot_output_;
@@ -346,11 +347,11 @@ void StringOutputWriter::WriteDOT(const string& dot) {
 // ---------------------------- FileOutputWriter -------------------------------
 class FileOutputWriter : public DOTOutputWriter {
  public:
-  explicit FileOutputWriter(const string& file_name)
+  explicit FileOutputWriter(string  file_name)
       : DOTOutputWriter(),
-        file_name_(file_name) {}
+        file_name_(std::move(file_name)) {}
 
-  virtual void WriteDOT(const string& dot);
+  void WriteDOT(const string& dot) override;
 
  private:
   string file_name_;

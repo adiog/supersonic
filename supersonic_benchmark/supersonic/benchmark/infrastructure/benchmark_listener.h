@@ -27,16 +27,7 @@ namespace supersonic {
 // benchmarking values.
 class BenchmarkListener : public SpyListener {
  public:
-  virtual ~BenchmarkListener() {}
-
-  // Method called before the listened-to cursor's next() call.
-  virtual void BeforeNext(const string& id, rowcount_t max_row_count) = 0;
-
-  // Method called after the listened-to cursor's next() call.
-  virtual void AfterNext(const string& id,
-                         rowcount_t max_row_count,
-                         const ResultView& result_view,
-                         int64 time_nanos) = 0;
+  ~BenchmarkListener() override = default;
 
   // Returns the number of calls to the cursor's Next() function.
   virtual int64 NextCalls() const = 0;

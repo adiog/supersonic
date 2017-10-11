@@ -71,10 +71,10 @@ class BenchmarkResult {
 class BenchmarkTreeBuilder {
  public:
   BenchmarkTreeBuilder()
-      : root_node_stats_(NULL),
+      : root_node_stats_(nullptr),
         tree_created_(false) {}
 
-  virtual ~BenchmarkTreeBuilder() {}
+  virtual ~BenchmarkTreeBuilder() = default;
 
   // Creates a benchmarking tree for the argument cursor. The caller will take
   // ownership of the returned object which contains a handle to the tree root

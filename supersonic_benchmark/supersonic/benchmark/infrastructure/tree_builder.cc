@@ -35,8 +35,8 @@ namespace {
 
 using util::gtl::PointerVector;
 
-typedef CursorWithBenchmarkListener Entry;
-typedef CursorTransformerWithBenchmarkHistory Transformer;
+using Entry = CursorWithBenchmarkListener;
+using Transformer = CursorTransformerWithBenchmarkHistory;
 
 // Function which resolves the cursor's benchmarking type based on its id.
 BenchmarkType GetBenchmarkType(const Cursor& cursor) {
@@ -184,7 +184,7 @@ BenchmarkResult* BenchmarkTreeBuilder::CreateTree(Cursor* cursor) {
   return new BenchmarkResult(result_node.release(), wrapped_cursor.release());
 }
 
-typedef vector<Entry*>::iterator entry_iterator;
+using entry_iterator = vector<Entry*>::iterator;
 
 BenchmarkTreeNode* BenchmarkTreeBuilder::CreateTreeNode(
     Entry* current_output,
@@ -216,7 +216,7 @@ BenchmarkTreeNode* BenchmarkTreeBuilder::CreateTreeNode(
   return node;
 }
 
-typedef PointerVector<Entry>::iterator entry_ptr_iterator;
+using entry_ptr_iterator = PointerVector<Entry>::iterator;
 
 void BenchmarkTreeBuilder::RecoverHistory(Transformer* transformer,
                                           vector<Entry*>* output_history) {

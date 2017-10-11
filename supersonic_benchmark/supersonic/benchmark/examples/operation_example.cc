@@ -168,7 +168,7 @@ Operation* SimpleTreeExample() {
                                group.release());
 }
 
-typedef vector<Operation*>::iterator operation_iterator;
+using operation_iterator = vector<Operation*>::iterator;
 
 void Run() {
   vector<Operation*> operations(Container(
