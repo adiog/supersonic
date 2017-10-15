@@ -18,14 +18,15 @@ addons:
       - protobuf-compiler
       - libprotobuf*
       - lcov
+      - uuid-dev
 
 before_install:
   - git clone https://github.com/antlr/antlr4
   - mkdir -p antlr4/runtime/Cpp/build
   - cd antlr4/runtime/Cpp/build
-  - cmake -DCMAKE_CXX_COMPILER=g++-6 -DCMAKE_C_COMPILER=gcc-6 ..
+  - cmake -DCMAKE_CXX_COMPILER=g++-6 -DCMAKE_C_COMPILER=gcc-6 -DCMAKE_BUILD_TYPE=Release ..
   - make -j 2
-  - make install
+  - sudo make install
   - cd -
 
 script:
