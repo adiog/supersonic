@@ -7,3 +7,15 @@
 [submodule "deps/cctz"]
 	path = deps/cctz
 	url = https://github.com/google/cctz
+[submodule "deps/rapidjson"]
+	path = deps/rapidjson
+	url = https://github.com/Tencent/rapidjson/
+[submodule "deps/libbeans"]
+	path = deps/libbeans
+	url = https://github.com/adiog/io_quicksave_libbeans
+[submodule "deps/qsql"]
+	path = deps/qsql
+	url = https://github.com/adiog/io_quicksave_qsql
+[submodule "deps/antlr4"]
+	path = deps/antlr4
+	url = https://github.com/antlr/antlr4/

@@ -309,8 +309,8 @@ const SingleSourceProjector* ProjectAttributeAt(const int position) {
 const SingleSourceProjector* ProjectAttributesAt(const vector<int>& positions) {
   unique_ptr<CompoundSingleSourceProjector> projector(
       new CompoundSingleSourceProjector);
-  for (int i = 0; i < positions.size(); ++i) {
-    projector->add(ProjectAttributeAt(positions[i]));
+  for (int position : positions) {
+    projector->add(ProjectAttributeAt(position));
   }
   return projector.release();
 }
@@ -318,8 +318,8 @@ const SingleSourceProjector* ProjectAttributesAt(const vector<int>& positions) {
 const SingleSourceProjector* ProjectNamedAttributes(
     const vector<string>& names) {
   auto* projector = new CompoundSingleSourceProjector;
-  for (int i = 0; i < names.size(); ++i) {
-    projector->add(ProjectNamedAttribute(names[i]));
+  for (const auto &name : names) {
+    projector->add(ProjectNamedAttribute(name));
   }
   return projector;
 }
