@@ -18,17 +18,16 @@ addons:
       - protobuf-compiler
       - libprotobuf*
       - lcov
+
 before_install:
-#  - sudo add-apt-repository main -y
-#  - sudo add-apt-repository universe -y
-#  - sudo add-apt-repository restricted -y
-#  - sudo add-apt-repository multiverse -y
-#  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
-#  - sudo apt-get update -q
-#  - sudo apt-cache search protobuf
-#  - sudo apt-cache search g++
-#  - sudo apt-cache search gcc
-  - cd $TRAVIS_BUILD_DIR
+  - git clone https://github.com/antlr/antlr4
+  - mkdir -p antlr4/runtime/Cpp/build
+  - cd antlr4/runtime/Cpp/build
+  - cmake -DCMAKE_CXX_COMPILER=g++-6 -DCMAKE_C_COMPILER=gcc-6 ..
+  - make -j 2
+  - make install
+  - cd -
+
 script:
   - git submodule update --init --recursive
   - mkdir -p build && cd build
@@ -47,6 +46,7 @@ script:
   - GLOG_minloglevel=2 ./test_expression_templated
   - GLOG_minloglevel=2 ./test_expression_vector
   - GLOG_minloglevel=2 ./supersonicTest
+  - GLOG_minloglevel=2 ./quicksaveTest
 #  - find . -name "*.gc*" -exec gcov {} \;
 #  - lcov -c -d . -o cov.info
 #  - genhtml cov.info --output-directory gcov-html
