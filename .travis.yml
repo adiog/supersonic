@@ -39,21 +39,21 @@ addons:
       - libdwarf-dev
 
 before_install:
+  - export CXX=g++-6
+  - export CC=gcc-6
+  - git clone https://github.com/facebook/folly
+  - cd folly/folly
+  - autoreconf -ivf
+  - ./configure
+  - make
+  - make check
+  - sudo make install
+  - cd -
   - git clone https://github.com/antlr/antlr4
   - mkdir -p antlr4/runtime/Cpp/build
   - cd antlr4/runtime/Cpp/build
   - cmake -DCMAKE_CXX_COMPILER=g++-6 -DCMAKE_C_COMPILER=gcc-6 -DCMAKE_BUILD_TYPE=Release ..
   - make -j 2
-  - sudo make install
-  - cd -
-  - export CXX=g++-6
-  - export CC=gcc-6
-  - git clone https://github.com/facebook/folly
-  - cd folly
-  - autoreconf -ivf
-  - ./configure
-  - make
-  - make check
   - sudo make install
   - cd -
 
