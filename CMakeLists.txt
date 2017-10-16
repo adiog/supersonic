@@ -714,11 +714,10 @@ ADD_EXECUTABLE(supersonicTest ${CMAKE_CURRENT_SOURCE_DIR}/test_utils/supersonic_
 TARGET_LINK_LIBRARIES(supersonicTest supersonic gtest gmock)
 
 
+
 set(CMAKE_CXX_FLAGS "${CAMKE_CXX_FLAGS} -I/usr/local/include/antlr4-runtime -L/usr/local/lib")
 
-
-#ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/deps/antlr4/runtime/Cpp)
-#include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/antlr4/runtime/Cpp/runtime/src)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/supersonic_quicksave_generated)
 
 ADD_SUBDIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/deps/qsql)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/qsql/cppqsql/generated)
@@ -730,9 +729,10 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/deps/sha1)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/rapidjson/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/deps/libbeans/cppbeans/include)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/supersonic_memory)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/supersonic_memory_test)
-FILE(GLOB_RECURSE quicksaveTestSources ${CMAKE_CURRENT_SOURCE_DIR}/supersonic_memory_test/**.cc)
-FILE(GLOB_RECURSE quicksaveTestHeaders ${CMAKE_CURRENT_SOURCE_DIR}/supersonic_memory/**.h)
-ADD_EXECUTABLE(quicksaveTest ${quicksaveTestSources} ${quicksaveTestHeaders})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/supersonic_quicksave)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/supersonic_quicksave_test)
+FILE(GLOB_RECURSE quicksaveHeaders ${CMAKE_CURRENT_SOURCE_DIR}/supersonic_quicksave/**.h)
+FILE(GLOB_RECURSE quicksaveGeneratedHeaders ${CMAKE_CURRENT_SOURCE_DIR}/supersonic_quicksave_generated/**.h)
+FILE(GLOB_RECURSE quicksaveTestSources ${CMAKE_CURRENT_SOURCE_DIR}/supersonic_quicksave_test/**.cc)
+ADD_EXECUTABLE(quicksaveTest ${quicksaveTestSources} ${quicksaveHeaders} ${quicksaveGeneratedHeaders})
 TARGET_LINK_LIBRARIES(quicksaveTest qsql supersonic gtest gmock sha1)

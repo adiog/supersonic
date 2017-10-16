@@ -1,13 +1,15 @@
-#include <MetaBean.h>
-#include <SupersonicMemory.h>
+#include <SupersonicCast.h>
 #include <gtest/gtest.h>
+#include <qsgen/supersonicBean/SupersonicBeans.h>
 #include <qsql/qsqlSupersonicExpression.h>
 #include <supersonic/cursor/infrastructure/view_cursor.h>
 
-TEST(SupersonicMemoryTestSuite, BeanTestCase)
-{
-    auto memory = supersonic::SupersonicBeanTable<MetaBean>();
+#include <CursorIterator.h>
 
+namespace {
+
+void insert_samples(supersonic::SupersonicBeanTable<MetaBean>& memory)
+{
     {
         MetaBean bean;
         bean.meta_hash = "metahash1";
@@ -40,29 +42,52 @@ TEST(SupersonicMemoryTestSuite, BeanTestCase)
 
         memory.insert(bean);
     }
+}
+}
 
-    const auto *expression = QsqlSupersonicExpression::parseQsql("", "WHERE ((name = 'name1') or (text = 'text3'))");
+TEST(SupersonicMemoryTestSuite, DecodeIteratorTestCase)
+{
+    auto memory = supersonic::SupersonicBeanTable<MetaBean>();
+
+    insert_samples(memory);
+
+    const auto* expression = QsqlSupersonicExpression::parseQsql("", "WHERE ((name = 'name1') or (text = 'text3'))");
 
     auto filtered = supersonic::Filter(
         expression,
         supersonic::ProjectAllAttributes(),
-        memory.table.release()
-    );
+        memory.table.release());
+
+    supersonic::FailureOrOwned<supersonic::Cursor> cursor = filtered->CreateCursor();
+    ASSERT_TRUE(cursor.is_success());
+
+    for (auto bean : supersonic::DecodeCursorAs<MetaBean>(cursor.get()))
+    {
+        std::cout << bean << std::endl;
+    }
+}
+
+TEST(SupersonicMemoryTestSuite, BeanTestCase)
+{
+    auto memory = supersonic::SupersonicBeanTable<MetaBean>();
+
+    insert_samples(memory);
+
+    const auto* expression = QsqlSupersonicExpression::parseQsql("", "WHERE ((name = 'name1') or (text = 'text3'))");
+
+    auto filtered = supersonic::Filter(
+        expression,
+        supersonic::ProjectAllAttributes(),
+        memory.table.release());
 
     supersonic::FailureOrOwned<supersonic::Cursor> cursor = filtered->CreateCursor();
     ASSERT_TRUE(cursor.is_success());
 
     supersonic::ResultView output = cursor.get()->Next(1);
     ASSERT_TRUE(output.has_data());
-    auto& view = output.view();
-    auto bean = memory.decode(view);
-    std::cout << bean.to_string() << std::endl;
 
     supersonic::ResultView output2 = cursor.get()->Next(1);
     ASSERT_TRUE(output2.has_data());
-    auto& view2 = output2.view();
-    MetaBean bean2 = memory.decode(view2);
-    std::cout << bean2.to_string() << std::endl;
 
     supersonic::ResultView output3 = cursor.get()->Next(1);
     ASSERT_FALSE(output3.has_data());

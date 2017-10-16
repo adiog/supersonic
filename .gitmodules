@@ -20,3 +20,6 @@
 [submodule "deps/antlr4"]
 	path = deps/antlr4
 	url = https://github.com/antlr/antlr4/
+[submodule "deps/beans"]
+	path = deps/beans
+	url = https://github.com/adiog/io_quicksave_beans

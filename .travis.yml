@@ -57,6 +57,7 @@ before_install:
   - cd -
 
 script:
+  - export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64:${LD_LIBRARY_PATH}
   - git submodule update --init --recursive
   - mkdir -p build && cd build
 #  - find . -name "*.gcov" -or -name "*.gcda" -or -name "*.gcno" -exec rm {} \;
