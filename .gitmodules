@@ -16,6 +16,7 @@
 [submodule "deps/qsql"]
 	path = deps/qsql
 	url = https://github.com/adiog/io_quicksave_qsql
+  branch = supersonic
 [submodule "deps/antlr4"]
 	path = deps/antlr4
 	url = https://github.com/antlr/antlr4/

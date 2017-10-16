@@ -3,6 +3,6 @@
 # Copyright 2017 Aleksander Gajewski <adiog@quicksave.io>.
 
 cat Dockerfile.in | envsubst > Dockerfile
-sudo docker build -t quicksave/dev-ubuntu .
+sudo docker build -t quicksave/dev-supersonic .
 rm Dockerfile
 

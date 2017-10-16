@@ -1,5 +1,12 @@
-FROM ubuntu:latest
+FROM quicksave/dev-python
 
-RUN apt-get update \
-    && apt-get upgrade -y \
-    && apt-get install -y git make cmake g++-5 gcc-5 sqlite3 python3 python3-dev libvsqlitepp-dev uuid uuid-dev libmemcached-dev libpqxx-dev libgpgme++ sshfs libc6-pic librabbitmq-dev libfuse-dev libgoogle-glog-dev libgflags-dev
+RUN git clone --recursive https://github.com/adiog/supersonic \
+    && cd supersonic \
+    && git checkout quicksave \
+    && mkdir -p build \
+    && cd build \
+    && cmake -DCMAKE_C_COMPILER=gcc-5 -DCMAKE_CXX_COMPILER=g++-5 -DCMAKE_BUILD_TYPE=Release .. \
+    && make -j 4
+
+CMD bash
+
