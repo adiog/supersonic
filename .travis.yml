@@ -19,6 +19,24 @@ addons:
       - libprotobuf*
       - lcov
       - uuid-dev
+      - libtool
+      - libboost-all-dev
+      - libevent-dev
+      - libdouble-conversion-dev
+      - libgoogle-glog-dev
+      - libgflags-dev
+      - liblz4-dev
+      - liblzma-dev
+      - libsnappy-dev
+      - make
+      - zlib1g-dev
+      - binutils-dev
+      - libjemalloc-dev
+      - libssl-dev
+      - pkg-config
+      - libunwind8-dev
+      - libelf-dev
+      - libdwarf-dev
 
 before_install:
   - git clone https://github.com/antlr/antlr4
@@ -26,6 +44,16 @@ before_install:
   - cd antlr4/runtime/Cpp/build
   - cmake -DCMAKE_CXX_COMPILER=g++-6 -DCMAKE_C_COMPILER=gcc-6 -DCMAKE_BUILD_TYPE=Release ..
   - make -j 2
+  - sudo make install
+  - cd -
+  - export CXX=g++-6
+  - export CC=gcc-6
+  - git clone https://github.com/facebook/folly
+  - cd folly
+  - autoreconf -ivf
+  - ./configure
+  - make
+  - make check
   - sudo make install
   - cd -
 
