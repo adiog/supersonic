@@ -1,8 +1,18 @@
 FROM quicksave/dev-python
 
+RUN apt-get install -y \
+      libgoogle-glog-dev \
+      libgflags-dev \
+      libboost-system-dev \
+      libboost-timer-dev \
+      protobuf-c-compiler \
+      protobuf-compiler \
+      libprotobuf*
+
 RUN git clone --recursive https://github.com/adiog/supersonic \
     && cd supersonic \
     && git checkout quicksave \
+    && git submodule update --init --recursive \
     && mkdir -p build \
     && cd build \
     && cmake -DCMAKE_C_COMPILER=gcc-5 -DCMAKE_CXX_COMPILER=g++-5 -DCMAKE_BUILD_TYPE=Release .. \

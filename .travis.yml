@@ -46,7 +46,6 @@ before_install:
   - autoreconf -ivf
   - ./configure
   - make
-  - make check
   - sudo make install
   - cd -
   - git clone https://github.com/antlr/antlr4
